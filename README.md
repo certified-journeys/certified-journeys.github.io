@@ -1,1 +1,0 @@
-# certified-journeys.github.io
