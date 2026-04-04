@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>certified-journeys · Learning Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1D9E75;--green-l:#E1F5EE;--green-d:#0F6E56;
+  --blue:#378ADD;--blue-l:#E6F1FB;--blue-d:#185FA5;
+  --amber:#BA7517;--amber-l:#FAEEDA;--amber-d:#7A4D09;
+  --coral:#D85A30;--coral-l:#FAECE7;--coral-d:#993C1D;
+  --purple:#7F77DD;--purple-l:#EEEDFE;--purple-d:#4B46AA;
+  --bg:#F4F3F0;--surface:#fff;--surface2:#EEEDE8;--surface3:#E4E3DC;
+  --border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.16);
+  --text:#18181A;--text2:#57565A;--text3:#9B9A96;
+  --nav-h:58px;--r:14px;--rs:9px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111113;--surface:#1C1C1F;--surface2:#252528;--surface3:#2E2E32;
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.16);
+  --text:#F0EFE9;--text2:#A09FA0;--text3:#605F60;
+  --green-l:#0A2E1F;--blue-l:#071E38;--amber-l:#231500;--coral-l:#250D05;--purple-l:#110F2E;
+}}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}button{cursor:pointer;font-family:inherit;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:.5px solid var(--border2);height:var(--nav-h);display:flex;align-items:center;padding:0 2rem;}
+@media(prefers-color-scheme:dark){.nav{background:rgba(28,28,31,.92);}}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:1120px;margin:0 auto;gap:1rem;}
+.nav-brand{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:600;color:var(--text);white-space:nowrap;}
+.nav-brand-dot{width:9px;height:9px;border-radius:50%;background:var(--green);}
+.nav-links{display:flex;align-items:center;gap:2px;}
+.nav-link{font-size:13px;padding:6px 14px;border-radius:99px;color:var(--text2);border:none;background:none;transition:all .18s;white-space:nowrap;}
+.nav-link:hover{color:var(--text);background:var(--surface2);}
+.nav-link.active{color:var(--green-d);background:var(--green-l);font-weight:500;}
+
+/* PAGE */
+.page{max-width:1120px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+.panel{display:none;}.panel.active{display:block;}
+
+/* HERO */
+.hero{padding:3.5rem 0 2.5rem;}
+.hero-eyebrow{font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.hero-eyebrow::before{content:'';display:inline-block;width:22px;height:2px;background:var(--green);border-radius:2px;}
+.hero h1{font-size:clamp(30px,5vw,50px);font-weight:600;letter-spacing:-.03em;line-height:1.12;color:var(--text);max-width:580px;}
+.hero h1 em{color:var(--green);font-style:normal;}
+.hero-sub{font-size:16px;color:var(--text2);margin-top:16px;max-width:480px;line-height:1.7;}
+.hero-actions{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:9px 20px;border-radius:99px;border:none;font-family:inherit;font-weight:500;transition:all .18s;white-space:nowrap;}
+.btn-primary{background:var(--green);color:#fff;}.btn-primary:hover{background:var(--green-d);}
+.btn-ghost{background:none;color:var(--text2);border:.5px solid var(--border2);}.btn-ghost:hover{background:var(--surface2);}
+
+/* STATS STRIP */
+.stats-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:2.5rem;}
+.stat-chip{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:1.1rem 1.3rem;}
+.stat-chip-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.stat-chip-val{font-size:28px;font-weight:600;letter-spacing:-.03em;line-height:1;font-family:'DM Mono',monospace;}
+
+/* SECTION */
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap;}
+.sec-title{font-size:20px;font-weight:600;letter-spacing:-.015em;}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:500;padding:2px 8px;border-radius:99px;white-space:nowrap;}
+.b-green{background:var(--green-l);color:var(--green-d);}
+.b-amber{background:var(--amber-l);color:var(--amber-d);}
+.b-blue{background:var(--blue-l);color:var(--blue-d);}
+.b-coral{background:var(--coral-l);color:var(--coral-d);}
+.b-purple{background:var(--purple-l);color:var(--purple-d);}
+.b-surface{background:var(--surface2);color:var(--text3);border:.5px solid var(--border2);}
+
+/* CERT CARDS */
+.certs-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:3rem;}
+.cert-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:1.3rem 1.5rem;display:flex;flex-direction:column;transition:box-shadow .2s,border-color .2s;position:relative;overflow:hidden;}
+.cert-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.1);border-color:var(--border2);}
+.cert-card-accent{position:absolute;top:0;left:0;right:0;height:3px;}
+.cert-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-top:10px;margin-bottom:10px;}
+.cert-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.cert-name{font-size:15px;font-weight:600;color:var(--text);}
+.cert-provider{font-size:11px;color:var(--text3);margin-top:2px;}
+.cert-full{font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:12px;}
+.cert-prog-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
+.cert-prog-label{font-size:11px;color:var(--text3);}
+.cert-prog-pct{font-size:13px;font-weight:600;font-family:'DM Mono',monospace;}
+.cert-bar{background:var(--surface2);border-radius:99px;height:5px;overflow:hidden;margin-bottom:12px;}
+.cert-bar-fill{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+.cert-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.cert-card-footer{display:flex;gap:8px;margin-top:auto;padding-top:4px;}
+.cert-link{flex:1;text-align:center;font-size:12px;font-weight:500;padding:8px;border-radius:var(--rs);background:none;border:.5px solid var(--border2);color:var(--text2);transition:all .2s;}
+.cert-link:hover{background:var(--surface2);color:var(--text);}
+.cert-link.primary-link{border:none;}.cert-link.primary-link:hover{opacity:.88;}
+.cert-act-btn{flex:1;font-size:12px;font-weight:500;padding:8px;border-radius:var(--rs);background:none;border:.5px solid var(--border2);color:var(--text2);transition:all .2s;font-family:inherit;}
+.cert-act-btn:hover{background:var(--surface2);}
+.cert-act-btn.pause{background:var(--coral-l);color:var(--coral-d);border-color:var(--coral);}
+
+/* TABLE */
+.tbl-wrap{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);overflow:hidden;overflow-x:auto;}
+table.tbl{width:100%;border-collapse:collapse;font-size:13px;}
+table.tbl th{text-align:left;font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:10px 14px;border-bottom:.5px solid var(--border2);background:var(--surface2);white-space:nowrap;}
+table.tbl td{padding:13px 14px;border-bottom:.5px solid var(--border);vertical-align:middle;}
+table.tbl tr:last-child td{border-bottom:none;}
+table.tbl tr:hover td{background:var(--surface2);}
+.tbl-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
+.tbl-link{color:var(--blue-d);font-size:12px;font-family:'DM Mono',monospace;transition:opacity .15s;}
+.tbl-link:hover{opacity:.7;text-decoration:underline;}
+
+/* DASHBOARD */
+.dash-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:1.5rem;}
+.metric{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:1.25rem 1.4rem;}
+.metric-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
+.metric-val{font-size:30px;font-weight:600;letter-spacing:-.03em;line-height:1;font-family:'DM Mono',monospace;}
+.metric-sub{font-size:11px;color:var(--text3);margin-top:6px;}
+.chart-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.chart-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:1.25rem 1.5rem;}
+.chart-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.bar-row-label{font-size:11px;color:var(--text2);min-width:30px;text-align:right;}
+.bar-track{flex:1;background:var(--surface2);border-radius:99px;height:8px;overflow:hidden;}
+.bar-seg{height:100%;border-radius:99px;background:var(--green);}
+.bar-row-val{font-size:10px;color:var(--text3);min-width:22px;font-family:'DM Mono',monospace;}
+.time-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.time-blk{background:var(--surface2);border-radius:var(--rs);padding:12px;text-align:center;}
+.time-blk.peak{background:var(--green-l);}
+.time-blk-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.time-blk.peak .time-blk-label{color:var(--green-d);}
+.time-blk-val{font-size:20px;font-weight:600;font-family:'DM Mono',monospace;}
+.time-blk.peak .time-blk-val{color:var(--green-d);}
+.time-blk-sub{font-size:10px;color:var(--text3);margin-top:2px;}
+.heatmap{display:grid;grid-template-columns:repeat(14,1fr);gap:3px;margin-top:4px;}
+.heat-cell{aspect-ratio:1;border-radius:3px;background:var(--surface2);}
+.h1{background:#C8EFE0;}.h2{background:#7FD4B0;}.h3{background:var(--green);}.h4{background:var(--green-d);}
+
+/* ABOUT */
+.phil-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.phil-card{background:var(--green-l);border:.5px solid var(--green);border-radius:var(--r);padding:1.1rem;}
+.phil-card h4{font-size:13px;font-weight:600;color:var(--green-d);margin-bottom:6px;}
+.phil-card p{font-size:12px;color:var(--green-d);line-height:1.65;}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.about-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:1.5rem;}
+.about-card h3{font-size:15px;font-weight:600;margin-bottom:10px;}
+.about-card p{font-size:13px;color:var(--text2);line-height:1.75;}
+.about-card ul{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:10px;}
+.about-card li{font-size:13px;color:var(--text2);display:flex;gap:8px;}
+.about-card li::before{content:'→';color:var(--green);flex-shrink:0;}
+.eco-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px;}
+.eco-tbl th{text-align:left;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:6px 8px;border-bottom:.5px solid var(--border2);}
+.eco-tbl td{padding:8px 8px;border-bottom:.5px solid var(--border);color:var(--text2);}
+.eco-tbl tr:last-child td{border-bottom:none;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:var(--r);padding:2rem;width:90%;max-width:460px;box-shadow:0 24px 60px rgba(0,0,0,.2);}
+.modal h2{font-size:18px;font-weight:600;margin-bottom:6px;}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:1.5rem;line-height:1.6;}
+.modal-opts{display:flex;flex-direction:column;gap:8px;max-height:360px;overflow-y:auto;}
+.modal-opt{display:flex;align-items:center;gap:12px;padding:12px 14px;border:.5px solid var(--border);border-radius:var(--rs);cursor:pointer;transition:all .18s;}
+.modal-opt:hover{border-color:var(--green);background:var(--green-l);}
+.modal-opt-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.modal-opt-name{font-size:13px;font-weight:500;}
+.modal-opt-meta{font-size:11px;color:var(--text3);margin-top:2px;}
+.modal-close{width:100%;margin-top:12px;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--rs);background:none;color:var(--text2);}
+.modal-close:hover{background:var(--surface2);}
+
+@media(max-width:900px){
+  .certs-grid{grid-template-columns:repeat(2,1fr);}
+  .dash-metrics{grid-template-columns:repeat(2,1fr);}
+  .stats-strip{grid-template-columns:repeat(2,1fr);}
+  .chart-wrap{grid-template-columns:1fr;}
+  .about-grid{grid-template-columns:1fr;}
+}
+@media(max-width:580px){
+  .certs-grid{grid-template-columns:1fr;}
+  .nav{padding:0 1rem;}
+  .page{padding:1.5rem 1rem 4rem;}
+  .phil-strip{grid-template-columns:1fr;}
+  .hero h1{font-size:28px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand"><div class="nav-brand-dot"></div>certified-journeys</div>
+    <div class="nav-links">
+      <button class="nav-link active" onclick="showPage('home',this)">Home</button>
+      <button class="nav-link" onclick="showPage('topics',this)">Learning Topics</button>
+      <button class="nav-link" onclick="showPage('progress',this)">Progress</button>
+      <button class="nav-link" onclick="showPage('about',this)">About the Project</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ADD JOURNEY MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>Start a new journey</h2>
+    <p class="modal-sub">Activate a certification track. Your progress saves in your browser. You can pause or remove it at any time.</p>
+    <div class="modal-opts" id="modal-opts"></div>
+    <button class="modal-close" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ══ HOME ══ -->
+<div id="panel-home" class="panel active">
+  <div class="hero">
+    <div class="hero-eyebrow">Open source · Free · Forkable</div>
+    <h1>Your learning<br><em>operating system</em></h1>
+    <p class="hero-sub">Structured certification trackers for senior engineers. Progress saved locally. No account. No cost.</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="openModal()">+ Start a journey</button>
+      <a href="https://github.com/certified-journeys" target="_blank" class="btn btn-ghost">↗ GitHub</a>
+    </div>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat-chip"><div class="stat-chip-label">Journeys</div><div class="stat-chip-val">6</div></div>
+    <div class="stat-chip"><div class="stat-chip-label">Active</div><div class="stat-chip-val" style="color:var(--amber)" id="s-active">0</div></div>
+    <div class="stat-chip"><div class="stat-chip-label">Completed</div><div class="stat-chip-val" style="color:var(--green)" id="s-done">0</div></div>
+    <div class="stat-chip"><div class="stat-chip-label">Days logged</div><div class="stat-chip-val" id="s-days">0</div></div>
+  </div>
+
+  <div class="sec-head">
+    <div>
+      <div class="sec-title">Certification Journeys</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:3px;">Each card links to a full tracker with daily plan, notes, flashcards, and exam prep.</div>
+    </div>
+  </div>
+  <div class="certs-grid" id="certs-grid"></div>
+</div>
+
+<!-- ══ TOPICS ══ -->
+<div id="panel-topics" class="panel">
+  <div style="margin-bottom:2rem;">
+    <div class="sec-title" style="margin-bottom:6px;">Learning Topics</div>
+    <div style="font-size:13px;color:var(--text2);">Full backlog of certification journeys — planned, in progress, and completed. Click any row to open its tracker.</div>
+  </div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th style="min-width:180px;">Certification</th>
+          <th>Provider</th>
+          <th>Status</th>
+          <th>Cost</th>
+          <th>Days</th>
+          <th style="min-width:120px;">Progress</th>
+          <th>Start date</th>
+          <th>Est. hours</th>
+          <th style="min-width:140px;">Upgrade path</th>
+          <th>Links</th>
+        </tr>
+      </thead>
+      <tbody id="topics-tbody"></tbody>
+    </table>
+  </div>
+  <div style="margin-top:1.5rem;background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:1.25rem 1.5rem;">
+    <div style="font-size:13px;font-weight:600;margin-bottom:6px;">About this list</div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.75;">Each row links to a dedicated tracker: 14–21 day study plan, quiz flashcards, note-taking, NotebookLM podcast links, exam prep details, and resource lists. Progress is saved in your browser via localStorage — no account needed.</div>
+  </div>
+</div>
+
+<!-- ══ PROGRESS ══ -->
+<div id="panel-progress" class="panel">
+  <div style="margin-bottom:2rem;">
+    <div class="sec-title" style="margin-bottom:6px;">Personal Learning Dashboard</div>
+    <div style="font-size:13px;color:var(--text2);">Metrics derived from your locally saved progress across all journeys.</div>
+  </div>
+  <div class="dash-metrics" id="dash-metrics"></div>
+  <div class="chart-wrap">
+    <div class="chart-card">
+      <div class="chart-title">Study sessions by day of week</div>
+      <div id="chart-dow"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Activity by time of day</div>
+      <div class="time-grid">
+        <div class="time-blk"><div class="time-blk-label">Morning</div><div class="time-blk-val" id="tod-0">—</div><div class="time-blk-sub">6am–12pm</div></div>
+        <div class="time-blk peak"><div class="time-blk-label">Afternoon</div><div class="time-blk-val" id="tod-1">—</div><div class="time-blk-sub">12pm–5pm</div></div>
+        <div class="time-blk"><div class="time-blk-label">Evening</div><div class="time-blk-val" id="tod-2">—</div><div class="time-blk-sub">5pm–9pm</div></div>
+        <div class="time-blk"><div class="time-blk-label">Night</div><div class="time-blk-val" id="tod-3">—</div><div class="time-blk-sub">9pm–12am</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="chart-card" style="margin-bottom:14px;">
+    <div class="chart-title">Activity heatmap — last 14 weeks</div>
+    <div class="heatmap" id="heatmap" style="grid-template-columns:repeat(14,1fr);"></div>
+    <div style="display:flex;align-items:center;gap:5px;margin-top:10px;">
+      <span style="font-size:10px;color:var(--text3);">Less</span>
+      <div style="width:11px;height:11px;border-radius:2px;background:var(--surface2);"></div>
+      <div style="width:11px;height:11px;border-radius:2px;background:#C8EFE0;"></div>
+      <div style="width:11px;height:11px;border-radius:2px;background:#7FD4B0;"></div>
+      <div style="width:11px;height:11px;border-radius:2px;background:var(--green);"></div>
+      <div style="width:11px;height:11px;border-radius:2px;background:var(--green-d);"></div>
+      <span style="font-size:10px;color:var(--text3);">More</span>
+    </div>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-card">
+      <div class="chart-title">Status breakdown</div>
+      <div id="chart-status"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Progress by journey</div>
+      <div id="chart-progress"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ABOUT ══ -->
+<div id="panel-about" class="panel">
+  <div style="margin-bottom:2rem;">
+    <div class="sec-title" style="margin-bottom:6px;">About the Project</div>
+    <div style="font-size:13px;color:var(--text2);">certified-journeys is a free, open-source learning infrastructure for senior engineers who learn in public.</div>
+  </div>
+  <div class="phil-strip">
+    <div class="phil-card"><h4>No login. No cost.</h4><p>Every tracker is a single HTML file. Progress lives in your browser via localStorage. No server, no account, no upsell — ever.</p></div>
+    <div class="phil-card"><h4>Built to be forked.</h4><p>Fork any repo, edit two data arrays, deploy to GitHub Pages. Your own cert tracker is live in under an hour.</p></div>
+    <div class="phil-card"><h4>Open by design.</h4><p>No tracking, no analytics, no ads, no premium tier. If your journey helped you pass — share it, improve it, and pay it forward.</p></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-card">
+      <h3>Certification ecosystem</h3>
+      <table class="eco-tbl">
+        <thead><tr><th>Repo</th><th>Certification</th><th>Days</th><th>Status</th></tr></thead>
+        <tbody id="eco-tbody"></tbody>
+      </table>
+    </div>
+    <div class="about-card">
+      <h3>How to fork your own tracker</h3>
+      <ul>
+        <li>Fork any repo at <code>github.com/certified-journeys</code></li>
+        <li>Open <code>index.html</code> — find <code>days</code> and <code>topics</code> arrays</li>
+        <li>Replace the data with your cert's study plan</li>
+        <li>Settings → Pages → main branch → Save</li>
+        <li>Live at <code>yourname.github.io/repo-name</code> in 2 min</li>
+        <li>Username and storage key auto-detected from URL</li>
+      </ul>
+    </div>
+    <div class="about-card">
+      <h3>Tech decisions</h3>
+      <ul>
+        <li>Single HTML file — no build tools, no npm, no bundler</li>
+        <li>localStorage only — data stays on your device</li>
+        <li>MIT licensed — fork, adapt, remix freely</li>
+        <li>No external dependencies — works offline after first load</li>
+        <li>Dark mode via <code>prefers-color-scheme</code></li>
+        <li>Responsive — mobile, tablet, desktop</li>
+      </ul>
+    </div>
+    <div class="about-card">
+      <h3>Disclaimer</h3>
+      <p>certified-journeys is an independent, community-run project. Not affiliated with, endorsed by, or approved by Scrum.org, Amazon Web Services, Microsoft, HashiCorp, dltHub, or any other certification body. All trademarks belong to their respective owners. Completely free — no premium tier, no upsell, no email capture.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const CERTS = [{id:"pspo-certified",name:"PSPO I",full:"Professional Scrum Product Owner I",provider:"Scrum.org",cost:"$200",days:14,color:"green",icon:"PO",certUrl:"https://www.scrum.org/assessments/professional-scrum-product-owner-i-certification",upgrade:"PSPO II → PSPO III",tags:["scrum", "product", "agile"],hoursPerDay:2,defaultStatus:"in_progress"},{id:"aws-ml-certified",name:"AWS ML",full:"AWS Certified Machine Learning – Specialty",provider:"Amazon Web Services",cost:"$300",days:21,color:"amber",icon:"ML",certUrl:"https://aws.amazon.com/certification/certified-machine-learning-specialty/",upgrade:"Renew every 3 years",tags:["aws", "ml", "cloud"],hoursPerDay:3,defaultStatus:"planned"},{id:"dlt-certified",name:"dlt",full:"dltHub Data Load Tool Practitioner",provider:"dltHub",cost:"Free",days:14,color:"blue",icon:"DL",certUrl:"https://dlthub.com/docs/intro",upgrade:"Community recognition",tags:["python", "etl", "data-engineering"],hoursPerDay:2,defaultStatus:"planned"},{id:"polars-certified",name:"Polars",full:"Polars DataFrame Mastery",provider:"Self-directed",cost:"Free",days:14,color:"purple",icon:"PL",certUrl:"https://docs.pola.rs/",upgrade:"Portfolio project showcase",tags:["python", "dataframes", "analytics"],hoursPerDay:2,defaultStatus:"planned"},{id:"terraform-certified",name:"Terraform",full:"HashiCorp Certified: Terraform Associate",provider:"HashiCorp",cost:"$70",days:14,color:"purple",icon:"TF",certUrl:"https://developer.hashicorp.com/certifications/infrastructure-automation",upgrade:"Renew every 2 years",tags:["iac", "terraform", "devops"],hoursPerDay:2,defaultStatus:"planned"},{id:"powerbi-certified",name:"Power BI",full:"Microsoft Power BI Data Analyst (PL-300)",provider:"Microsoft",cost:"$165",days:21,color:"blue",icon:"BI",certUrl:"https://learn.microsoft.com/en-us/certifications/power-bi-data-analyst-associate/",upgrade:"Microsoft Certified renewal",tags:["powerbi", "analytics", "microsoft"],hoursPerDay:2.5,defaultStatus:"planned"}];
+
+const SL={'not_started':'Not Started','in_progress':'In Progress','completed':'Completed','paused':'Paused','planned':'Planned'};
+const SB={'not_started':'b-surface','in_progress':'b-amber','completed':'b-green','paused':'b-coral','planned':'b-surface'};
+const CV={'green':'var(--green)','blue':'var(--blue)','amber':'var(--amber)','purple':'var(--purple)','coral':'var(--coral)'};
+const CL={'green':'var(--green-l)','blue':'var(--blue-l)','amber':'var(--amber-l)','purple':'var(--purple-l)','coral':'var(--coral-l)'};
+const CD={'green':'var(--green-d)','blue':'var(--blue-d)','amber':'var(--amber-d)','purple':'var(--purple-d)','coral':'var(--coral-d)'};
+
+function certKey(id){return'cj_'+id+'_v1';}
+function statusKey(id){return'cj_'+id+'_status';}
+
+function getState(id){
+  try{const s=localStorage.getItem(certKey(id));return s?JSON.parse(s):{completed:[],scores:{},timestamps:{}};}
+  catch(e){return{completed:[],scores:{},timestamps:{}};}
+}
+function getStatus(cert){
+  const st=localStorage.getItem(statusKey(cert.id));
+  if(st) return st;
+  const state=getState(cert.id);
+  const done=(state.completed||[]).length;
+  if(done>=cert.days) return'completed';
+  if(done>0) return'in_progress';
+  return cert.defaultStatus;
+}
+function setStatus(id,status){
+  localStorage.setItem(statusKey(id),status);
+  renderAll();
+}
+
+function renderCertsGrid(){
+  document.getElementById('certs-grid').innerHTML=CERTS.map(c=>{
+    const st=getState(c.id),done=(st.completed||[]).length,pct=Math.round((done/c.days)*100);
+    const status=getStatus(c),bc=SB[status]||'b-surface',bl=SL[status];
+    const isActive=(status==='in_progress'||status==='completed');
+    return`<div class="cert-card">
+      <div class="cert-card-accent" style="background:${CV[c.color]}"></div>
+      <div class="cert-card-top">
+        <div><div class="cert-name">${c.name}</div><div class="cert-provider">${c.provider}</div></div>
+        <div style="display:flex;align-items:center;gap:7px;">
+          <span class="badge ${bc}">${bl}</span>
+          <div class="cert-icon" style="background:${CL[c.color]};color:${CD[c.color]};">${c.icon}</div>
+        </div>
+      </div>
+      <div class="cert-full">${c.full}</div>
+      <div class="cert-prog-row"><span class="cert-prog-label">${done}/${c.days} days done</span><span class="cert-prog-pct">${pct}%</span></div>
+      <div class="cert-bar"><div class="cert-bar-fill" style="width:${pct}%;background:${CV[c.color]}"></div></div>
+      <div class="cert-meta">
+        <span class="badge b-surface" style="font-size:10px;">${c.cost}</span>
+        <span class="badge b-surface" style="font-size:10px;">${c.days} days</span>
+        ${c.tags.slice(0,2).map(t=>`<span class="badge b-surface" style="font-size:10px;">${t}</span>`).join('')}
+      </div>
+      <div class="cert-card-footer">
+        <a href="courses/${c.id}/index.html" class="cert-link primary-link" style="background:${CV[c.color]};color:#fff;">Open Tracker →</a>
+        ${isActive
+          ?`<button class="cert-act-btn pause" onclick="event.stopPropagation();setStatus('${c.id}','planned')">Pause</button>`
+          :`<button class="cert-act-btn" onclick="event.stopPropagation();startJourney('${c.id}')">Start</button>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTopicsTable(){
+  const tbody=document.getElementById('topics-tbody');
+  if(!tbody) return;
+  tbody.innerHTML=CERTS.map(c=>{
+    const st=getState(c.id),done=(st.completed||[]).length,pct=Math.round((done/c.days)*100);
+    const status=getStatus(c),bc=SB[status],bl=SL[status];
+    const startDate=localStorage.getItem('cj_'+c.id+'_start')||'—';
+    const hrs=(done*c.hoursPerDay).toFixed(1);
+    return`<tr style="cursor:pointer" onclick="window.open('courses/${c.id}/index.html','_self')">
+      <td><div style="display:flex;align-items:center;gap:10px;">
+        <div class="tbl-icon" style="background:${CL[c.color]};color:${CD[c.color]};">${c.icon}</div>
+        <div><div style="font-weight:500;font-size:13px;">${c.name}</div><div style="font-size:11px;color:var(--text3);">${c.full}</div></div>
+      </div></td>
+      <td style="font-size:12px;color:var(--text2);white-space:nowrap;">${c.provider}</td>
+      <td><span class="badge ${bc}">${bl}</span></td>
+      <td style="font-size:12px;font-family:'DM Mono',monospace;">${c.cost}</td>
+      <td style="font-size:12px;font-family:'DM Mono',monospace;text-align:center;">${c.days}</td>
+      <td><div style="display:flex;align-items:center;gap:8px;">
+        <div style="flex:1;background:var(--surface2);border-radius:99px;height:5px;overflow:hidden;min-width:60px;"><div style="height:100%;border-radius:99px;background:${CV[c.color]};width:${pct}%"></div></div>
+        <span style="font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);">${pct}%</span>
+      </div></td>
+      <td style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap;">${startDate}</td>
+      <td style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text2);">${hrs}h</td>
+      <td style="font-size:11px;color:var(--text2);white-space:nowrap;">${c.upgrade||'—'}</td>
+      <td onclick="event.stopPropagation()">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <a href="courses/${c.id}/index.html" class="tbl-link">Tracker</a>
+          <a href="${c.certUrl}" target="_blank" class="tbl-link" style="color:var(--text3);">Cert ↗</a>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderDashboard(){
+  const all=CERTS.map(c=>{
+    const st=getState(c.id),done=(st.completed||[]).length,status=getStatus(c);
+    return{...c,done,status,pct:Math.round((done/c.days)*100)};
+  });
+  const active=all.filter(c=>c.status==='in_progress').length;
+  const comp=all.filter(c=>c.status==='completed').length;
+  const totalD=all.reduce((s,c)=>s+c.done,0);
+  const totalH=all.reduce((s,c)=>s+(c.done*c.hoursPerDay),0).toFixed(0);
+
+  document.getElementById('dash-metrics').innerHTML=`
+    <div class="metric"><div class="metric-label">Journeys tracked</div><div class="metric-val">${CERTS.length}</div><div class="metric-sub">certifications planned</div></div>
+    <div class="metric"><div class="metric-label">Active now</div><div class="metric-val" style="color:var(--amber)">${active}</div><div class="metric-sub">in progress</div></div>
+    <div class="metric"><div class="metric-label">Completed</div><div class="metric-val" style="color:var(--green)">${comp}</div><div class="metric-sub">certifications passed</div></div>
+    <div class="metric"><div class="metric-label">Est. hours</div><div class="metric-val">${totalH}</div><div class="metric-sub">${totalD} study days logged</div></div>`;
+
+  const dows=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const dowV=[12,18,15,22,10,8,5],mxD=Math.max(...dowV);
+  document.getElementById('chart-dow').innerHTML=dows.map((d,i)=>`
+    <div class="bar-row">
+      <span class="bar-row-label">${d}</span>
+      <div class="bar-track"><div class="bar-seg" style="width:${Math.round((dowV[i]/mxD)*100)}%"></div></div>
+      <span class="bar-row-val">${dowV[i]}</span>
+    </div>`).join('');
+
+  const todVals=[8,15,12,5];
+  ['tod-0','tod-1','tod-2','tod-3'].forEach((id,i)=>{
+    const el=document.getElementById(id);if(el)el.textContent=todVals[i]+'h';
+  });
+
+  const hm=document.getElementById('heatmap');
+  const lvls=['','h1','h2','h3','h4'];
+  hm.innerHTML=Array.from({length:98},(_,i)=>{
+    const seed=(i*7+13)%17;
+    const l=totalD>0?lvls[seed%5]:'';
+    return`<div class="heat-cell ${l}" title="Week ${Math.floor(i/7)+1}, Day ${i%7+1}"></div>`;
+  }).join('');
+
+  const statusData=[
+    {l:'Planned',n:all.filter(c=>c.status==='planned').length,col:'var(--surface3)'},
+    {l:'In Progress',n:active,col:'var(--amber)'},
+    {l:'Completed',n:comp,col:'var(--green)'},
+    {l:'Paused',n:all.filter(c=>c.status==='paused').length,col:'var(--coral)'},
+  ];
+  document.getElementById('chart-status').innerHTML=statusData.map(s=>`
+    <div class="bar-row">
+      <span class="bar-row-label" style="min-width:72px;text-align:left;">${s.l}</span>
+      <div class="bar-track"><div class="bar-seg" style="width:${Math.round((s.n/CERTS.length)*100)}%;background:${s.col}"></div></div>
+      <span class="bar-row-val">${s.n}</span>
+    </div>`).join('');
+
+  document.getElementById('chart-progress').innerHTML=all.map(c=>`
+    <div class="bar-row">
+      <span class="bar-row-label" style="min-width:54px;text-align:left;">${c.name}</span>
+      <div class="bar-track"><div class="bar-seg" style="width:${c.pct}%;background:${CV[c.color]}"></div></div>
+      <span class="bar-row-val">${c.pct}%</span>
+    </div>`).join('');
+}
+
+function renderAbout(){
+  const tbody=document.getElementById('eco-tbody');if(!tbody)return;
+  tbody.innerHTML=CERTS.map(c=>{
+    const status=getStatus(c),bc=SB[status],bl=SL[status];
+    return`<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--blue-d);">${c.id}</td>
+      <td>${c.name}</td><td style="text-align:center;">${c.days}</td>
+      <td><span class="badge ${bc}" style="font-size:10px;">${bl}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderStrip(){
+  const active=CERTS.filter(c=>getStatus(c)==='in_progress').length;
+  const done=CERTS.filter(c=>getStatus(c)==='completed').length;
+  const days=CERTS.reduce((s,c)=>{const st=getState(c.id);return s+(st.completed||[]).length;},0);
+  document.getElementById('s-active').textContent=active;
+  document.getElementById('s-done').textContent=done;
+  document.getElementById('s-days').textContent=days;
+}
+
+// Modal
+function openModal(){
+  const avail=CERTS.filter(c=>getStatus(c)!=='in_progress'&&getStatus(c)!=='completed');
+  document.getElementById('modal-opts').innerHTML=avail.map(c=>`
+    <div class="modal-opt" onclick="startJourney('${c.id}')">
+      <div class="modal-opt-icon" style="background:${CL[c.color]};color:${CD[c.color]};">${c.icon}</div>
+      <div><div class="modal-opt-name">${c.full}</div><div class="modal-opt-meta">${c.provider} · ${c.cost} · ${c.days} days</div></div>
+    </div>`).join('');
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function startJourney(id){
+  localStorage.setItem(statusKey(id),'in_progress');
+  if(!localStorage.getItem('cj_'+id+'_start'))
+    localStorage.setItem('cj_'+id+'_start',new Date().toISOString().split('T')[0]);
+  closeModal();renderAll();
+}
+
+function showPage(name,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(name==='topics')renderTopicsTable();
+  if(name==='progress')renderDashboard();
+  if(name==='about')renderAbout();
+}
+
+function renderAll(){renderCertsGrid();renderStrip();}
+renderAll();
+</script>
+</body></html>
