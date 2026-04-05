@@ -294,7 +294,7 @@ let state = {
 
 **Required functions — implement all:**
 
-- `loadState()`, `saveState()`, `broadcastStatus()`, `resetAll()`
+- `loadState()` (**async**), `saveState()`, `broadcastStatus()`, `resetAll()`
 - `isCompleted(i)`, `toggleComplete(i)`, `toggleDay(i)`
 - `logScore(i, val)`, `logHours(i, val)`
 - `scoreClass(s)`, `badgeClass(b)`, `badgeLabel(b)`
@@ -308,6 +308,7 @@ let state = {
 - `renderResources()` — 4 sections: Core Reading, Hands-On, Ecosystem, Upgrade Path
 - `showPanel(name, btn)`, `renderAll()`
 - `goToDay(i)` — switches to Daily Plan tab and scrolls to day i
+- `updateSyncBadge(s)`, `openGHModal()`, `closeGHModal()`, `saveGHCreds()`, `disconnectGH()` — GitHub sync UI
 
 #### `renderTask`, `tickTask`, and `renderRes` helpers (required for both types)
 
@@ -515,11 +516,92 @@ Minimum 3 links per section (12 total).
 - Written a cheat sheet from memory and verified it
 - Consistent scores — not one lucky attempt
 
+#### `loadState` and `saveState` — GitHub sync integration
+
+`loadState` is **async**. It loads localStorage first for fast paint, then fetches from GitHub if connected:
+
+```js
+async function loadState() {
+  try { const s = localStorage.getItem(STORAGE_KEY); if (s) state = {...state, ...JSON.parse(s)}; } catch(e) {}
+  if (GHSync.isConnected()) {
+    updateSyncBadge('syncing');
+    const gh = await GHSync.fetchState(COURSE_ID);
+    if (gh) { state = {...state, ...gh}; try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
+    updateSyncBadge(gh ? 'connected' : 'error');
+  } else { updateSyncBadge('disconnected'); }
+}
+```
+
+`saveState` writes localStorage immediately then debounces a GitHub commit (2.5 s):
+
+```js
+function saveState() {
+  // ... existing status/localStorage logic ...
+  broadcastStatus();
+  if (GHSync.isConnected())
+    GHSync.saveDebounced(COURSE_ID, state, 2500,
+      () => updateSyncBadge('syncing'),
+      ok => updateSyncBadge(ok ? 'connected' : 'error'));
+}
+```
+
+#### GitHub sync UI functions
+
+```js
+function updateSyncBadge(s) {
+  const el = document.getElementById('sync-badge'); if (!el) return;
+  const L = {disconnected:'☁ Connect GitHub', connected:'✓ Synced', syncing:'↑ Syncing…', error:'⚠ Sync failed'};
+  el.textContent = L[s] || L.disconnected;
+  el.className = 'sync-badge' + (s==='connected' ? ' connected' : s==='syncing' ? ' syncing' : s==='error' ? ' error' : '');
+}
+function openGHModal() { /* populate fields from GHSync.getCreds(), open modal */ }
+function closeGHModal() { document.getElementById('gh-modal').classList.remove('open'); }
+async function saveGHCreds() { /* validate fields, GHSync.saveCreds(c), testConnection(), fetchState on success */ }
+function disconnectGH() { GHSync.saveCreds(null); updateSyncBadge('disconnected'); closeGHModal(); }
+```
+
+### HTML — footer and modal
+
+**Footer** — replace "Progress saved locally" text with sync badge:
+
+```html
+<div class="page-footer">
+  <button class="sync-badge" id="sync-badge" onclick="openGHModal()">☁ Connect GitHub</button>
+  · <span id="sk-display">cj_[COURSE_ID]_v1</span> · <a href="../../index.html">← All journeys</a>
+</div>
+```
+
+**Modal + shared script** — add between closing `</div>` of `.app` and the inline `<script>`:
+
+```html
+<!-- GitHub sync modal -->
+<div class="gh-modal" id="gh-modal" onclick="if(event.target===this)closeGHModal()">
+  <div class="gh-modal-box">
+    <h3>☁ GitHub Sync</h3>
+    <p class="gh-modal-sub">Progress is committed to <code>courses/[COURSE_ID]/progress.json</code>
+    in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
+    <div class="gh-field"><label>Personal Access Token</label><input id="gh-pat" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+    <div class="gh-field"><label>Owner</label><input id="gh-owner" type="text" placeholder="your-username"></div>
+    <div class="gh-field"><label>Repository</label><input id="gh-repo" type="text" placeholder="certified-journeys.github.io"></div>
+    <div class="gh-field"><label>Branch</label><input id="gh-branch" type="text" placeholder="main"></div>
+    <div class="gh-modal-actions">
+      <button class="gh-btn-save" onclick="saveGHCreds()">Test &amp; Save</button>
+      <button class="gh-btn-cancel" onclick="closeGHModal()">Cancel</button>
+      <button class="gh-btn-disconnect" id="gh-disconnect-btn" style="display:none" onclick="disconnectGH()">Disconnect</button>
+      <span class="gh-modal-msg" id="gh-modal-msg"></span>
+    </div>
+  </div>
+</div>
+
+<script src="../../github-sync.js"></script>
+```
+
+> `github-sync.js` lives at the repo root (`certified-journeys.github.io/github-sync.js`) and is shared by all courses. Do not inline it — always load with `../../github-sync.js`.
+
 ### Init (last lines of `<script>`)
 
 ```js
-loadState();
-renderAll();
+loadState().then(renderAll);
 ```
 
 ---
@@ -669,6 +751,10 @@ No Jupyter notebooks are generated for `standard` courses.
 - [ ] Dark mode CSS variables are correct
 - [ ] `.breadcrumb-sep` rule has no trailing `"`
 - [ ] `notes/day-01.md` through `notes/day-NN.md` template files generated
+- [ ] GitHub sync: `loadState` is `async`, `saveState` calls `GHSync.saveDebounced`
+- [ ] GitHub sync: modal (`id="gh-modal"`), sync badge (`id="sync-badge"`) present in HTML
+- [ ] GitHub sync: `<script src="../../github-sync.js"></script>` loads before inline script
+- [ ] Init is `loadState().then(renderAll)` — not `loadState(); renderAll()`
 
 ### `notebook` type only
 - [ ] `const NOTEBOOKS` array present, one slug per day
@@ -731,4 +817,4 @@ Output each file with a header:
 
 ---
 
-*certified-journeys prompt v5 · two course types · notes/day-NN.md link in every day card · topic ↔ day navigation · per-task tick checkboxes + auto-complete progress bar*
+*certified-journeys prompt v6 · two course types · notes/day-NN.md link in every day card · topic ↔ day navigation · per-task tick checkboxes + auto-complete progress bar · GitHub repo sync via PAT*
