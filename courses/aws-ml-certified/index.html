@@ -294,6 +294,8 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 <script src="../../github-sync.js"></script>
 
 <script>
+// GHSync fallback — in case github-sync.js fails to load
+if(typeof GHSync==='undefined'){window.GHSync={isConnected:()=>false,saveCreds:()=>{},getCreds:()=>null,fetchState:async()=>null,pushState:async()=>false,saveDebounced:()=>{},testConnection:async()=>({ok:false,msg:'Script not loaded'})};}
 const COURSE_ID='aws-ml-certified';
 const STORAGE_KEY='cj_aws-ml-certified_v1';
 const TOTAL_DAYS=21;
@@ -599,7 +601,7 @@ function renderAll(){
   broadcastStatus();
 }
 
-loadState().then(renderAll);
+loadState().then(renderAll).catch(e=>{console.error('loadState failed:',e);renderAll();});
 </script>
 
 </body>
