@@ -1,0 +1,13 @@
+# Day 5: Sprint events and timebox rules
+
+## Notes
+
+_Your notes for today._
+
+## Key takeaways
+
+-
+
+## Questions
+
+-

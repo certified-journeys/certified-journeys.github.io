@@ -4,10 +4,12 @@ Copy this entire prompt into Claude (or any capable LLM). Fill in the `[COURSE I
 
 Courses come in **two types** — set `COURSE_TYPE` accordingly:
 
-| Type | Use when | Day-card action | Output B |
-|------|----------|-----------------|---------|
-| `notebook` | Hands-on technical (Python, data engineering, ML) | 📓 Notebook + Colab buttons | Jupyter `.ipynb` per day |
-| `standard` | Certification prep, theory-heavy (Scrum, cloud certs, BI) | 📝 Per-day notes textarea | `notes/day-NN.md` templates |
+| Type | Use when | Day-card action row | Output B |
+|------|----------|---------------------|---------|
+| `notebook` | Hands-on technical (Python, data engineering, ML) | 📓 Notebook · ▶ Colab · 📝 notes_by_day.md | Jupyter `.ipynb` per day + `notes/day-NN.md` templates |
+| `standard` | Certification prep, theory-heavy (Scrum, cloud certs, BI) | 📝 notes_by_day.md only | `notes/day-NN.md` templates |
+
+Both types include a `📝 notes_by_day.md` link per day. The difference is whether notebook + Colab buttons also appear.
 
 ---
 
@@ -119,25 +121,19 @@ Single self-contained HTML file. No external JS, no build tools, no npm. Google 
 }}
 ```
 
-### Day-card action row CSS — choose one based on COURSE_TYPE
+### Action row CSS (required for both types)
 
-**If `notebook`:**
 ```css
-/* Notebook links */
+/* Action row — notebook buttons + notes link */
 .nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
 .nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
 .nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
-.nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
-.nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
 ```
 
-**If `standard`:**
+Add these only for **`notebook` type:**
 ```css
-/* Day notes */
-.notes-wrap{margin-bottom:10px;}
-.notes-label{font-size:11px;color:var(--text3);margin-bottom:4px;display:block;}
-.notes-area{width:100%;min-height:72px;font-size:12px;padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;resize:vertical;line-height:1.5;transition:border-color .15s;}
-.notes-area:focus{outline:none;border-color:var(--blue);}
+.nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
+.nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
 ```
 
 ### Linked task and resource CSS (required for both types)
@@ -183,9 +179,7 @@ Responsive: `@media(max-width:640px)` for `.topic-grid`, `.hero-meta`, `.stats-g
   <!-- 3. Progress strip (bar, pct, readiness, stats grid) -->
   <div class="prog-strip"> ... </div>
 
-  <!-- 4. Tabs — notebook courses have 5 tabs, standard courses have 5 tabs -->
-  <!-- notebook:  📅 Daily Plan | 📚 Topics | 🤖 AI Tools | 🔗 Resources | 🎓 Exam Prep -->
-  <!-- standard:  📅 Daily Plan | 📚 Topics | 🤖 AI Tools | 🔗 Resources | 🎓 Exam Prep -->
+  <!-- 4. Tabs — same for both types -->
   <div class="tabs">
     <button class="tab active" onclick="showPanel('schedule',this)">📅 Daily Plan</button>
     <button class="tab" onclick="showPanel('topics',this)">📚 Topics</button>
@@ -209,7 +203,7 @@ Responsive: `@media(max-width:640px)` for `.topic-grid`, `.hero-meta`, `.stats-g
 </div>
 ```
 
-> Both course types use the same 5-tab layout. Notes are inline per-day for standard courses (not a separate tab).
+> Both course types use the same 5-tab layout. No separate Notes tab — the notes link appears inline in each day card.
 
 ### JavaScript — data constants
 
@@ -286,13 +280,13 @@ let state = {
 - `scoreClass(s)`, `badgeClass(b)`, `badgeLabel(b)`
 - `renderTask(t)`, `renderRes(r)` — helpers for linked tasks/resources (see below)
 - `updateStats()`
-- `renderSchedule()` — day card body differs by COURSE_TYPE (see below)
-- `renderTopics()`
+- `renderSchedule()` — action row differs by COURSE_TYPE (see below)
+- `renderTopics()` — includes clickable day buttons that navigate to Daily Plan
 - `renderAI()` — 3 cards: NotebookLM audio, NotebookLM flashcards, Claude prompts
 - `renderExam()` — 4 stat cards + readiness checklist
 - `renderResources()` — 4 sections: Core Reading, Hands-On, Ecosystem, Upgrade Path
 - `showPanel(name, btn)`, `renderAll()`
-- **`standard` type only:** `saveNote(i, val)`, `getNote(i)`
+- `goToDay(i)` — switches to Daily Plan tab and scrolls to day i
 
 #### `renderTask` and `renderRes` helpers (required for both types)
 
@@ -314,19 +308,40 @@ function renderRes(r) {
 }
 ```
 
-#### `renderSchedule` — day card body (differs by COURSE_TYPE)
+#### `renderSchedule` — action row (differs by COURSE_TYPE, rest is identical)
 
-**`notebook` type** — day card body opens with notebook buttons:
+The notes link is present in **both** types. The file name is zero-padded to match `notes/day-NN.md`.
+
+**`notebook` type** — three buttons: notebook · Colab · notes:
 
 ```js
-`<!-- action row -->
-<div class="nb-row">
+`<div class="nb-row">
   <a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a>
   <a class="nb-btn nb-btn-colab"
      href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/[COURSE_ID]/notebooks/${NOTEBOOKS[i]}.ipynb"
      target="_blank">▶ Open in Colab</a>
-</div>
-<div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
+  <a class="nb-btn" href="notes/day-${String(i+1).padStart(2,'0')}.md" target="_blank">📝 notes_by_day.md</a>
+</div>`
+```
+
+**`standard` type** — one button: notes only:
+
+```js
+`<div class="nb-row">
+  <a class="nb-btn" href="notes/day-${String(i+1).padStart(2,'0')}.md" target="_blank">📝 notes_by_day.md</a>
+</div>`
+```
+
+**Both types** — remainder of day card body (identical):
+
+```js
+`<div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
+${(dayTopics[i]||[]).length ? `<div class="day-topic-pills">
+  ${(dayTopics[i]||[]).map(t => `<span class="day-topic-pill"
+    style="background:${t.color}18;color:${t.color};border-color:${t.color}40"
+    onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])"
+    title="View topic in Topics tab">${t.name}</span>`).join('')}
+</div>` : ''}
 <div class="task-list">${d.tasks.map(renderTask).join('')}</div>
 <div class="resources-row">${d.resources.map(renderRes).join('')}</div>
 <!-- score row only if d.hasScore -->
@@ -334,36 +349,59 @@ function renderRes(r) {
 <button class="complete-btn ...">...</button>`
 ```
 
-**`standard` type** — day card body opens with notes textarea:
+#### Topic ↔ Day connection (required for both types)
 
-```js
-`<!-- action row -->
-<div class="notes-wrap">
-  <label class="notes-label">📝 Day notes</label>
-  <textarea class="notes-area"
-    placeholder="Your notes for today…"
-    oninput="saveNote(${i}, this.value)">${getNote(i)}</textarea>
-</div>
-<div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
-<div class="task-list">${d.tasks.map(renderTask).join('')}</div>
-<div class="resources-row">${d.resources.map(renderRes).join('')}</div>
-<!-- score row only if d.hasScore -->
-<div class="hours-row">...</div>
-<button class="complete-btn ...">...</button>`
+Add CSS for topic pills on day cards and day buttons in Topics tab:
+
+```css
+.day-topic-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.day-topic-pill{font-size:10px;padding:2px 9px;border-radius:99px;border:.5px solid;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.day-topic-pill:hover{opacity:.7;}
+.topic-days{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.topic-day-btn{font-size:11px;padding:2px 8px;border-radius:99px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
+.topic-day-btn:hover{background:var(--surface3);color:var(--text);}
+.topic-day-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
 ```
 
-**`standard` type** — notes JS helpers:
+Build the reverse index and `goToDay` after `badgeLabel`:
 
 ```js
-function saveNote(i, v) {
-  const k = STORAGE_KEY + '_note_' + i;
-  try { v.trim() ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch(e) {}
+const dayTopics = (() => {
+  const m = {};
+  topics.forEach(t => t.days.forEach(d => { (m[d] = m[d] || []).push(t); }));
+  return m;
+})();
+
+function goToDay(i) {
+  showPanel('schedule', document.querySelector('.tab'));
+  setTimeout(() => {
+    state.openDay = i; saveState(); renderSchedule();
+    const el = document.querySelector('.day-card:nth-child(' + (i + 1) + ')');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
 }
-function getNote(i) {
-  try {
-    const v = localStorage.getItem(STORAGE_KEY + '_note_' + i);
-    return v ? (v + '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
-  } catch(e) { return ''; }
+```
+
+Update `renderTopics` to include clickable day buttons:
+
+```js
+function renderTopics() {
+  document.getElementById('panel-topics').innerHTML = `<div class="topic-grid">${
+    topics.map(t => {
+      const cov = t.days.filter(d => state.completed.includes(d)).length;
+      const pct = Math.round((cov / t.days.length) * 100);
+      const dayBtns = t.days.map(d =>
+        `<button class="topic-day-btn${state.completed.includes(d) ? ' done' : ''}"
+          onclick="goToDay(${d})">Day ${d + 1}</button>`
+      ).join('');
+      return `<div class="topic-card">
+        <h4>${t.name}</h4>
+        <div class="t-bar-bg"><div class="t-bar-fill" style="width:${pct}%;background:${t.color}"></div></div>
+        <div class="t-pct">${pct}% covered · ${cov}/${t.days.length} sessions</div>
+        <div class="topic-days">${dayBtns}</div>
+      </div>`;
+    }).join('')
+  }</div>`;
 }
 ```
 
@@ -528,27 +566,29 @@ Mark Day N complete in your [tracker](../index.html).
 
 ---
 
-### If `standard` — Notes templates
+### Notes templates (both types)
 
-**One file per day:** `courses/[COURSE_ID]/notes/day-NN.md`
+**One file per day for every course:** `courses/[COURSE_ID]/notes/day-NN.md`
 
 ```markdown
 # Day N: [Day Title]
 
 ## Notes
 
-_Add your notes here._
+_Your notes for today._
 
 ## Key takeaways
 
-- 
+-
 
-## Questions to follow up
+## Questions
 
-- 
+-
 ```
 
-No Jupyter notebooks are generated for standard courses.
+The `📝 notes_by_day.md` link in each day card points to this file. Users fill it in locally or in their fork.
+
+No Jupyter notebooks are generated for `standard` courses.
 
 ---
 
@@ -558,17 +598,22 @@ No Jupyter notebooks are generated for standard courses.
 - [ ] `broadcastStatus()` writes to `cj_summary_[COURSE_ID]`
 - [ ] `STORAGE_KEY` is `cj_[COURSE_ID]_v1`
 - [ ] All 5 panels render without JS errors
-- [ ] `renderTask(t)` and `renderRes(r)` helpers are present and used in `renderSchedule`
+- [ ] `renderTask(t)` and `renderRes(r)` helpers present and used in `renderSchedule`
 - [ ] All `{text, url}` objects in `tasks` and `resources` have real, working URLs
+- [ ] Every day card has `.nb-row` with a `📝 notes_by_day.md` link (`notes/day-NN.md`)
+- [ ] `dayTopics` reverse index is built and `goToDay(i)` function is present
+- [ ] Topic pills appear in each day card body (clickable → Topics tab)
+- [ ] Topics tab shows clickable day buttons (completed days highlighted green)
 - [ ] `renderResources()` has 4 sections, 12+ links
 - [ ] `renderAI()` has 3 cards with prompts tailored to this course
 - [ ] Dark mode CSS variables are correct
 - [ ] `.breadcrumb-sep` rule has no trailing `"`
+- [ ] `notes/day-01.md` through `notes/day-NN.md` template files generated
 
 ### `notebook` type only
 - [ ] `const NOTEBOOKS` array present, one slug per day
-- [ ] Every day card has `.nb-row` with both notebook and Colab buttons
-- [ ] Colab URL uses repo `certified-journeys/certified-journeys.github.io`
+- [ ] Every day card's `.nb-row` has notebook + Colab + notes_by_day.md buttons (3 total)
+- [ ] Colab URL repo is `certified-journeys/certified-journeys.github.io`
 - [ ] Colab URL path is `/blob/main/courses/[COURSE_ID]/notebooks/[filename].ipynb#scrollTo=[first_cell_id]`
 - [ ] `nbformat: 4`, `nbformat_minor: 5` at notebook top level
 - [ ] `metadata.language_info.name` is `"python"`
@@ -580,10 +625,8 @@ No Jupyter notebooks are generated for standard courses.
 
 ### `standard` type only
 - [ ] No `const NOTEBOOKS` array present
-- [ ] No `.nb-row` or `.nb-btn` in HTML or CSS
-- [ ] Every day card has `.notes-wrap` with `.notes-area` textarea
-- [ ] `saveNote(i, val)` and `getNote(i)` functions present
-- [ ] `notes/day-01.md` through `notes/day-NN.md` template files generated
+- [ ] No `.nb-btn-colab` in HTML or CSS
+- [ ] Every day card's `.nb-row` has only the `📝 notes_by_day.md` button (1 total)
 
 ---
 
@@ -597,6 +640,10 @@ courses/[COURSE_ID]/
     day-01-[slug].ipynb
     ...
     day-NN-[slug].ipynb
+  notes/
+    day-01.md          ← linked from each day card
+    ...
+    day-NN.md
 ```
 
 **`standard` type:**
@@ -604,7 +651,7 @@ courses/[COURSE_ID]/
 courses/[COURSE_ID]/
   index.html
   notes/
-    day-01.md
+    day-01.md          ← linked from each day card
     ...
     day-NN.md
 ```
@@ -615,13 +662,13 @@ Output each file with a header:
 ## FILE: courses/[COURSE_ID]/index.html
 [full content]
 
-## FILE: courses/[COURSE_ID]/notebooks/day-01-[slug].ipynb   ← notebook only
+## FILE: courses/[COURSE_ID]/notebooks/day-01-[slug].ipynb   ← notebook type only
 [full content]
 
-## FILE: courses/[COURSE_ID]/notes/day-01.md                 ← standard only
+## FILE: courses/[COURSE_ID]/notes/day-01.md                 ← both types
 [full content]
 ```
 
 ---
 
-*certified-journeys prompt v3 · two course types (notebook / standard) · linked tasks & resources · per-day notes textarea*
+*certified-journeys prompt v4 · two course types · notes_by_day.md link in every day card · topic ↔ day navigation*

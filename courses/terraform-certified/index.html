@@ -96,6 +96,10 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 .day-card.open .chevron{transform:rotate(180deg);}
 .day-body{display:none;padding:0 1.1rem 1.1rem;border-top:.5px solid var(--border);}
 .day-card.open .day-body{display:block;}
+/* Action row */
+.nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
+.nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
 .tip-box{background:var(--green-light);border-left:3px solid var(--green);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:.7rem .9rem;margin:1rem 0 .75rem;}
 .tip-box p{font-size:13px;color:var(--green-dark);line-height:1.6;}
 .tip-box strong{font-weight:600;}
@@ -333,7 +337,7 @@ function renderSchedule(){
         <span class="chevron">▾</span>
       </div>
       <div class="day-body">
-        
+<div class="nb-row"><a class="nb-btn" href="notes/day-${String(i+1).padStart(2,'0')}.md" target="_blank">📝 notes_by_day.md</a></div>
         <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
         ${(dayTopics[i]||[]).length?`<div class="day-topic-pills">${(dayTopics[i]||[]).map(t=>`<span class="day-topic-pill" style="background:${t.color}18;color:${t.color};border-color:${t.color}40" onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])" title="View topic in Topics tab">${t.name}</span>`).join('')}</div>`:''}
         <div class="task-list">${d.tasks.map(renderTask).join('')}</div>
