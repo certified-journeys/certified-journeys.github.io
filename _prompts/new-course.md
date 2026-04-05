@@ -146,13 +146,27 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 .task-link:hover{opacity:1;text-decoration:none;}
 ```
 
+### Task tick + progress bar CSS (required for both types)
+
+```css
+/* Task tick checkboxes */
+.task-tick{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px;background:none;padding:0;}
+.task-tick:hover{border-color:var(--green);}
+.task-tick.ticked{background:var(--green);border-color:var(--green);}
+.task-tick.ticked::after{content:"✓";font-size:10px;color:#fff;font-weight:700;line-height:1;}
+.task.task-done>span{text-decoration:line-through;color:var(--text3);}
+/* Per-day task progress bar */
+.task-progress{height:3px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
+.task-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;}
+```
+
 ### All other required CSS classes
 
 Layout: `.app`, `.breadcrumb`, `.breadcrumb-sep`  
 Hero: `.course-hero`, `.course-hero-top`, `.course-icon-wrap`, `.course-icon`, `.course-title-block`, `.tag-row`, `.tag`, `.hero-meta`, `.meta-item`, `.meta-label`, `.meta-val`  
 Progress: `.prog-strip`, `.prog-strip-top`, `.prog-label`, `.prog-pct`, `.bar-bg`, `.bar-fill`, `.readiness` (+ `.early`, `.close`, `.ready`), `.stats-grid`, `.stat`, `.stat-label`, `.stat-val` (+ `.ok`, `.warn`, `.danger`)  
 Tabs: `.tabs`, `.tab` (+ `.active`), `.panel` (+ `.active`)  
-Day cards: `.day-card` (+ `.completed`, `.open`), `.day-header`, `.day-num`, `.day-meta`, `.day-title`, `.day-sub`, `.day-badge`, `.chevron`, `.day-body`, `.tip-box`, `.task-list`, `.task`, `.task-bullet`, `.resources-row`, `.res-pill`, `.score-row`, `.score-badge`, `.hours-row`, `.complete-btn` (+ `.done`)  
+Day cards: `.day-card` (+ `.completed`, `.open`), `.day-header`, `.day-num`, `.day-meta`, `.day-title`, `.day-sub`, `.day-badge`, `.chevron`, `.day-body`, `.tip-box`, `.task-list`, `.task` (+ `.task-done`), `.task-tick` (+ `.ticked`), `.task-progress`, `.task-progress-fill`, `.resources-row`, `.res-pill`, `.score-row`, `.score-badge`, `.hours-row`, `.complete-btn` (+ `.done`)  
 Topics: `.topic-grid`, `.topic-card`, `.t-bar-bg`, `.t-bar-fill`, `.t-pct`  
 AI: `.ai-card`, `.ai-card-head`, `.ai-icon`, `.ai-card-title`, `.ai-card-sub`, `.ai-card-body`, `.ai-prompt-box`, `.ai-link-btn`  
 Exam: `.exam-grid`, `.exam-card`, `.exam-card-label`, `.exam-card-val`, `.exam-card-sub`  
@@ -265,6 +279,7 @@ let state = {
   scores:       {},
   hours:        {},
   completedAt:  {},
+  tasksDone:    {},   // per-day tick state: {dayIndex: [taskIndex, ...]}
   openDay:      null,
   startDate:    null,
   lastActivity: null,
@@ -272,13 +287,19 @@ let state = {
 };
 ```
 
+> **`resetAll` must also reset `tasksDone`:**
+> ```js
+> state = {completed:[], scores:{}, hours:{}, completedAt:{}, tasksDone:{}, openDay:null, startDate:null, lastActivity:null, status:'not_started'};
+> ```
+
 **Required functions — implement all:**
 
 - `loadState()`, `saveState()`, `broadcastStatus()`, `resetAll()`
 - `isCompleted(i)`, `toggleComplete(i)`, `toggleDay(i)`
 - `logScore(i, val)`, `logHours(i, val)`
 - `scoreClass(s)`, `badgeClass(b)`, `badgeLabel(b)`
-- `renderTask(t)`, `renderRes(r)` — helpers for linked tasks/resources (see below)
+- `renderTask(t, di, ti)`, `renderRes(r)` — helpers for linked tasks/resources (see below)
+- `tickTask(di, ti)` — handles per-task tick toggle and auto-complete logic
 - `updateStats()`
 - `renderSchedule()` — action row differs by COURSE_TYPE (see below)
 - `renderTopics()` — includes clickable day buttons that navigate to Daily Plan
@@ -288,17 +309,45 @@ let state = {
 - `showPanel(name, btn)`, `renderAll()`
 - `goToDay(i)` — switches to Daily Plan tab and scrolls to day i
 
-#### `renderTask` and `renderRes` helpers (required for both types)
+#### `renderTask`, `tickTask`, and `renderRes` helpers (required for both types)
+
+`renderTask(t, di, ti)` — renders a task row with an interactive tick checkbox.  
+- `di` = day index, `ti` = task index within that day.  
+- Reads `state.tasksDone[di]` to determine checked state.
 
 ```js
-function renderTask(t) {
-  if (typeof t === 'string')
-    return `<div class="task"><div class="task-bullet"></div><span>${t}</span></div>`;
-  return `<div class="task"><div class="task-bullet"></div><span>${t.text}</span>${
-    t.url ? `<a class="task-link" href="${t.url}" target="_blank" rel="noopener">↗</a>` : ''
-  }</div>`;
+function renderTask(t, di, ti) {
+  const done = (state.tasksDone[di] || []).includes(ti);
+  const text = typeof t === 'string' ? t : t.text;
+  const link = (typeof t === 'object' && t.url)
+    ? `<a class="task-link" href="${t.url}" target="_blank" rel="noopener">↗</a>` : '';
+  return `<div class="task${done ? ' task-done' : ''}">
+    <button class="task-tick${done ? ' ticked' : ''}"
+      onclick="event.stopPropagation();tickTask(${di},${ti})"></button>
+    <span>${text}</span>${link}
+  </div>`;
 }
+```
 
+`tickTask(di, ti)` — toggles a tick; auto-completes the day when all tasks are ticked; un-completes if a tick is removed after auto-complete.
+
+```js
+function tickTask(di, ti) {
+  const arr = state.tasksDone[di] || (state.tasksDone[di] = []);
+  const idx = arr.indexOf(ti);
+  if (idx === -1) arr.push(ti); else arr.splice(idx, 1);
+  const total = days[di].tasks.length;
+  const done  = arr.length;
+  if (done === total && !isCompleted(di)) { toggleComplete(di); return; }
+  if (done < total  &&  isCompleted(di)) {
+    state.completed = state.completed.filter(x => x !== di);
+    delete state.completedAt[di];
+  }
+  saveState(); renderSchedule();
+}
+```
+
+```js
 function renderRes(r) {
   if (typeof r === 'string')
     return `<span class="res-pill">📎 ${r}</span>`;
@@ -342,12 +391,21 @@ ${(dayTopics[i]||[]).length ? `<div class="day-topic-pills">
     onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])"
     title="View topic in Topics tab">${t.name}</span>`).join('')}
 </div>` : ''}
-<div class="task-list">${d.tasks.map(renderTask).join('')}</div>
+${(()=>{
+  const tot = d.tasks.length;
+  const done = (state.tasksDone[i] || []).length;
+  return tot
+    ? `<div class="task-progress"><div class="task-progress-fill" style="width:${Math.round(done/tot*100)}%"></div></div>`
+    : '';
+})()}
+<div class="task-list">${d.tasks.map((t, j) => renderTask(t, i, j)).join('')}</div>
 <div class="resources-row">${d.resources.map(renderRes).join('')}</div>
 <!-- score row only if d.hasScore -->
 <div class="hours-row">...</div>
 <button class="complete-btn ...">...</button>`
 ```
+
+> The progress bar fills automatically as tasks are ticked. When all tasks are ticked, `tickTask` calls `toggleComplete` and the day auto-completes. The "Mark as complete" button still works independently for days where you want to mark complete without ticking every task.
 
 #### Topic ↔ Day connection (required for both types)
 
@@ -597,14 +655,16 @@ No Jupyter notebooks are generated for `standard` courses.
 ### Both types
 - [ ] `broadcastStatus()` writes to `cj_summary_[COURSE_ID]`
 - [ ] `STORAGE_KEY` is `cj_[COURSE_ID]_v1`
-- [ ] All 5 panels render without JS errors
-- [ ] `renderTask(t)` and `renderRes(r)` helpers present and used in `renderSchedule`
+- [ ] All panels render without JS errors
+- [ ] `renderTask(t, di, ti)`, `tickTask(di, ti)`, and `renderRes(r)` helpers present and used
+- [ ] `state` includes `tasksDone: {}` and `resetAll()` resets it too
+- [ ] Per-day task progress bar (`.task-progress`) appears above each task list
+- [ ] Ticking all tasks auto-completes the day; unticking any un-completes it
 - [ ] All `{text, url}` objects in `tasks` and `resources` have real, working URLs
-- [ ] Every day card has `.nb-row` with a `📝 notes/day-NN.md` link (`notes/day-NN.md`)
+- [ ] Every day card has `.nb-row` with a `📝 notes/day-NN.md` link
 - [ ] `dayTopics` reverse index is built and `goToDay(i)` function is present
 - [ ] Topic pills appear in each day card body (clickable → Topics tab)
 - [ ] Topics tab shows clickable day buttons (completed days highlighted green)
-- [ ] `renderResources()` has 4 sections, 12+ links
 - [ ] `renderAI()` has 3 cards with prompts tailored to this course
 - [ ] Dark mode CSS variables are correct
 - [ ] `.breadcrumb-sep` rule has no trailing `"`
@@ -671,4 +731,4 @@ Output each file with a header:
 
 ---
 
-*certified-journeys prompt v4 · two course types · notes_by_day.md link in every day card · topic ↔ day navigation*
+*certified-journeys prompt v5 · two course types · notes/day-NN.md link in every day card · topic ↔ day navigation · per-task tick checkboxes + auto-complete progress bar*

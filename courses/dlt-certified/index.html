@@ -290,7 +290,7 @@ function broadcastStatus(){
 }
 function resetAll(){
   if(!confirm('Reset all progress? This cannot be undone.'))return;
-  state={completed:[],scores:{},hours:{},completedAt:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
+  state={completed:[],scores:{},hours:{},completedAt:{},tasksDone:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
   saveState();renderAll();
 }
 function isCompleted(i){return state.completed.includes(i);}
