@@ -231,7 +231,6 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 <div class="tabs">
   <button class="tab active" onclick="showPanel('schedule',this)">📅 Daily Plan</button>
   <button class="tab" onclick="showPanel('topics',this)">📚 Topics</button>
-  <button class="tab" onclick="showPanel('notes',this)">📝 Notes</button>
   <button class="tab" onclick="showPanel('ai',this)">🤖 AI Tools</button>
   <button class="tab" onclick="showPanel('resources',this)">🔗 Resources</button>
   <button class="tab" onclick="showPanel('exam',this)">🎓 Exam Prep</button>
@@ -239,7 +238,6 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 
 <div id="panel-schedule" class="panel active"></div>
 <div id="panel-topics" class="panel"></div>
-<div id="panel-notes" class="panel"></div>
 <div id="panel-ai" class="panel"></div>
 <div id="panel-exam" class="panel"></div>
 <div id="panel-resources" class="panel"></div>
@@ -249,6 +247,7 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 
 <script>
 const COURSE_ID='dlt-certified';
+const STORAGE_KEY='cj_dlt-certified_v1';
 const NOTEBOOKS=[
   'day-01-fundamentals',
   'day-02-sources',
@@ -259,15 +258,14 @@ const NOTEBOOKS=[
   'day-07-quality',
   'day-08-production',
   'day-09-advanced',
-  'day-10-capstone',
+  'day-10-capstone'
 ];
-const STORAGE_KEY='cj_dlt-certified_v1';
 const TOTAL_DAYS=10;
 const days=[{"title": "dlt fundamentals and architecture", "badge": "learn", "sub": "Day 1 \u00b7 Foundation", "tasks": ["Read dlt docs: What is dlt? Core concepts overview", "Understand: source \u2192 resource \u2192 pipeline \u2192 destination pattern", "Install dlt: pip install dlt", "Run Hello World: dlt pipeline to local DuckDB"], "resources": ["dlthub.com/docs/intro", "dlt GitHub: github.com/dlt-hub/dlt"], "tip": "dlt is opinionated \u2014 it handles schema inference, type coercion, and deduplication for you. Don't fight the defaults.", "hasScore": false}, {"title": "Sources, resources and decorators", "badge": "learn", "sub": "Day 2 \u00b7 Sources", "tasks": ["Understand @dlt.source and @dlt.resource decorators", "Write a custom REST API source using dlt's rest_api helper", "Configure pagination, authentication, and rate limiting", "Run the pipeline and inspect the generated schema"], "resources": ["dlt REST API source docs", "dlt verified sources (github.com/dlt-hub/verified-sources)"], "tip": "Use dlt's verified sources as reference implementations \u2014 they show all best practices including incremental loading.", "hasScore": false}, {"title": "Destinations and loading strategies", "badge": "learn", "sub": "Day 3 \u00b7 Destinations", "tasks": ["Connect dlt to BigQuery, Snowflake, or Redshift (use DuckDB for practice)", "Understand write dispositions: append, replace, merge", "Configure primary keys and deduplication for merge loads", "Study destination-specific performance settings"], "resources": ["dlt destinations docs", "dlt DuckDB destination (fastest for local dev)"], "tip": "'merge' write disposition with composite primary keys is the most powerful dlt feature for idempotent loads.", "hasScore": false}, {"title": "Incremental loading and state management", "badge": "learn", "sub": "Day 4 \u00b7 Incremental", "tasks": ["Configure incremental loading with dlt.sources.incremental", "Understand cursor fields: updated_at, id, timestamp", "Study dlt's pipeline state: how it persists between runs", "Practice: build an incremental API source that only fetches new records"], "resources": ["dlt incremental loading docs", "dlt pipeline state docs"], "tip": "Always prefer incremental loading over full refresh. dlt state is stored in the destination \u2014 no external DB needed.", "hasScore": false}, {"title": "Schema management and data contracts", "badge": "learn", "sub": "Day 5 \u00b7 Schema", "tasks": ["Understand dlt's automatic schema inference", "Configure column hints: data_type, nullable, primary_key", "Study schema evolution: add columns, change types, freeze schema", "Implement data contracts using dlt schema contracts feature"], "resources": ["dlt schema docs", "dlt data contracts guide"], "tip": "Schema freezing is critical for production pipelines. Always set explicit column hints for key columns.", "hasScore": false}, {"title": "Transformations and dbt integration", "badge": "learn", "sub": "Day 6 \u00b7 Transform", "tasks": ["Run SQL transformations using dlt's built-in SQL client", "Integrate dlt with dbt for post-load transformations", "Configure dbt profiles to use the dlt destination connection", "Build a dlt \u2192 dbt pipeline on DuckDB"], "resources": ["dlt dbt integration docs", "dlt + dbt example (GitHub)"], "tip": "dlt handles extraction and loading. dbt handles transformation. Together they form a clean ELT pattern.", "hasScore": false}, {"title": "Error handling and data quality", "badge": "learn", "sub": "Day 7 \u00b7 Quality", "tasks": ["Configure dlt to raise on schema violations vs log warnings", "Implement custom data filtering in resource functions", "Study dlt's built-in error reporting and logging", "Add Pydantic validation to resource items"], "resources": ["dlt error handling docs", "dlt Pydantic integration guide"], "tip": "Use fail_map_on_single_error=False during development, then flip it to True in production for strict quality.", "hasScore": false}, {"title": "Production deployment patterns", "badge": "learn", "sub": "Day 8 \u00b7 Production", "tasks": ["Deploy a dlt pipeline to GitHub Actions (cron-based)", "Configure environment-based secrets management", "Study dlt's Airflow, Prefect, and Dagster integrations", "Add observability: logging, alerting, and pipeline run monitoring"], "resources": ["dlt deployment docs", "dlt Airflow integration example"], "tip": "For production, always use environment variables for credentials. Never hardcode in pipeline files.", "hasScore": false}, {"title": "Advanced patterns: REST API helper and normalization", "badge": "learn", "sub": "Day 9 \u00b7 Advanced", "tasks": ["Use dlt's rest_api source helper for complex APIs", "Configure endpoint chaining and resource dependencies", "Study dlt's data normalization: nested JSON \u2192 flat tables", "Build a pipeline that handles deeply nested API responses"], "resources": ["dlt rest_api source helper docs", "dlt nested data normalization guide"], "tip": "The rest_api helper can build 80% of API sources with zero custom code \u2014 use it before writing from scratch.", "hasScore": false}, {"title": "Capstone project + portfolio", "badge": "exam", "sub": "Day 10 \u00b7 Capstone", "tasks": ["Build a complete dlt pipeline: REST API \u2192 DuckDB \u2192 dbt transformations", "Add incremental loading, schema contracts, and error handling", "Deploy to GitHub Actions with scheduled runs", "Document the pipeline and publish to GitHub"], "resources": ["Your GitHub repository", "dlt showcase gallery (dlthub.com/showcase)"], "tip": "A working dlt pipeline on GitHub is worth more than any certification. Make it production-quality.", "hasScore": false}];
 const topics=[{"name": "Core dlt concepts", "color": "#378ADD", "days": [0, 1, 2]}, {"name": "Incremental loading", "color": "#1D9E75", "days": [3, 4, 8]}, {"name": "Schema management", "color": "#BA7517", "days": [4, 5, 7]}, {"name": "Transformations", "color": "#7F77DD", "days": [5, 6]}, {"name": "Production deployment", "color": "#D85A30", "days": [7, 9]}, {"name": "Advanced patterns", "color": "#0891B2", "days": [8, 9]}];
 const exam={"questions": null, "minutes": null, "passScore": "N/A", "cost": "Free", "provider": "dltHub (community)", "link": "https://dlthub.com/community", "notes": "No formal exam. Mastery demonstrated through building and publishing production pipelines on GitHub."};
 
-let state={completed:[],scores:{},hours:{},completedAt:{},notes:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
+let state={completed:[],scores:{},hours:{},completedAt:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
 
 function loadState(){try{const s=localStorage.getItem(STORAGE_KEY);if(s)state={...state,...JSON.parse(s)};}catch(e){}}
 function saveState(){
@@ -284,7 +282,7 @@ function broadcastStatus(){
 }
 function resetAll(){
   if(!confirm('Reset all progress? This cannot be undone.'))return;
-  state={completed:[],scores:{},hours:{},completedAt:{},notes:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
+  state={completed:[],scores:{},hours:{},completedAt:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
   saveState();renderAll();
 }
 function isCompleted(i){return state.completed.includes(i);}
@@ -337,10 +335,7 @@ function renderSchedule(){
         <span class="chevron">▾</span>
       </div>
       <div class="day-body">
-        <div class="nb-row">
-          <a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a>
-          <a class="nb-btn nb-btn-colab" href="https://colab.research.google.com/github/certified-journeys/dlt-certified/blob/main/notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">▶ Open in Colab</a>
-        </div>
+<div class="nb-row"><a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a><a class="nb-btn nb-btn-colab" href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/dlt-certified/notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">▶ Open in Colab</a></div>
         <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
         <div class="task-list">${d.tasks.map(t=>`<div class="task"><div class="task-bullet"></div><span>${t}</span></div>`).join('')}</div>
         <div class="resources-row">${d.resources.map(r=>`<span class="res-pill">📎 ${r}</span>`).join('')}</div>
@@ -360,43 +355,6 @@ function renderTopics(){
       return `<div class="topic-card"><h4>${t.name}</h4><div class="t-bar-bg"><div class="t-bar-fill" style="width:${pct}%;background:${t.color}"></div></div><div class="t-pct">${pct}% covered · ${cov}/${t.days.length} sessions</div></div>`;
     }).join('')
   }</div>`;
-}
-
-function saveNote(key,val){
-  state.notes[key]=val;
-  saveState();
-  const indicator=document.getElementById('note-saved-'+key);
-  if(indicator){indicator.style.display='inline';setTimeout(()=>indicator.style.display='none',1500);}
-}
-
-function renderNotes(){
-  const generalNote=state.notes['general']||'';
-  const weekNotes=state.notes['week1']||'';
-  const week2Notes=state.notes['week2']||'';
-  const reflections=state.notes['reflections']||'';
-  document.getElementById('panel-notes').innerHTML=`
-    <div class="notes-wrap">
-      <div class="note-card">
-        <div class="note-card-head"><span>📓 General notes</span><span class="note-saved" id="note-saved-general">Saved ✓</span></div>
-        <textarea placeholder="Anything you want to remember — key concepts, mnemonics, questions to revisit..." oninput="saveNote('general',this.value)">${generalNote}</textarea>
-      </div>
-      <div class="note-card">
-        <div class="note-card-head"><span>📖 Week 1 notes</span><span class="note-saved" id="note-saved-week1">Saved ✓</span></div>
-        <textarea placeholder="Key learnings from Week 1..." oninput="saveNote('week1',this.value)">${weekNotes}</textarea>
-      </div>
-      <div class="note-card">
-        <div class="note-card-head"><span>📖 Week 2 notes</span><span class="note-saved" id="note-saved-week2">Saved ✓</span></div>
-        <textarea placeholder="Key learnings from Week 2..." oninput="saveNote('week2',this.value)">${week2Notes}</textarea>
-      </div>
-      ${days.map((d,i)=>`<div class="note-card">
-        <div class="note-card-head"><span>Day ${i+1}: ${d.title}</span><span class="note-saved" id="note-saved-day${i}">Saved ✓</span></div>
-        <textarea placeholder="Notes, questions, and takeaways for Day ${i+1}..." oninput="saveNote('day${i}',this.value)">${state.notes['day'+i]||''}</textarea>
-      </div>`).join('')}
-      <div class="note-card">
-        <div class="note-card-head"><span>💬 Reflections and lessons learned</span><span class="note-saved" id="note-saved-reflections">Saved ✓</span></div>
-        <textarea style="min-height:140px;" placeholder="What worked? What would you do differently? Advice for someone starting this journey..." oninput="saveNote('reflections',this.value)">${reflections}</textarea>
-      </div>
-    </div>`;
 }
 
 function renderAI(){
@@ -551,7 +509,6 @@ function showPanel(name,btn){
   document.getElementById('panel-'+name).classList.add('active');
   if(btn)btn.classList.add('active');
   if(name==='topics')renderTopics();
-  if(name==='notes')renderNotes();
   if(name==='ai')renderAI();
   if(name==='exam')renderExam();
   if(name==='resources')renderResources();

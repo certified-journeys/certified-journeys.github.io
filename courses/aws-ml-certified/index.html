@@ -109,6 +109,13 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 .score-row label{font-size:12px;color:var(--text2);}
 .score-row input{width:72px;font-size:13px;padding:5px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
 .score-badge{font-size:12px;font-weight:500;padding:3px 10px;border-radius:99px;}
+
+/* Notebook links */
+.nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
+.nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
+.nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
 .complete-btn{width:100%;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s;font-weight:400;}
 .complete-btn:hover{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
 .complete-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);font-weight:500;}
@@ -225,7 +232,6 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 <div class="tabs">
   <button class="tab active" onclick="showPanel('schedule',this)">📅 Daily Plan</button>
   <button class="tab" onclick="showPanel('topics',this)">📚 Topics</button>
-  <button class="tab" onclick="showPanel('notes',this)">📝 Notes</button>
   <button class="tab" onclick="showPanel('ai',this)">🤖 AI Tools</button>
   <button class="tab" onclick="showPanel('resources',this)">🔗 Resources</button>
   <button class="tab" onclick="showPanel('exam',this)">🎓 Exam Prep</button>
@@ -233,7 +239,6 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 
 <div id="panel-schedule" class="panel active"></div>
 <div id="panel-topics" class="panel"></div>
-<div id="panel-notes" class="panel"></div>
 <div id="panel-ai" class="panel"></div>
 <div id="panel-exam" class="panel"></div>
 <div id="panel-resources" class="panel"></div>
@@ -244,12 +249,35 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 <script>
 const COURSE_ID='aws-ml-certified';
 const STORAGE_KEY='cj_aws-ml-certified_v1';
+const NOTEBOOKS=[
+  'day-01-aws-ml-specialty-overview-exam-structure',
+  'day-02-data-engineering-on-aws',
+  'day-03-exploratory-data-analysis-feature-engine',
+  'day-04-sagemaker-core-services-deep-dive',
+  'day-05-built-in-algorithms-mastery',
+  'day-06-deep-learning-on-aws',
+  'day-07-mock-exam-1-gap-analysis',
+  'day-08-hyperparameter-tuning-and-model-optimiza',
+  'day-09-ml-security-compliance-and-governance',
+  'day-10-mlops-on-aws',
+  'day-11-evaluation-metrics-and-model-selection',
+  'day-12-cost-optimization-and-operational-best-p',
+  'day-13-full-timed-mock-exam-2',
+  'day-14-sagemaker-clarify-and-responsible-ai',
+  'day-15-generative-ai-and-llms-on-aws',
+  'day-16-comprehensive-review-weak-areas',
+  'day-17-final-mock-exam-book',
+  'day-18-aws-ml-study-deep-dive-sagemaker-studio',
+  'day-19-computer-vision-and-nlp-on-aws',
+  'day-20-time-series-and-anomaly-detection',
+  'day-21-final-review-exam-day-prep'
+];
 const TOTAL_DAYS=21;
 const days=[{"title": "AWS ML Specialty overview + exam structure", "badge": "learn", "sub": "Week 1 \u00b7 Foundation", "tasks": ["Study the 5 exam domains: Data Engineering 20%, EDA 24%, Modeling 36%, ML Impl 20%", "Set up AWS Free Tier account if you don't have one", "Install AWS CLI and configure credentials", "Review the exam guide PDF from AWS training site"], "resources": ["AWS ML Specialty Exam Guide (aws.training)", "A Cloud Guru or Udemy AWS ML course overview"], "tip": "Domain 3 (Modeling) is 36% of the exam. Prioritize SageMaker, algorithm selection, and hyperparameter tuning.", "hasScore": false}, {"title": "Data Engineering on AWS", "badge": "learn", "sub": "Week 1 \u00b7 Data", "tasks": ["Study S3 as the ML data lake foundation", "Understand Kinesis Data Streams vs Firehose vs Analytics", "Study AWS Glue for ETL and data cataloging", "Practice: create an S3 \u2192 Glue \u2192 Athena pipeline"], "resources": ["AWS Glue docs", "Kinesis whitepaper", "A Cloud Guru lab: Data Engineering"], "tip": "Know the difference between Kinesis Data Streams (real-time) and Firehose (near-real-time delivery). This is tested.", "hasScore": false}, {"title": "Exploratory Data Analysis + Feature Engineering", "badge": "learn", "sub": "Week 1 \u00b7 EDA", "tasks": ["Study SageMaker Data Wrangler for EDA", "Understand feature engineering techniques: encoding, scaling, imputation", "Study class imbalance techniques: SMOTE, oversampling, class weights", "Practice: use SageMaker Studio for EDA on a dataset"], "resources": ["SageMaker Data Wrangler docs", "AWS EDA whitepaper"], "tip": "EDA is 24% of the exam. Know which imputation method suits which data type.", "hasScore": false}, {"title": "SageMaker core services deep dive", "badge": "learn", "sub": "Week 1 \u00b7 SageMaker", "tasks": ["SageMaker Training: built-in algorithms, custom containers", "SageMaker endpoints: real-time, batch transform, async inference", "SageMaker Pipelines for ML workflow orchestration", "SageMaker Model Monitor for drift detection"], "resources": ["SageMaker Developer Guide", "SageMaker immersion day labs"], "tip": "Know when to use real-time vs batch transform vs async inference \u2014 common scenario question pattern.", "hasScore": false}, {"title": "Built-in algorithms mastery", "badge": "learn", "sub": "Week 2 \u00b7 Algorithms", "tasks": ["Linear Learner: regression and classification", "XGBoost: gradient boosting, most commonly tested", "BlazingText: NLP, Word2Vec, text classification", "DeepAR: time series forecasting \u2014 know when to use it", "K-Means: unsupervised clustering in SageMaker"], "resources": ["SageMaker built-in algorithms guide", "AWS re:Invent algorithm selection talks"], "tip": "For every algorithm know: input format, use case, key hyperparameters, and output format.", "hasScore": false}, {"title": "Deep learning on AWS", "badge": "learn", "sub": "Week 2 \u00b7 Deep Learning", "tasks": ["Study AWS Deep Learning AMIs and containers", "SageMaker support for TensorFlow, PyTorch, MXNet", "Understand distributed training: data parallelism vs model parallelism", "Study Amazon Rekognition, Comprehend, Textract (managed services)"], "resources": ["AWS Deep Learning Containers docs", "SageMaker distributed training guide"], "tip": "Managed AI services (Rekognition, Comprehend, Textract) are frequently tested \u2014 no ML expertise required.", "hasScore": false}, {"title": "Mock exam #1 + gap analysis", "badge": "practice", "sub": "Week 2 \u00b7 Assessment", "tasks": ["Take a 65-question practice exam (Whizlabs or Tutorials Dojo)", "Log your score \u2014 target 70%+ at this stage", "Identify weak domains and flag them", "Re-read AWS docs for flagged areas"], "resources": ["Tutorials Dojo AWS ML Specialty practice exams", "Whizlabs AWS ML practice tests"], "tip": "Tutorials Dojo explanations are excellent \u2014 read them even for questions you got right.", "hasScore": true}, {"title": "Hyperparameter tuning and model optimization", "badge": "learn", "sub": "Week 2 \u00b7 Optimization", "tasks": ["SageMaker Automatic Model Tuning (Bayesian optimization)", "Understand overfitting vs underfitting \u2014 L1/L2 regularization", "Dropout, batch normalization for deep learning", "Study bias/variance tradeoff with worked examples"], "resources": ["SageMaker Hyperparameter Tuning docs", "AWS ML University \u2014 optimization module"], "tip": "For SageMaker HPO: know what ranges to specify for each hyperparameter type (integer, continuous, categorical).", "hasScore": false}, {"title": "ML Security, Compliance and Governance", "badge": "learn", "sub": "Week 3 \u00b7 Security", "tasks": ["SageMaker VPC configuration for private training", "IAM roles for SageMaker execution \u2014 principle of least privilege", "Data encryption: S3 at rest (SSE-S3, SSE-KMS), in transit (TLS)", "SageMaker Model Cards and ML governance concepts"], "resources": ["SageMaker Security Best Practices", "AWS ML Governance whitepaper"], "tip": "Security questions are 20% of the exam. Know which encryption option suits which scenario.", "hasScore": false}, {"title": "MLOps on AWS", "badge": "learn", "sub": "Week 3 \u00b7 MLOps", "tasks": ["SageMaker Pipelines: orchestrate end-to-end ML workflows", "SageMaker Model Registry: versioning, approval workflow", "SageMaker Experiments: track training runs", "CI/CD for ML: CodePipeline + SageMaker integration"], "resources": ["SageMaker MLOps docs", "AWS MLOps framework whitepaper"], "tip": "Know the full MLOps loop: data \u2192 train \u2192 evaluate \u2192 register \u2192 deploy \u2192 monitor \u2192 retrain.", "hasScore": false}, {"title": "Evaluation metrics and model selection", "badge": "learn", "sub": "Week 3 \u00b7 Evaluation", "tasks": ["Classification: accuracy, precision, recall, F1, AUC-ROC", "Regression: RMSE, MAE, MAPE", "Know when to prioritize precision vs recall (fraud, medical diagnosis)", "Confusion matrix interpretation and threshold tuning"], "resources": ["AWS ML Specialty study guide \u2014 evaluation chapter", "Hands-on: evaluate a SageMaker model with Clarify"], "tip": "The AUC-ROC vs precision-recall question appears in almost every practice exam. Know the difference cold.", "hasScore": false}, {"title": "Cost optimization and operational best practices", "badge": "learn", "sub": "Week 3 \u00b7 Operations", "tasks": ["SageMaker Savings Plans and Managed Spot Training", "Right-sizing training instances: compute vs GPU", "SageMaker Serverless Inference for low-traffic endpoints", "Cost monitoring: AWS Cost Explorer for ML workloads"], "resources": ["SageMaker cost optimization guide", "AWS Well-Architected ML Lens"], "tip": "Spot training can save 60\u201390% on training costs. Know the checkpoint strategy to handle interruptions.", "hasScore": false}, {"title": "Full timed mock exam #2", "badge": "exam", "sub": "Week 3 \u00b7 Assessment", "tasks": ["Take a full 65-question timed mock \u2014 3 hours", "No notes. Exam-like conditions.", "Log your score \u2014 target 80%+", "Review every wrong answer in detail"], "resources": ["Tutorials Dojo AWS ML Specialty \u2014 Timed Mode", "Whizlabs final practice exam"], "tip": "If scoring below 75%, spend one more day on your weakest domain before booking.", "hasScore": true}, {"title": "SageMaker Clarify and responsible AI", "badge": "learn", "sub": "Week 3 \u00b7 Advanced", "tasks": ["SageMaker Clarify: bias detection and explainability", "SHAP values for model explainability", "Pre-training vs post-training bias metrics", "Study AI fairness definitions: demographic parity, equal opportunity"], "resources": ["SageMaker Clarify docs", "AWS responsible AI whitepaper"], "tip": "Clarify is increasingly tested. Know pre-training bias metrics (CI, DPL) vs post-training (DPPL, DI).", "hasScore": false}, {"title": "Generative AI and LLMs on AWS", "badge": "learn", "sub": "Week 3 \u00b7 GenAI", "tasks": ["Amazon Bedrock: foundation models, model selection", "SageMaker JumpStart: pre-trained models and fine-tuning", "RAG architecture on AWS (Bedrock + Knowledge Bases)", "Prompt engineering concepts tested in new exam versions"], "resources": ["Amazon Bedrock docs", "AWS GenAI Learning Path"], "tip": "GenAI content is being added to the ML Specialty. Know Bedrock vs SageMaker JumpStart use cases.", "hasScore": false}, {"title": "Comprehensive review + weak areas", "badge": "review", "sub": "Week 3 \u00b7 Consolidation", "tasks": ["Review all flagged questions from both mock exams", "Re-read AWS docs for any domain below 75%", "Create a one-pager: SageMaker services \u2192 use cases", "Write out the ML workflow from scratch from memory"], "resources": ["Your flagged questions list", "AWS ML Specialty exam guide (final review)"], "tip": "The exam is 3 hours for 65 questions \u2014 you have ~2.7 min per question. Pace is manageable.", "hasScore": false}, {"title": "Final mock exam + book", "badge": "exam", "sub": "Week 3 \u00b7 Exam day", "tasks": ["Take one final timed practice exam", "Must score 80%+ to feel confident about booking", "Book exam: $300 USD, available at Pearson VUE or in-person", "Exam is 65 questions, 180 minutes, ~72% to pass"], "resources": ["aws.training \u2014 schedule exam", "Pearson VUE test centre locator"], "tip": "The AWS exam is more nuanced than practice exams suggest. Read every option before selecting.", "hasScore": true}, {"title": "AWS ML study deep dive \u2014 SageMaker Studio", "badge": "learn", "sub": "Week 3 \u00b7 Lab", "tasks": ["Complete the SageMaker Immersion Day labs", "Build an end-to-end ML pipeline in SageMaker Studio", "Deploy a model endpoint and test with boto3", "Add Model Monitor and review drift reports"], "resources": ["SageMaker Immersion Day (aws.amazon.com/getting-started)", "SageMaker example notebooks on GitHub"], "tip": "Hands-on time in SageMaker Studio is invaluable. The exam has scenario questions only practice can prepare you for.", "hasScore": false}, {"title": "Computer Vision and NLP on AWS", "badge": "learn", "sub": "Week 3 \u00b7 Domains", "tasks": ["Rekognition: image labels, faces, custom labels", "Textract vs Comprehend vs Translate \u2014 know which service for which task", "SageMaker Object Detection and Image Classification algorithms", "Hugging Face on SageMaker for NLP fine-tuning"], "resources": ["AWS AI Services overview", "SageMaker NLP examples"], "tip": "For managed AI services: know the input/output format, pricing model, and when NOT to use them.", "hasScore": false}, {"title": "Time series and anomaly detection", "badge": "learn", "sub": "Week 3 \u00b7 Specialized", "tasks": ["DeepAR for time series forecasting \u2014 know hyperparameters", "Amazon Forecast vs DeepAR in SageMaker", "Random Cut Forest for anomaly detection", "Lookout for Metrics for business anomaly detection"], "resources": ["Amazon Forecast docs", "SageMaker DeepAR algorithm guide"], "tip": "Time series questions usually involve choosing between DeepAR, Forecast, and traditional methods.", "hasScore": false}, {"title": "Final review + exam day prep", "badge": "exam", "sub": "Week 3 \u00b7 Final", "tasks": ["Final scan of exam guide: confirm all domains are covered", "Review your algorithm cheat sheet one last time", "Know exam logistics: 65 questions, 180 min, 72% pass (~47/65)", "Rest well. Deep knowledge built over 3 weeks."], "resources": ["AWS exam readiness checklist", "Your personal notes and cheat sheets"], "tip": "The exam rewards deep AWS service knowledge over generic ML theory. Trust your AWS experience.", "hasScore": false}];
 const topics=[{"name": "Data Engineering (20%)", "color": "#E8890C", "days": [1, 2, 7, 12]}, {"name": "Exploratory Data Analysis (24%)", "color": "#378ADD", "days": [3, 11, 16]}, {"name": "Modeling \u2014 SageMaker (36%)", "color": "#1D9E75", "days": [4, 5, 6, 9, 10, 13, 14, 18, 19, 20]}, {"name": "ML Implementation (20%)", "color": "#7F77DD", "days": [8, 9, 10, 11]}, {"name": "Security & Compliance", "color": "#D85A30", "days": [9, 12]}, {"name": "MLOps & Pipelines", "color": "#0891B2", "days": [10, 17]}, {"name": "GenAI & Bedrock", "color": "#BA7517", "days": [15, 18]}, {"name": "Responsible AI", "color": "#993C1D", "days": [14, 16]}];
 const exam={"questions": 65, "minutes": 180, "passScore": "~72% (approx 47/65)", "cost": "$300", "provider": "Pearson VUE / AWS", "link": "https://aws.amazon.com/certification", "notes": "Available online proctored or in-person. 50 USD voucher often available via practice exam programs."};
 
-let state={completed:[],scores:{},hours:{},completedAt:{},notes:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
+let state={completed:[],scores:{},hours:{},completedAt:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
 
 function loadState(){try{const s=localStorage.getItem(STORAGE_KEY);if(s)state={...state,...JSON.parse(s)};}catch(e){}}
 function saveState(){
@@ -266,7 +294,7 @@ function broadcastStatus(){
 }
 function resetAll(){
   if(!confirm('Reset all progress? This cannot be undone.'))return;
-  state={completed:[],scores:{},hours:{},completedAt:{},notes:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
+  state={completed:[],scores:{},hours:{},completedAt:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
   saveState();renderAll();
 }
 function isCompleted(i){return state.completed.includes(i);}
@@ -319,6 +347,7 @@ function renderSchedule(){
         <span class="chevron">▾</span>
       </div>
       <div class="day-body">
+        <div class="nb-row"><a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a><a class="nb-btn nb-btn-colab" href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/aws-ml-certified/notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">▶ Open in Colab</a></div>
         <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
         <div class="task-list">${d.tasks.map(t=>`<div class="task"><div class="task-bullet"></div><span>${t}</span></div>`).join('')}</div>
         <div class="resources-row">${d.resources.map(r=>`<span class="res-pill">📎 ${r}</span>`).join('')}</div>
@@ -338,43 +367,6 @@ function renderTopics(){
       return `<div class="topic-card"><h4>${t.name}</h4><div class="t-bar-bg"><div class="t-bar-fill" style="width:${pct}%;background:${t.color}"></div></div><div class="t-pct">${pct}% covered · ${cov}/${t.days.length} sessions</div></div>`;
     }).join('')
   }</div>`;
-}
-
-function saveNote(key,val){
-  state.notes[key]=val;
-  saveState();
-  const indicator=document.getElementById('note-saved-'+key);
-  if(indicator){indicator.style.display='inline';setTimeout(()=>indicator.style.display='none',1500);}
-}
-
-function renderNotes(){
-  const generalNote=state.notes['general']||'';
-  const weekNotes=state.notes['week1']||'';
-  const week2Notes=state.notes['week2']||'';
-  const reflections=state.notes['reflections']||'';
-  document.getElementById('panel-notes').innerHTML=`
-    <div class="notes-wrap">
-      <div class="note-card">
-        <div class="note-card-head"><span>📓 General notes</span><span class="note-saved" id="note-saved-general">Saved ✓</span></div>
-        <textarea placeholder="Anything you want to remember — key concepts, mnemonics, questions to revisit..." oninput="saveNote('general',this.value)">${generalNote}</textarea>
-      </div>
-      <div class="note-card">
-        <div class="note-card-head"><span>📖 Week 1 notes</span><span class="note-saved" id="note-saved-week1">Saved ✓</span></div>
-        <textarea placeholder="Key learnings from Week 1..." oninput="saveNote('week1',this.value)">${weekNotes}</textarea>
-      </div>
-      <div class="note-card">
-        <div class="note-card-head"><span>📖 Week 2 notes</span><span class="note-saved" id="note-saved-week2">Saved ✓</span></div>
-        <textarea placeholder="Key learnings from Week 2..." oninput="saveNote('week2',this.value)">${week2Notes}</textarea>
-      </div>
-      ${days.map((d,i)=>`<div class="note-card">
-        <div class="note-card-head"><span>Day ${i+1}: ${d.title}</span><span class="note-saved" id="note-saved-day${i}">Saved ✓</span></div>
-        <textarea placeholder="Notes, questions, and takeaways for Day ${i+1}..." oninput="saveNote('day${i}',this.value)">${state.notes['day'+i]||''}</textarea>
-      </div>`).join('')}
-      <div class="note-card">
-        <div class="note-card-head"><span>💬 Reflections and lessons learned</span><span class="note-saved" id="note-saved-reflections">Saved ✓</span></div>
-        <textarea style="min-height:140px;" placeholder="What worked? What would you do differently? Advice for someone starting this journey..." oninput="saveNote('reflections',this.value)">${reflections}</textarea>
-      </div>
-    </div>`;
 }
 
 function renderAI(){
@@ -546,7 +538,6 @@ function showPanel(name,btn){
   document.getElementById('panel-'+name).classList.add('active');
   if(btn)btn.classList.add('active');
   if(name==='topics')renderTopics();
-  if(name==='notes')renderNotes();
   if(name==='ai')renderAI();
   if(name==='exam')renderExam();
   if(name==='resources')renderResources();

@@ -109,6 +109,13 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 .score-row label{font-size:12px;color:var(--text2);}
 .score-row input{width:72px;font-size:13px;padding:5px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
 .score-badge{font-size:12px;font-weight:500;padding:3px 10px;border-radius:99px;}
+
+/* Notebook links */
+.nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
+.nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
+.nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
 .complete-btn{width:100%;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s;font-weight:400;}
 .complete-btn:hover{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
 .complete-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);font-weight:500;}
@@ -225,7 +232,6 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 <div class="tabs">
   <button class="tab active" onclick="showPanel('schedule',this)">📅 Daily Plan</button>
   <button class="tab" onclick="showPanel('topics',this)">📚 Topics</button>
-  <button class="tab" onclick="showPanel('notes',this)">📝 Notes</button>
   <button class="tab" onclick="showPanel('ai',this)">🤖 AI Tools</button>
   <button class="tab" onclick="showPanel('resources',this)">🔗 Resources</button>
   <button class="tab" onclick="showPanel('exam',this)">🎓 Exam Prep</button>
@@ -233,7 +239,6 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 
 <div id="panel-schedule" class="panel active"></div>
 <div id="panel-topics" class="panel"></div>
-<div id="panel-notes" class="panel"></div>
 <div id="panel-ai" class="panel"></div>
 <div id="panel-exam" class="panel"></div>
 <div id="panel-resources" class="panel"></div>
@@ -244,12 +249,28 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 <script>
 const COURSE_ID='terraform-certified';
 const STORAGE_KEY='cj_terraform-certified_v1';
+const NOTEBOOKS=[
+  'day-01-terraform-fundamentals-and-iac-concepts',
+  'day-02-provider-configuration-and-core-workflow',
+  'day-03-resource-blocks-data-sources-and-depende',
+  'day-04-variables-outputs-and-locals',
+  'day-05-state-management-deep-dive',
+  'day-06-modules-creation-and-consumption',
+  'day-07-built-in-functions-and-expressions',
+  'day-08-terraform-cloud-and-remote-operations',
+  'day-09-provisioners-null-resource-and-lifecycle',
+  'day-10-workspaces-and-environment-management',
+  'day-11-mock-exam-1-gap-analysis',
+  'day-12-security-compliance-and-secret-managemen',
+  'day-13-final-mock-exam-readiness-check',
+  'day-14-exam-day-prep-review'
+];
 const TOTAL_DAYS=14;
 const days=[{"title": "Terraform fundamentals and IaC concepts", "badge": "learn", "sub": "Week 1 \u00b7 Foundation", "tasks": ["Install Terraform and verify: terraform --version", "Understand: HCL syntax, blocks, arguments, expressions", "Study IaC concepts: declarative vs imperative, idempotency", "Write your first Terraform: deploy a local file resource"], "resources": ["developer.hashicorp.com/terraform/tutorials", "Terraform: Up & Running (Brikman) ch.1"], "tip": "The exam tests conceptual understanding heavily. Know WHY you use IaC, not just how.", "hasScore": false}, {"title": "Provider configuration and core workflow", "badge": "learn", "sub": "Week 1 \u00b7 Workflow", "tasks": ["Configure AWS provider (use a free tier account)", "terraform init, plan, apply, destroy \u2014 understand each stage", "Study provider authentication: environment variables, profiles", "Read state: terraform show, terraform state list"], "resources": ["Terraform AWS provider docs", "HashiCorp Learn: Get Started with AWS"], "tip": "Know the exact output of each CLI command \u2014 terraform plan output format is frequently tested.", "hasScore": false}, {"title": "Resource blocks, data sources and dependencies", "badge": "learn", "sub": "Week 1 \u00b7 Resources", "tasks": ["Define resources: resource type, local name, arguments", "Data sources: read existing infrastructure with data blocks", "Implicit vs explicit dependencies: depends_on", "Use terraform graph to visualize dependencies"], "resources": ["Terraform resource docs", "Terraform data sources guide"], "tip": "Implicit dependencies (reference via expression) are always preferred over explicit depends_on.", "hasScore": false}, {"title": "Variables, outputs and locals", "badge": "learn", "sub": "Week 1 \u00b7 Variables", "tasks": ["Input variables: types, validation, sensitive flag", "Variable precedence: CLI flags \u2192 env vars \u2192 .tfvars \u2192 defaults", "Output values: sharing data between configurations", "Locals: computed values within a module"], "resources": ["Terraform variables docs", "HashiCorp variable precedence guide"], "tip": "Variable precedence order is tested directly. Memorize: -var flag > TF_VAR_env > terraform.tfvars > defaults.", "hasScore": true}, {"title": "State management deep dive", "badge": "learn", "sub": "Week 1 \u00b7 State", "tasks": ["Study terraform.tfstate: structure and purpose", "Remote state: S3 backend with DynamoDB locking", "terraform state mv, terraform state rm, terraform import", "Sensitive values in state: always encrypted in transit"], "resources": ["Terraform state docs", "Terraform backend configuration guide"], "tip": "The exam tests state manipulation commands. Know when to use state mv vs import vs taint (deprecated).", "hasScore": false}, {"title": "Modules: creation and consumption", "badge": "learn", "sub": "Week 1 \u00b7 Modules", "tasks": ["Create a reusable module with variables and outputs", "Consume a module from Terraform Registry (hashicorp/vpc/aws)", "Module versioning: source = 'module//submodule'", "Study the module file structure: main.tf, variables.tf, outputs.tf"], "resources": ["Terraform module docs", "Terraform Registry \u2014 official modules"], "tip": "Modules are heavily tested. Know the difference between root module, child module, and published module.", "hasScore": false}, {"title": "Built-in functions and expressions", "badge": "learn", "sub": "Week 2 \u00b7 Expressions", "tasks": ["String functions: format(), join(), split(), tostring()", "Collection functions: flatten(), merge(), zipmap()", "Conditional expressions: condition ? true_val : false_val", "for expressions and dynamic blocks"], "resources": ["Terraform built-in functions reference", "HashiCorp Learn: expressions tutorial"], "tip": "Practice built-in functions in the Terraform console: terraform console \u2192 enter function calls directly.", "hasScore": true}, {"title": "Terraform Cloud and remote operations", "badge": "learn", "sub": "Week 2 \u00b7 Cloud", "tasks": ["Understand Terraform Cloud vs Enterprise vs OSS differences", "Remote execution mode: runs in TFC vs locally", "Workspace management in Terraform Cloud", "Sentinel policies: policy-as-code for governance"], "resources": ["Terraform Cloud docs", "HashiCorp Learn: Terraform Cloud tutorials"], "tip": "Terraform Cloud is heavily weighted in the exam. Know the workspace types and execution modes cold.", "hasScore": false}, {"title": "Provisioners, null_resource and lifecycle", "badge": "learn", "sub": "Week 2 \u00b7 Advanced", "tasks": ["Lifecycle meta-argument: create_before_destroy, prevent_destroy, ignore_changes", "Provisioners: local-exec and remote-exec (use sparingly)", "null_resource for running arbitrary local commands", "terraform taint equivalent: -replace flag in modern versions"], "resources": ["Terraform lifecycle docs", "Terraform provisioners guide"], "tip": "The exam may present provisioners as an option. Know why they're a last resort and what to use instead.", "hasScore": false}, {"title": "Workspaces and environment management", "badge": "learn", "sub": "Week 2 \u00b7 Workspaces", "tasks": ["Terraform CLI workspaces: terraform workspace new/select/list", "Workspace use cases: dev/staging/prod isolation", "Study the terraform.workspace interpolation", "Understand when workspaces are NOT appropriate (use separate configs instead)"], "resources": ["Terraform workspace docs", "HashiCorp workspace best practices"], "tip": "Exam often presents workspaces as a solution. Know their limitations \u2014 they share the same backend config.", "hasScore": false}, {"title": "Mock exam #1 + gap analysis", "badge": "practice", "sub": "Week 2 \u00b7 Assessment", "tasks": ["Take a 57-question Terraform practice exam (Udemy or Whizlabs)", "Target score: 75%+", "Flag all questions related to state, cloud, and modules", "Re-read Terraform docs for flagged topics"], "resources": ["Bryan Krausen Terraform practice exams (Udemy)", "HashiCorp Study Guide"], "tip": "Bryan Krausen's practice exams are the closest to the real exam. Do all of them.", "hasScore": true}, {"title": "Security, compliance and secret management", "badge": "learn", "sub": "Week 2 \u00b7 Security", "tasks": ["Mark variables as sensitive: sensitive = true", "Use Vault provider for secrets management", "Study encryption of state in remote backends", "Understand provider authentication patterns: roles vs static keys"], "resources": ["Terraform sensitive variable docs", "HashiCorp Vault + Terraform integration"], "tip": "Never put secrets in .tf files or state without encryption. Sensitive = true prevents console display only.", "hasScore": false}, {"title": "Final mock exam + readiness check", "badge": "exam", "sub": "Week 2 \u00b7 Exam", "tasks": ["Take a second full timed practice exam", "Must score 80%+ before booking", "Book exam: $70 USD \u2014 available online proctored", "Exam: 57 questions, 60 minutes, ~70% to pass"], "resources": ["HashiCorp certification portal", "Pearson VUE online proctoring"], "tip": "The exam is open-note but time-constrained. Build intuition \u2014 don't plan to look everything up.", "hasScore": true}, {"title": "Exam day prep + review", "badge": "exam", "sub": "Week 2 \u00b7 Final", "tasks": ["Review state management commands one more time", "Review variable precedence chart", "Review Terraform Cloud workspace types", "Rest. 57 questions in 60 minutes is very manageable."], "resources": ["Your personal cheat sheet", "HashiCorp Terraform Associate study guide"], "tip": "You know this. The exam rewards engineers who have actually used Terraform in production. That's you.", "hasScore": false}];
 const topics=[{"name": "HCL & Core workflow", "color": "#7F77DD", "days": [0, 1, 2]}, {"name": "State management", "color": "#D85A30", "days": [4, 12]}, {"name": "Modules & Registry", "color": "#1D9E75", "days": [5, 10]}, {"name": "Functions & Expressions", "color": "#378ADD", "days": [6, 8]}, {"name": "Terraform Cloud", "color": "#BA7517", "days": [7, 11]}, {"name": "Security & Compliance", "color": "#E8890C", "days": [11, 12]}];
 const exam={"questions": 57, "minutes": 60, "passScore": "~70%", "cost": "$70", "provider": "HashiCorp / Pearson VUE", "link": "https://developer.hashicorp.com/certifications", "notes": "Available online proctored. Retake policy: wait 2 weeks between attempts."};
 
-let state={completed:[],scores:{},hours:{},completedAt:{},notes:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
+let state={completed:[],scores:{},hours:{},completedAt:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
 
 function loadState(){try{const s=localStorage.getItem(STORAGE_KEY);if(s)state={...state,...JSON.parse(s)};}catch(e){}}
 function saveState(){
@@ -266,7 +287,7 @@ function broadcastStatus(){
 }
 function resetAll(){
   if(!confirm('Reset all progress? This cannot be undone.'))return;
-  state={completed:[],scores:{},hours:{},completedAt:{},notes:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
+  state={completed:[],scores:{},hours:{},completedAt:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
   saveState();renderAll();
 }
 function isCompleted(i){return state.completed.includes(i);}
@@ -319,6 +340,7 @@ function renderSchedule(){
         <span class="chevron">▾</span>
       </div>
       <div class="day-body">
+        <div class="nb-row"><a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a><a class="nb-btn nb-btn-colab" href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/terraform-certified/notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">▶ Open in Colab</a></div>
         <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
         <div class="task-list">${d.tasks.map(t=>`<div class="task"><div class="task-bullet"></div><span>${t}</span></div>`).join('')}</div>
         <div class="resources-row">${d.resources.map(r=>`<span class="res-pill">📎 ${r}</span>`).join('')}</div>
@@ -338,43 +360,6 @@ function renderTopics(){
       return `<div class="topic-card"><h4>${t.name}</h4><div class="t-bar-bg"><div class="t-bar-fill" style="width:${pct}%;background:${t.color}"></div></div><div class="t-pct">${pct}% covered · ${cov}/${t.days.length} sessions</div></div>`;
     }).join('')
   }</div>`;
-}
-
-function saveNote(key,val){
-  state.notes[key]=val;
-  saveState();
-  const indicator=document.getElementById('note-saved-'+key);
-  if(indicator){indicator.style.display='inline';setTimeout(()=>indicator.style.display='none',1500);}
-}
-
-function renderNotes(){
-  const generalNote=state.notes['general']||'';
-  const weekNotes=state.notes['week1']||'';
-  const week2Notes=state.notes['week2']||'';
-  const reflections=state.notes['reflections']||'';
-  document.getElementById('panel-notes').innerHTML=`
-    <div class="notes-wrap">
-      <div class="note-card">
-        <div class="note-card-head"><span>📓 General notes</span><span class="note-saved" id="note-saved-general">Saved ✓</span></div>
-        <textarea placeholder="Anything you want to remember — key concepts, mnemonics, questions to revisit..." oninput="saveNote('general',this.value)">${generalNote}</textarea>
-      </div>
-      <div class="note-card">
-        <div class="note-card-head"><span>📖 Week 1 notes</span><span class="note-saved" id="note-saved-week1">Saved ✓</span></div>
-        <textarea placeholder="Key learnings from Week 1..." oninput="saveNote('week1',this.value)">${weekNotes}</textarea>
-      </div>
-      <div class="note-card">
-        <div class="note-card-head"><span>📖 Week 2 notes</span><span class="note-saved" id="note-saved-week2">Saved ✓</span></div>
-        <textarea placeholder="Key learnings from Week 2..." oninput="saveNote('week2',this.value)">${week2Notes}</textarea>
-      </div>
-      ${days.map((d,i)=>`<div class="note-card">
-        <div class="note-card-head"><span>Day ${i+1}: ${d.title}</span><span class="note-saved" id="note-saved-day${i}">Saved ✓</span></div>
-        <textarea placeholder="Notes, questions, and takeaways for Day ${i+1}..." oninput="saveNote('day${i}',this.value)">${state.notes['day'+i]||''}</textarea>
-      </div>`).join('')}
-      <div class="note-card">
-        <div class="note-card-head"><span>💬 Reflections and lessons learned</span><span class="note-saved" id="note-saved-reflections">Saved ✓</span></div>
-        <textarea style="min-height:140px;" placeholder="What worked? What would you do differently? Advice for someone starting this journey..." oninput="saveNote('reflections',this.value)">${reflections}</textarea>
-      </div>
-    </div>`;
 }
 
 function renderAI(){
@@ -534,7 +519,6 @@ function showPanel(name,btn){
   document.getElementById('panel-'+name).classList.add('active');
   if(btn)btn.classList.add('active');
   if(name==='topics')renderTopics();
-  if(name==='notes')renderNotes();
   if(name==='ai')renderAI();
   if(name==='exam')renderExam();
   if(name==='resources')renderResources();

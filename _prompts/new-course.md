@@ -282,7 +282,7 @@ Every day card body must render in this order:
 ```js
 `<div class="nb-row">
   <a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a>
-  <a class="nb-btn nb-btn-colab" href="https://colab.research.google.com/github/certified-journeys/[COURSE_ID]/blob/main/notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">▶ Open in Colab</a>
+  <a class="nb-btn nb-btn-colab" href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/[COURSE_ID]/notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">▶ Open in Colab</a>
 </div>
 <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
 <div class="task-list"><!-- tasks --></div>
@@ -423,7 +423,7 @@ Every **code cell** must use this exact structure:
 
 **Cell 1 — Header (markdown)**
 ```markdown
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/certified-journeys/[COURSE_ID]/blob/main/notebooks/day-NN-slug.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/[COURSE_ID]/notebooks/day-NN-slug.ipynb#scrollTo=[FIRST_CELL_ID])
 
 ---
 # Day N · [Day Title]
@@ -433,6 +433,8 @@ Every **code cell** must use this exact structure:
 
 ---
 ```
+
+> **Colab URL format:** The repo is always `certified-journeys/certified-journeys.github.io`. The path includes the full `courses/[COURSE_ID]/notebooks/` prefix. Append `#scrollTo=[FIRST_CELL_ID]` using the `id` of the notebook's first cell so Colab scrolls to the top on open.
 
 **Cell 2 — Install (code)**
 ```python
@@ -516,7 +518,8 @@ For the final day (capstone), replace "What's next" with a completion message an
 - [ ] `metadata.language_info.name` is `"python"` — required for VS Code / JupyterLab kernel detection
 - [ ] Every cell has a unique `"id"` field (8-char hex) — required by nbformat 4.5; missing ids cause "error loading this notebook"
 - [ ] Every code cell has `"outputs": []` and `"execution_count": null` — required even when empty
-- [ ] Every notebook has the Colab badge with the correct GitHub URL
+- [ ] Colab badge URL uses `certified-journeys/certified-journeys.github.io` as the repo (not the course ID)
+- [ ] Colab badge URL path is `/blob/main/courses/[COURSE_ID]/notebooks/[filename].ipynb#scrollTo=[first_cell_id]`
 - [ ] Every notebook ends with a link back to `../index.html`
 - [ ] Notebook filenames match `NOTEBOOKS` array in `index.html` exactly
 - [ ] All code cells are runnable (no pseudocode outside Challenge cell)
