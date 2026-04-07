@@ -89,9 +89,9 @@ certified-journeys.github.io/
 │   │       └── ...
 │   └── [other courses]/
 │       └── index.html
-├── _prompts/
-│   └── new-course.md                 # Prompt template for generating new courses with an LLM
-└── notes-sync.js                     # Shared localStorage sync utility
+├── github-sync.js                    # GitHub Sync module — cross-device progress via GitHub API
+└── _prompts/
+    └── new-course.md                 # Prompt template for generating new courses with an LLM
 ```
 
 Each course tracker (`index.html`) is fully self-contained — no build tools, no frameworks, no `node_modules`. The only external dependency is Google Fonts.
@@ -148,6 +148,75 @@ All notebooks follow the certified-journeys standard defined in [`_prompts/new-c
 
 ---
 
+## Syncing progress across devices
+
+By default progress is saved in your browser's `localStorage` — it stays on that device only. To sync across multiple devices (mobile, laptop, work machine) you can connect **GitHub Sync**, which saves your progress as a JSON file committed to any GitHub repo you own.
+
+### How it works
+
+```
+Every change you make
+  → saved to localStorage immediately (instant, local)
+  → pushed to GitHub after 2.5 s (debounced, cross-device)
+
+When you open a course
+  → localStorage loaded first (fast paint)
+  → GitHub state fetched and merged (authoritative)
+```
+
+Progress is stored at `courses/{course-id}/progress.json` in your connected repo.
+
+### Set up GitHub Sync
+
+**Step 1 — Create a fine-grained Personal Access Token**
+
+1. Go to [github.com/settings/tokens](https://github.com/settings/tokens) → **Fine-grained tokens** → **Generate new token**
+2. Set **Repository access** → Only select repositories → choose your repo
+3. Under **Permissions** → **Contents** → set to **Read and Write**
+4. Click **Generate token** and copy it — you won't see it again
+
+**Step 2 — Connect on your first device**
+
+1. Open any course tracker
+2. Click **☁ Connect GitHub** in the footer
+3. Fill in:
+   - **Personal Access Token** — the token you just created
+   - **Owner** — your GitHub username or org
+   - **Repository** — the repo name (e.g. `certified-journeys.github.io`)
+   - **Branch** — `main` (default)
+4. Click **Test & Save** — the badge changes to **☁ Synced** when connected
+
+**Step 3 — Transfer to another device (one click)**
+
+Once connected on device 1:
+
+1. Click **☁ Synced** → the modal opens with a **Config string** pre-filled
+2. Click **Copy**
+3. On device 2, open the same modal → paste the string into the config field → click **Import**
+4. Fields auto-fill — click **Test & Save** to connect
+
+No need to re-enter your token manually on each device.
+
+### What gets synced
+
+| Data | Synced |
+|---|---|
+| Days marked complete | ✅ |
+| Task tick progress | ✅ |
+| Practice scores | ✅ |
+| Hours logged | ✅ |
+| Start date / last activity | ✅ |
+| Notes (`.md` files) | Separately via GitHub edit links |
+
+### Notes
+
+- The config string contains your PAT — treat it like a password, don't share it publicly
+- Sync is per-course — each course pushes to its own `progress.json`
+- If two devices save at the same time, the last push wins (no conflict merging)
+- To disconnect, open the modal → **Disconnect**
+
+---
+
 ## Tech stack
 
 | Layer | Choice | Reason |
@@ -155,7 +224,7 @@ All notebooks follow the certified-journeys standard defined in [`_prompts/new-c
 | Hosting | GitHub Pages | Free, zero config |
 | Frontend | Vanilla HTML/CSS/JS | No build step, forkable instantly |
 | Fonts | Google Fonts (DM Sans + DM Mono) | Only external dependency |
-| Progress storage | `localStorage` | No server, no account, no tracking |
+| Progress storage | `localStorage` + GitHub API | Local-first, optional cross-device sync |
 | Notebooks | Jupyter / Google Colab | Interactive, zero-install via Colab |
 | Course generation | LLM + `_prompts/new-course.md` | Consistent format across courses |
 
@@ -164,7 +233,7 @@ All notebooks follow the certified-journeys standard defined in [`_prompts/new-c
 ## Principles
 
 1. **Single HTML file per course** — open it anywhere, no server needed
-2. **localStorage only** — your progress is yours, stored locally
+2. **localStorage first** — progress is always saved locally; GitHub sync is optional
 3. **MIT licensed** — fork, modify, redistribute freely
 4. **Zero paywalls** — no premium tier, no upsell, no email capture, ever
 5. **Learn in public** — if your fork worked, share it

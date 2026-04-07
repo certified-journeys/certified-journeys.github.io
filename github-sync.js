@@ -46,7 +46,7 @@ const GHSync = (() => {
       const data = await res.json();
       fileSHAs[courseId] = data.sha;
       const raw = data.content.replace(/\n/g, '');
-      return JSON.parse(decodeURIComponent(escape(atob(raw))));
+      return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(raw), c => c.charCodeAt(0))));
     } catch(e) { console.warn('GHSync.fetchState:', e); return null; }
   }
 
@@ -54,7 +54,8 @@ const GHSync = (() => {
     if (!isConnected()) return false;
     try {
       const branch = creds.branch || 'main';
-      const content = btoa(unescape(encodeURIComponent(JSON.stringify(state, null, 2))));
+      const encoded = new TextEncoder().encode(JSON.stringify(state, null, 2));
+      const content = btoa(String.fromCharCode(...encoded));
       const body = { message: `chore: update ${courseId} progress`, content, branch };
       if (fileSHAs[courseId]) body.sha = fileSHAs[courseId];
       const res = await fetch(apiUrl(courseId), {
@@ -89,6 +90,19 @@ const GHSync = (() => {
     } catch(e) { return { ok: false, msg: 'Network error.' }; }
   }
 
+  function exportConfig() {
+    if (!creds) return '';
+    return btoa(JSON.stringify(creds));
+  }
+
+  function importConfig(str) {
+    try {
+      const c = JSON.parse(atob(str.trim()));
+      if (!c || !c.pat || !c.owner || !c.repo) return null;
+      return c;
+    } catch { return null; }
+  }
+
   loadCreds();
-  return { isConnected, saveCreds, getCreds, fetchState, pushState, saveDebounced, testConnection };
+  return { isConnected, saveCreds, getCreds, fetchState, pushState, saveDebounced, testConnection, exportConfig, importConfig };
 })();
