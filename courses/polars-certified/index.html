@@ -302,13 +302,7 @@ function updateSyncBadge(st){
   const b=document.getElementById('sync-badge');if(!b)return;
   const map={connected:'☁ Synced',syncing:'☁ Syncing…',error:'☁ Sync error',disconnected:'☁ Not synced'};
   b.textContent=map[st]||'☁ Not synced';
-  b.className='sync-badge'+(st==='connected'?' sync-ok':st==='syncing'?' sync-busy':st==='error'?' sync-err':'');
-}
-}
-  const r=await GHSync.testConnection();
-});
-}
-}
+  b.className='sync-badge'+(st==='connected'?' connected':st==='syncing'?' syncing':st==='error'?' error':'');
 }
 function broadcastStatus(){
   // Write a summary for the home page to read

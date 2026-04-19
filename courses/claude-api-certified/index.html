@@ -748,13 +748,6 @@ function updateSyncBadge(st){
   b.className='sync-badge'+(st==='connected'?' connected':st==='syncing'?' syncing':st==='error'?' error':'');
 }
 
-}
-  const r=await GHSync.testConnection();
-});
-}
-}
-}
-
 function showPanel(name,btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
