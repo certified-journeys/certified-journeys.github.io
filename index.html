@@ -191,6 +191,70 @@ nav {
   font-size: 13px; color: var(--text2); line-height: 1.7;
 }
 .note strong { color: var(--text); font-weight: 500; }
+
+/* ── GitHub Sync ── */
+.nav-sync {
+  font-size: 12px; padding: 6px 14px; border-radius: 99px;
+  border: 1px solid var(--border2); color: var(--text2);
+  display: flex; align-items: center; gap: 5px; cursor: pointer;
+  background: none; font-family: inherit; font-weight: 500; transition: all 0.15s;
+}
+.nav-sync:hover { background: var(--surface2); color: var(--text); }
+.nav-sync.connected { color: var(--green); border-color: rgba(22,163,127,0.3); background: var(--green-dim); }
+.sync-banner {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+  background: var(--surface); border-top: 1px solid var(--border2);
+  padding: 14px 1.5rem; display: none; align-items: center; gap: 12px;
+  box-shadow: 0 -2px 20px rgba(0,0,0,0.1); font-size: 13px; color: var(--text2);
+}
+.sync-banner strong { color: var(--text); }
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center; padding: 1rem;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--surface); border-radius: 16px; border: 1px solid var(--border2);
+  padding: 2rem; max-width: 400px; width: 100%; position: relative;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+}
+.modal-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.modal-desc { font-size: 13px; color: var(--text2); margin-bottom: 1.25rem; line-height: 1.65; }
+.modal-label { font-size: 12px; font-weight: 600; color: var(--text); display: block; margin-bottom: 6px; }
+.modal-note { font-size: 11.5px; color: var(--text3); line-height: 1.7; margin-bottom: 1rem; }
+.modal-note a { color: var(--blue); }
+.modal-input {
+  width: 100%; padding: 9px 12px; font-size: 13px; font-family: 'JetBrains Mono', monospace;
+  border: 1px solid var(--border2); border-radius: 8px; background: var(--bg);
+  color: var(--text); outline: none; margin-bottom: 0.75rem; display: block;
+}
+.modal-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(22,163,127,0.12); }
+.modal-autofields {
+  background: var(--surface2); border-radius: 8px; padding: 10px 14px;
+  font-size: 12px; font-family: 'JetBrains Mono', monospace; color: var(--text3);
+  display: flex; flex-direction: column; gap: 4px; margin-bottom: 1.25rem;
+}
+.modal-autofields strong { color: var(--text2); }
+.modal-actions { display: flex; gap: 8px; align-items: center; }
+.modal-status {
+  font-size: 12px; padding: 8px 12px; border-radius: 8px; margin-top: 10px;
+  display: none; line-height: 1.5;
+}
+.modal-status.ok { background: var(--green-dim); color: var(--green); display: block; }
+.modal-status.err { background: #fee2e2; color: #c0392b; display: block; }
+@media (prefers-color-scheme: dark) { .modal-status.err { background: #3f1212; color: #f87171; } }
+.modal-close-btn {
+  position: absolute; top: 14px; right: 14px; background: none; border: none;
+  font-size: 14px; cursor: pointer; color: var(--text3); width: 28px; height: 28px;
+  border-radius: 6px; display: flex; align-items: center; justify-content: center;
+}
+.modal-close-btn:hover { background: var(--surface2); color: var(--text); }
+.modal-disconnect {
+  margin-left: auto; font-size: 12px; color: var(--text3); background: none;
+  border: none; cursor: pointer; font-family: inherit; padding: 4px 0;
+}
+.modal-disconnect:hover { color: #c0392b; text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -202,6 +266,7 @@ nav {
       certified-journeys
     </a>
     <div class="nav-right">
+      <button class="nav-sync" id="sync-btn" onclick="openSyncModal()">☁ Connect</button>
       <a class="nav-gh" href="https://github.com/certified-journeys" target="_blank">⭐ GitHub</a>
     </div>
   </div>
@@ -234,6 +299,41 @@ nav {
 
 </div>
 
+<!-- GitHub Sync banner (shown on forked sites when not connected) -->
+<div class="sync-banner" id="sync-banner">
+  <div style="flex:1">☁ <strong>Sync progress across devices</strong> — connect GitHub once and your progress is saved to your repo automatically.</div>
+  <div style="display:flex;gap:8px;flex-shrink:0">
+    <button class="btn btn-primary" style="font-size:12px;padding:7px 16px;" onclick="openSyncModal()">Connect →</button>
+    <button class="btn btn-ghost" style="font-size:12px;padding:7px 14px;" onclick="dismissBanner()">Not now</button>
+  </div>
+</div>
+
+<!-- GitHub Sync modal -->
+<div class="modal-overlay" id="sync-modal">
+  <div class="modal-box">
+    <button class="modal-close-btn" onclick="closeSyncModal()">✕</button>
+    <h3>☁ GitHub Sync</h3>
+    <p class="modal-desc">Connect once — progress from every course syncs to your forked repo automatically.</p>
+    <label class="modal-label">Personal Access Token</label>
+    <input class="modal-input" type="password" id="sync-pat" placeholder="github_pat_…" autocomplete="off">
+    <p class="modal-note">
+      <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create a fine-grained token →</a><br>
+      Repository access → select this repo → <strong>Contents: Read &amp; Write</strong>
+    </p>
+    <div class="modal-autofields">
+      <span>Owner: <strong id="sync-owner-val">—</strong></span>
+      <span>Repo:&nbsp; <strong id="sync-repo-val">—</strong></span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="sync-connect-btn" onclick="connectGitHub()">Connect</button>
+      <button class="btn btn-ghost" onclick="closeSyncModal()">Cancel</button>
+      <button class="modal-disconnect" id="sync-disconnect-btn" onclick="disconnectGitHub()" style="display:none">Disconnect</button>
+    </div>
+    <div class="modal-status" id="sync-status"></div>
+  </div>
+</div>
+
+<script src="github-sync.js"></script>
 <script>
 const COURSES = [
   {id:'claude-api-certified', name:'Claude API', fullName:'Building with the Claude API',            icon:'CL', color:'#d97757', colorDim:'#faede8', provider:'Anthropic',   cost:'Free', totalDays:10, tags:['Claude','Python','AI'], examLink:'https://anthropic.skilljar.com/claude-with-the-anthropic-api'},
@@ -317,6 +417,118 @@ function render() {
 }
 
 render();
+
+// ── GitHub Sync UI ──────────────────────────────────────────
+(function () {
+  function detectCtx() {
+    const host = window.location.hostname;
+    const path = window.location.pathname;
+    const m = host.match(/^([^.]+)\.github\.io$/);
+    // Skip: localhost, the original org site, and non-GitHub-Pages hosts
+    if (!m || m[1] === 'certified-journeys') return { owner: '', repo: '' };
+    const parts = path.split('/').filter(Boolean);
+    return { owner: m[1], repo: parts[0] || 'certified-journeys.github.io' };
+  }
+
+  const ctx = detectCtx();
+
+  function updateNavBtn() {
+    const btn = document.getElementById('sync-btn');
+    if (!btn) return;
+    const connected = typeof GHSync !== 'undefined' && GHSync.isConnected();
+    btn.textContent = connected ? '☁ Synced' : '☁ Connect';
+    btn.classList.toggle('connected', connected);
+  }
+
+  function maybeShowBanner() {
+    if (!ctx.owner) return; // not a fork — skip
+    if (localStorage.getItem('cj_sync_banner_dismissed')) return;
+    if (typeof GHSync !== 'undefined' && GHSync.isConnected()) return;
+    document.getElementById('sync-banner').style.display = 'flex';
+  }
+
+  window.dismissBanner = function () {
+    document.getElementById('sync-banner').style.display = 'none';
+    localStorage.setItem('cj_sync_banner_dismissed', '1');
+  };
+
+  window.openSyncModal = function () {
+    const modal = document.getElementById('sync-modal');
+    modal.classList.add('open');
+    const creds = typeof GHSync !== 'undefined' ? GHSync.getCreds() : null;
+    const owner = (creds && creds.owner) || ctx.owner || '';
+    const repo  = (creds && creds.repo)  || ctx.repo  || 'certified-journeys.github.io';
+    document.getElementById('sync-owner-val').textContent = owner || '(not detected)';
+    document.getElementById('sync-repo-val').textContent  = repo;
+    document.getElementById('sync-pat').value = (creds && creds.pat) ? creds.pat : '';
+    document.getElementById('sync-disconnect-btn').style.display = creds ? 'block' : 'none';
+    const st = document.getElementById('sync-status');
+    if (creds) {
+      st.textContent  = '☁ Connected to ' + owner + '/' + repo;
+      st.className    = 'modal-status ok';
+    } else {
+      st.textContent = '';
+      st.className   = 'modal-status';
+    }
+  };
+
+  window.closeSyncModal = function () {
+    document.getElementById('sync-modal').classList.remove('open');
+  };
+
+  window.connectGitHub = async function () {
+    if (typeof GHSync === 'undefined') return;
+    const pat   = document.getElementById('sync-pat').value.trim();
+    const owner = ctx.owner;
+    const repo  = ctx.repo || 'certified-journeys.github.io';
+    if (!pat)   { showStatus('Enter your Personal Access Token.', false); return; }
+    if (!owner) { showStatus('Cannot detect GitHub username from this URL.', false); return; }
+
+    const btn = document.getElementById('sync-connect-btn');
+    btn.disabled = true; btn.textContent = 'Connecting…';
+
+    GHSync.saveCreds({ pat, owner, repo, branch: 'main' });
+    const r = await GHSync.testConnection();
+
+    if (r.ok) {
+      showStatus('✓ Connected! Progress will sync across all your devices.', true);
+      updateNavBtn();
+      document.getElementById('sync-banner').style.display = 'none';
+      localStorage.setItem('cj_sync_banner_dismissed', '1');
+      document.getElementById('sync-disconnect-btn').style.display = 'block';
+      setTimeout(closeSyncModal, 1800);
+    } else {
+      GHSync.saveCreds(null);
+      showStatus(r.msg, false);
+    }
+    btn.disabled = false; btn.textContent = 'Connect';
+  };
+
+  window.disconnectGitHub = function () {
+    if (typeof GHSync !== 'undefined') GHSync.saveCreds(null);
+    updateNavBtn();
+    document.getElementById('sync-status').className = 'modal-status';
+    document.getElementById('sync-disconnect-btn').style.display = 'none';
+    document.getElementById('sync-pat').value = '';
+    localStorage.removeItem('cj_sync_banner_dismissed');
+    closeSyncModal();
+    maybeShowBanner();
+  };
+
+  function showStatus(msg, ok) {
+    const el = document.getElementById('sync-status');
+    el.textContent = msg;
+    el.className   = 'modal-status ' + (ok ? 'ok' : 'err');
+  }
+
+  // Close on overlay click
+  document.getElementById('sync-modal').addEventListener('click', function (e) {
+    if (e.target === this) closeSyncModal();
+  });
+
+  updateNavBtn();
+  maybeShowBanner();
+})();
 </script>
 </body>
 </html>
