@@ -17,6 +17,7 @@
 
 ## Key takeaways
 - Roles and Responsibilties of PO
+- https://www.volkerdon.com To do more practice
 
 ## Questions
 - What all occasions does PO meet Sprint Team ? 
