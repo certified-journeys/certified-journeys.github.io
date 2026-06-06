@@ -144,6 +144,7 @@ const GHSync = (() => {
 
   async function pushAll(onDone) {
     if (!isConnected()) { if (onDone) onDone(false); return false; }
+    try { window.dispatchEvent(new CustomEvent('cj-syncing')); } catch(e) {}
     try {
       const res = await fetch(`https://api.github.com/gists/${creds.gistId}`, {
         method:  'PATCH',

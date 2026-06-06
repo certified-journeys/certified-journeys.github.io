@@ -4,40 +4,44 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>certified-journeys · Open-source certification trackers</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
+  --brand: #1a1a2e;
+  --brand-dim: #eeeef5;
   --green: #16a37f;
   --green-dim: #dcf5ed;
   --blue: #2563eb;
   --blue-dim: #dbeafe;
-  --bg: #f8f8f6;
+  --bg: #F5F4F0;
   --surface: #ffffff;
-  --surface2: #f0efeb;
-  --border: rgba(0,0,0,0.07);
-  --border2: rgba(0,0,0,0.14);
-  --text: #111;
-  --text2: #555;
-  --text3: #999;
-  --r: 12px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+  --surface2: #EEECE5;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.16);
+  --text: #18181A;
+  --text2: #52524E;
+  --text3: #767676;
+  --r: 14px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #111;
-    --surface: #1a1a1a;
-    --surface2: #222;
-    --border: rgba(255,255,255,0.07);
-    --border2: rgba(255,255,255,0.14);
-    --text: #f0f0ed;
-    --text2: #999;
-    --text3: #555;
+    --brand: #a5b4fc;
+    --brand-dim: #1e1e3a;
+    --bg: #111113;
+    --surface: #1C1C1F;
+    --surface2: #252528;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #F0EFEA;
+    --text2: #A09F9B;
+    --text3: #767676;
     --green-dim: #0a2e20;
     --blue-dim: #0d1f3c;
   }
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
 a { color: var(--blue); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
@@ -64,10 +68,10 @@ nav {
 .nav-brand:hover { text-decoration: none; opacity: 0.85; }
 .brand-mark {
   width: 30px; height: 30px; border-radius: 8px;
-  background: var(--green); color: #fff;
+  background: var(--brand); color: #fff;
   display: flex; align-items: center; justify-content: center;
   font-size: 10px; font-weight: 800; letter-spacing: 0.01em; flex-shrink: 0;
-  box-shadow: 0 1px 4px rgba(22,163,127,0.35);
+  box-shadow: 0 1px 4px rgba(26,26,46,0.25);
 }
 .nav-right { display: flex; align-items: center; gap: 8px; }
 .nav-gh {
@@ -121,7 +125,7 @@ nav {
   display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s;
   text-decoration: none;
 }
-.btn-primary { background: var(--green); color: #fff; box-shadow: 0 1px 6px rgba(22,163,127,0.3); }
+.btn-primary { background: var(--brand); color: #fff; box-shadow: 0 1px 6px rgba(26,26,46,0.25); }
 .btn-primary:hover { opacity: 0.88; text-decoration: none; transform: translateY(-1px); }
 .btn-ghost { background: none; border: 1px solid var(--border2); color: var(--text2); }
 .btn-ghost:hover { background: var(--surface2); color: var(--text); text-decoration: none; }
@@ -133,7 +137,7 @@ nav {
 }
 .stat { display: flex; flex-direction: column; padding-right: 2rem; }
 .stat + .stat { padding-left: 2rem; border-left: 1px solid var(--border); }
-.stat-val { font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.02em; }
+.stat-val { font-size: 22px; font-weight: 700; font-family: 'DM Mono', monospace; letter-spacing: -0.02em; }
 .stat-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
 
 /* Grid */
@@ -167,17 +171,17 @@ nav {
 .card-meta { font-size: 12px; color: var(--text3); margin-bottom: 12px; }
 
 .bar-wrap { margin-bottom: 6px; }
-.bar-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; }
+.bar-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); margin-bottom: 4px; font-family: 'DM Mono', monospace; }
 .bar { background: var(--surface2); border-radius: 99px; height: 3px; overflow: hidden; }
 .bar-fill { height: 100%; border-radius: 99px; transition: width 0.6s; }
 
-.card-extras { font-size: 11px; color: var(--text3); margin-bottom: 14px; min-height: 16px; font-family: 'JetBrains Mono', monospace; }
+.card-extras { font-size: 11px; color: var(--text3); margin-bottom: 14px; min-height: 16px; font-family: 'DM Mono', monospace; }
 .card-footer { margin-top: auto; display: flex; gap: 6px; align-items: center; }
 .card-btn {
-  font-size: 12px; padding: 6px 14px; border-radius: 99px;
+  font-size: 12px; padding: 11px 16px; border-radius: 99px;
   border: 1px solid var(--border2); color: var(--text2); background: none;
   cursor: pointer; font-family: inherit; transition: all 0.15s; text-decoration: none;
-  display: inline-block;
+  display: inline-flex; align-items: center; min-height: 44px;
 }
 .card-btn:hover { background: var(--surface2); color: var(--text); text-decoration: none; }
 .card-btn-primary { background: var(--green); color: #fff; border-color: var(--green); }
@@ -225,14 +229,14 @@ nav {
 .modal-note { font-size: 11.5px; color: var(--text3); line-height: 1.7; margin-bottom: 1rem; }
 .modal-note a { color: var(--blue); }
 .modal-input {
-  width: 100%; padding: 9px 12px; font-size: 13px; font-family: 'JetBrains Mono', monospace;
+  width: 100%; padding: 9px 12px; font-size: 13px; font-family: 'DM Mono', monospace;
   border: 1px solid var(--border2); border-radius: 8px; background: var(--bg);
   color: var(--text); outline: none; margin-bottom: 0.75rem; display: block;
 }
 .modal-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(22,163,127,0.12); }
 .modal-autofields {
   background: var(--surface2); border-radius: 8px; padding: 10px 14px;
-  font-size: 12px; font-family: 'JetBrains Mono', monospace; color: var(--text3);
+  font-size: 12px; font-family: 'DM Mono', monospace; color: var(--text3);
   display: flex; flex-direction: column; gap: 4px; margin-bottom: 1.25rem;
 }
 .modal-autofields strong { color: var(--text2); }
@@ -255,7 +259,7 @@ nav {
   border: none; cursor: pointer; font-family: inherit; padding: 4px 0;
 }
 .modal-disconnect:hover { color: #c0392b; text-decoration: underline; }
-.sync-ts { font-size: 10px; color: var(--text3); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.01em; }
+.sync-ts { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; letter-spacing: 0.01em; }
 </style>
 </head>
 <body>
@@ -268,7 +272,7 @@ nav {
     </a>
     <div class="nav-right">
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
-        <button class="nav-sync" id="sync-btn" onclick="openSyncModal()">☁ Connect</button>
+        <button class="nav-sync" id="sync-btn" onclick="openSyncModal()" aria-label="Sync progress with GitHub">☁ Connect</button>
         <span class="sync-ts" id="sync-ts" style="display:none"></span>
       </div>
       <a class="nav-gh" href="https://github.com/certified-journeys" target="_blank">⭐ GitHub</a>
@@ -283,14 +287,14 @@ nav {
     <h1>Learn in public.<br><em>Build your edge.</em></h1>
     <p>Free, open-source certification trackers for engineers. Structured daily plans — no fluff, no paywalls, no sign-ups. Fork any repo and make it yours.</p>
     <div class="hero-actions">
-      <a class="btn btn-primary" href="#course-grid">Start a journey →</a>
+      <a class="btn btn-primary" href="#course-grid">Browse journeys →</a>
       <a class="btn btn-ghost" href="https://github.com/certified-journeys" target="_blank">Browse on GitHub</a>
     </div>
     <div class="stats-row">
-      <div class="stat"><span class="stat-val" id="hs-total">7</span><span class="stat-label">Journeys</span></div>
-      <div class="stat"><span class="stat-val" id="hs-active">0</span><span class="stat-label">In progress</span></div>
-      <div class="stat"><span class="stat-val" id="hs-done">0</span><span class="stat-label">Completed</span></div>
-      <div class="stat"><span class="stat-val" id="hs-hours">0 h</span><span class="stat-label">Hours logged</span></div>
+      <div class="stat"><span class="stat-val" id="hs-total">8</span><span class="stat-label">Journeys</span></div>
+      <div class="stat" title="Start a journey to track your progress"><span class="stat-val" id="hs-active" style="color:var(--text3)">—</span><span class="stat-label">In progress</span></div>
+      <div class="stat" title="Complete a journey to see this count"><span class="stat-val" id="hs-done" style="color:var(--text3)">—</span><span class="stat-label">Completed</span></div>
+      <div class="stat" title="Hours logged across all journeys"><span class="stat-val" id="hs-hours" style="color:var(--text3)">—</span><span class="stat-label">Hours logged</span></div>
     </div>
   </div>
 
@@ -407,23 +411,62 @@ function statusInfo(s) {
   }[s] || { label: 'Not started', cls: 'badge-ns' };
 }
 
+const NEXT_JOURNEY = {
+  'claude-api-certified':  'aws-ml-certified',
+  'aws-ml-certified':      'terraform-certified',
+  'terraform-certified':   'aws-ml-certified',
+  'dlt-certified':         'polars-certified',
+  'polars-certified':      'dlt-certified',
+  'powerbi-certified':     'polars-certified',
+  'typer-cli-certified':   'dlt-certified',
+  'pspo-certified':        'claude-api-certified',
+};
+
 function render() {
   const all = COURSES.map(c => ({ c, p: getProgress(c.id) }));
+
+  // Sort: in_progress first, then not_started, then completed
+  const ORDER = { in_progress: 0, not_started: 1, completed: 2 };
+  all.sort((a, b) => (ORDER[a.p.status] ?? 1) - (ORDER[b.p.status] ?? 1));
 
   const inProg = all.filter(x => x.p.status === 'in_progress').length;
   const done   = all.filter(x => x.p.status === 'completed').length;
   const hours  = all.reduce((a, x) => a + (x.p.totalHours || 0), 0);
+  const hasAny = inProg > 0 || done > 0 || hours > 0;
 
-  document.getElementById('hs-total').textContent  = COURSES.length;
-  document.getElementById('hs-active').textContent = inProg;
-  document.getElementById('hs-done').textContent   = done;
-  document.getElementById('hs-hours').textContent  = hours > 0 ? hours.toFixed(1) + ' h' : '0 h';
+  const activeEl = document.getElementById('hs-active');
+  const doneEl   = document.getElementById('hs-done');
+  const hoursEl  = document.getElementById('hs-hours');
+
+  if (hasAny) {
+    activeEl.textContent = inProg;
+    activeEl.style.color = '';
+    doneEl.textContent   = done;
+    doneEl.style.color   = '';
+    hoursEl.textContent  = hours > 0 ? hours.toFixed(1) + ' h' : '0 h';
+    hoursEl.style.color  = '';
+  }
+  // If no activity, the HTML default "—" placeholders remain with muted color
+
+  document.getElementById('hs-total').textContent = COURSES.length;
 
   document.getElementById('course-grid').innerHTML = all.map(({ c, p }) => {
     const pct  = Math.round((p.completed / c.totalDays) * 100);
     const si   = statusInfo(p.status);
     const ago  = p.status !== 'not_started' ? timeAgo(p.lastActivity) : null;
     const actionLabel = p.status === 'not_started' ? 'Start →' : p.status === 'completed' ? 'Review →' : 'Continue →';
+    const ariaAction  = p.status === 'not_started' ? `Start ${c.fullName} journey` : p.status === 'completed' ? `Review ${c.fullName}` : `Continue ${c.fullName}`;
+
+    // "What's next" for completed courses
+    let nextHint = '';
+    if (p.status === 'completed') {
+      const nextId = NEXT_JOURNEY[c.id];
+      const nextCourse = nextId && COURSES.find(x => x.id === nextId);
+      if (nextCourse) {
+        nextHint = `<div class="card-extras" style="color:var(--green);font-family:inherit;font-size:12px;">Try next: ${nextCourse.name} →</div>`;
+      }
+    }
+
     return `
     <div class="card">
       <div class="card-top">
@@ -436,10 +479,10 @@ function render() {
         <div class="bar-row"><span>${p.completed}/${c.totalDays} days</span><span>${pct}%</span></div>
         <div class="bar"><div class="bar-fill" style="width:${pct}%;background:${c.color};"></div></div>
       </div>
-      <div class="card-extras">${ago ? 'Active ' + ago : p.totalHours > 0 ? p.totalHours.toFixed(1) + ' h logged' : ''}</div>
+      ${nextHint || `<div class="card-extras">${ago ? 'Active ' + ago : p.totalHours > 0 ? p.totalHours.toFixed(1) + ' h logged' : ''}</div>`}
       <div class="card-footer">
-        <a class="card-btn card-btn-primary" href="courses/${c.id}/index.html">${actionLabel}</a>
-        <a class="card-btn card-btn-ghost" href="${c.examLink}" target="_blank">Exam info</a>
+        <a class="card-btn card-btn-primary" href="courses/${c.id}/index.html" aria-label="${ariaAction}">${actionLabel}</a>
+        <a class="card-btn card-btn-ghost" href="${c.examLink}" target="_blank" aria-label="View ${c.fullName} exam info">Exam info</a>
       </div>
     </div>`;
   }).join('');
@@ -456,12 +499,17 @@ render();
     return m && m[1] !== 'certified-journeys';
   }
 
-  function updateNavBtn() {
+  function updateNavBtn(syncing) {
     const btn = document.getElementById('sync-btn');
     if (!btn) return;
     const ok = GH && GH.isConnected();
-    btn.textContent = ok ? '☁ Synced' : '☁ Connect';
-    btn.classList.toggle('connected', !!ok);
+    if (syncing) {
+      btn.textContent = '☁ Syncing…';
+      btn.classList.add('connected');
+    } else {
+      btn.textContent = ok ? '☁ Synced' : '☁ Connect';
+      btn.classList.toggle('connected', !!ok);
+    }
   }
 
   function maybeShowBanner() {
@@ -477,6 +525,7 @@ render();
   };
 
   window.openSyncModal = function () {
+    if (!GH) { alert('Sync unavailable — reload the page.'); return; }
     document.getElementById('sync-modal').classList.add('open');
     const connected = GH && GH.isConnected();
     if (connected) {
@@ -581,7 +630,8 @@ render();
     }
   }
 
-  window.addEventListener('cj-synced', () => { updateNavBtn(); updateLastSynced(); });
+  window.addEventListener('cj-syncing', () => { updateNavBtn(true); });
+  window.addEventListener('cj-synced', () => { updateNavBtn(false); updateLastSynced(); render(); });
   window.addEventListener('storage', e => {
     if (e.key === 'cj_last_synced') updateLastSynced();
     if (e.key === 'cj_gist_creds')  { updateNavBtn(); updateLastSynced(); }
