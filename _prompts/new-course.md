@@ -160,6 +160,48 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 .task-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;}
 ```
 
+### Score row, hours row, and complete button CSS (required for both types)
+
+```css
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.score-row label{font-size:12px;color:var(--text2);}
+.score-row input{width:72px;font-size:13px;padding:5px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.hours-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text2);}
+.hours-row input{width:60px;font-size:13px;padding:4px 8px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.complete-btn{width:100%;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s;font-weight:400;}
+.complete-btn:hover{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+.complete-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);font-weight:500;}
+```
+
+### AI card CSS (required for both types)
+
+```css
+.ai-prompt-box{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:10px;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;line-height:1.7;white-space:pre-wrap;}
+.ai-link-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-family:inherit;text-decoration:none;}
+.ai-link-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+```
+
+### GitHub sync modal CSS (required for both types)
+
+```css
+.gh-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;}
+.gh-modal.open{display:flex;}
+.gh-modal-box{background:var(--surface);border-radius:var(--radius);padding:1.5rem;max-width:440px;width:90%;box-shadow:var(--shadow-md);}
+.gh-modal-box h3{font-size:17px;font-weight:600;margin-bottom:6px;}
+.gh-modal-sub{font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.6;}
+.gh-field{margin-bottom:10px;}
+.gh-field label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.gh-field input{width:100%;font-size:13px;padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Mono',monospace;}
+.gh-field input:focus{outline:none;border-color:var(--green);}
+.gh-modal-actions{display:flex;gap:8px;align-items:center;margin-top:1rem;flex-wrap:wrap;}
+.gh-btn-save{font-size:13px;padding:8px 18px;border-radius:var(--radius-sm);background:var(--green);color:#fff;border:none;font-family:inherit;font-weight:500;cursor:pointer;}
+.gh-btn-save:hover{background:var(--green-dark);}
+.gh-btn-cancel{font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--text2);border:.5px solid var(--border2);font-family:inherit;cursor:pointer;}
+.gh-btn-cancel:hover{background:var(--surface2);}
+.gh-btn-disconnect{font-size:12px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--coral-dark);border:.5px solid var(--coral);font-family:inherit;cursor:pointer;}
+.gh-modal-msg{font-size:12px;color:var(--text2);}
+```
+
 ### All other required CSS classes
 
 Layout: `.app`, `.breadcrumb`, `.breadcrumb-sep`  
@@ -188,6 +230,8 @@ Responsive: `@media(max-width:640px)` for `.topic-grid`, `.hero-meta`, `.stats-g
   </div>
 
   <!-- 2. Course hero (icon, title, tags, 4 meta items) -->
+  <!-- The 4 meta items map to: Cost → [COST], Duration → "[TOTAL_DAYS] days",
+       Provider → [PROVIDER], Difficulty → [DIFFICULTY] -->
   <div class="course-hero"> ... </div>
 
   <!-- 3. Progress strip (bar, pct, readiness, stats grid) -->
@@ -401,9 +445,9 @@ ${(()=>{
 })()}
 <div class="task-list">${d.tasks.map((t, j) => renderTask(t, i, j)).join('')}</div>
 <div class="resources-row">${d.resources.map(renderRes).join('')}</div>
-<!-- score row only if d.hasScore -->
-<div class="hours-row">...</div>
-<button class="complete-btn ...">...</button>`
+${d.hasScore ? `<div class="score-row"><label>Practice score (%):</label><input type="number" min="0" max="100" placeholder="e.g. 84" value="${score||''}" onchange="logScore(${i},this.value)">${score ? `<span class="score-badge ${scoreClass(score)==='ok'?'badge-learn':scoreClass(score)==='warn'?'badge-review':'badge-exam'}">${score}%</span>` : ''}</div>` : ''}
+<div class="hours-row"><label>Hours spent today:</label><input type="number" min="0" max="24" step="0.5" placeholder="e.g. 2.5" value="${hrs||''}" onchange="logHours(${i},this.value)"><span style="font-size:11px;color:var(--text3);">hrs</span></div>
+<button class="complete-btn ${comp?'done':''}" onclick="event.stopPropagation();toggleComplete(${i})">${comp?'✓ Completed':'Mark as complete'}</button>`
 ```
 
 > The progress bar fills automatically as tasks are ticked. When all tasks are ticked, `tickTask` calls `toggleComplete` and the day auto-completes. The "Mark as complete" button still works independently for days where you want to mark complete without ticking every task.
@@ -482,31 +526,98 @@ function broadcastStatus() {
 
 #### `renderAI` — three cards (required content)
 
-Card 1 — **NotebookLM Audio Podcast**: prompt for a 10-minute podcast covering key concepts, exam traps, and must-know items for [COURSE_FULL_NAME]. Link: `https://notebooklm.google.com`
+All three cards use the same `.ai-card` structure. Tailor every prompt and subtitle to [COURSE_FULL_NAME].
 
-Card 2 — **NotebookLM Flashcards**: prompt for 20 Q&A pairs focused on concept distinctions, misconceptions, scenario questions. Link: `https://notebooklm.google.com`
+```js
+function renderAI() {
+  document.getElementById('panel-ai').innerHTML = `
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#E8F0FE;">🎙</div>
+        <div>
+          <div class="ai-card-title">NotebookLM — Audio Podcast Summary</div>
+          <div class="ai-card-sub">Generate a personalized audio briefing of your learning</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Upload your day-card notes plus the official docs as sources in NotebookLM, then generate a podcast covering key concepts and exam traps.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Audio:
+"Create a 10-minute podcast episode for someone studying [COURSE_FULL_NAME]. Cover: the most important concepts, common exam traps, and the 3 things they absolutely must understand before the exam."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#FEF3E2;">🃏</div>
+        <div>
+          <div class="ai-card-title">NotebookLM — AI Flashcards</div>
+          <div class="ai-card-sub">Generate quiz cards from your notes</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Upload your notes and the official docs to NotebookLM and use the Study Guide feature to generate Q&A flashcards.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Quiz:
+"Generate 20 flashcard-style Q&A pairs for someone studying [COURSE_FULL_NAME]. Focus on concept distinctions, common misconceptions, and scenario-based questions that appear on the exam."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#EEE9FF;">💬</div>
+        <div>
+          <div class="ai-card-title">Claude — Deep Dive Prompts</div>
+          <div class="ai-card-sub">Explore difficult concepts with targeted prompts</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want a deeper explanation.</div>
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior engineer:
+"I'm studying [COURSE_FULL_NAME]. Explain [TOPIC] as if I'm already experienced. Skip the basics — focus on nuance, edge cases, and real-world decisions."
 
-Card 3 — **Claude Deep Dive Prompts**: three prompts — (1) explain like a senior engineer, (2) exam scenario questions, (3) gap analysis study plan. All tailored to [COURSE_FULL_NAME].
+Prompt 2 — Exam scenario questions:
+"Give me 5 scenario-based exam questions for [COURSE_FULL_NAME] on the topic of [TOPIC]. After each question, explain why the correct answer is right and why the distractors are wrong."
+
+Prompt 3 — Gap analysis study plan:
+"I've studied [COURSE_FULL_NAME] but I'm unsure about [TOPIC]. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+    </div>`;
+}
+```
 
 #### `renderResources` — four sections (required)
 
-- **Core Reading** — official docs, primary spec, main reference
-- **Hands-On Resources** — tutorials, labs, community forums
-- **Ecosystem & Tooling** — related tools, packages, integrations
-- **Upgrade Path** — what to study next, follow-on certs
+Four sections: **Core Reading**, **Hands-On Resources**, **Ecosystem & Tooling**, **Upgrade Path**. Minimum 3 links per section (12 total). Links are numbered sequentially across all sections (01, 02, 03 …).
 
-Each link item:
-```html
-<div class="res-link-item">
-  <span class="res-link-index">01</span>
-  <div class="res-link-body">
-    <a href="URL" target="_blank">Title</a>
-    <div class="res-link-desc">One-line description</div>
-  </div>
-</div>
+```js
+function renderResources() {
+  document.getElementById('panel-resources').innerHTML = `
+    <div class="res-section">
+      <div class="res-section-title">📖 Core Reading</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">01</span>
+          <div class="res-link-body">
+            <a href="URL" target="_blank">Title</a>
+            <div class="res-link-desc">One-line description</div>
+          </div>
+        </div>
+        <!-- more items … -->
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🛠 Hands-On Resources</div>
+      <div class="res-link-list">
+        <!-- items numbered continuing from Core Reading -->
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🔧 Ecosystem &amp; Tooling</div>
+      <div class="res-link-list">
+        <!-- items -->
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">⬆ Upgrade Path</div>
+      <div class="res-link-list">
+        <!-- items -->
+      </div>
+    </div>`;
+}
 ```
-
-Minimum 3 links per section (12 total).
 
 #### `renderExam` checklist (required items)
 
@@ -598,9 +709,62 @@ function disconnectGH() { GHSync.saveCreds(null); updateSyncBadge('disconnected'
 
 > `github-sync.js` lives at the repo root (`certified-journeys.github.io/github-sync.js`) and is shared by all courses. Do not inline it — always load with `../../github-sync.js`.
 
-### Init (last lines of `<script>`)
+#### `openGHModal` and `saveGHCreds` implementations (required)
 
 ```js
+function openGHModal() {
+  const creds = GHSync.getCreds();
+  if (creds) {
+    document.getElementById('gh-pat').value    = creds.pat    || '';
+    document.getElementById('gh-owner').value  = creds.owner  || '';
+    document.getElementById('gh-repo').value   = creds.repo   || '';
+    document.getElementById('gh-branch').value = creds.branch || 'main';
+    document.getElementById('gh-disconnect-btn').style.display = 'inline-flex';
+  } else {
+    document.getElementById('gh-disconnect-btn').style.display = 'none';
+  }
+  document.getElementById('gh-modal').classList.add('open');
+}
+function closeGHModal() { document.getElementById('gh-modal').classList.remove('open'); }
+async function saveGHCreds() {
+  const c = {
+    pat:    document.getElementById('gh-pat').value.trim(),
+    owner:  document.getElementById('gh-owner').value.trim(),
+    repo:   document.getElementById('gh-repo').value.trim(),
+    branch: document.getElementById('gh-branch').value.trim() || 'main'
+  };
+  if (!c.pat || !c.owner || !c.repo) {
+    document.getElementById('gh-modal-msg').textContent = 'Fill in all fields.'; return;
+  }
+  document.getElementById('gh-modal-msg').textContent = 'Testing…';
+  GHSync.saveCreds(c);
+  const r = await GHSync.testConnection();
+  if (r.ok) {
+    document.getElementById('gh-modal-msg').textContent = '✓ Connected!';
+    updateSyncBadge('connected');
+    setTimeout(closeGHModal, 900);
+  } else {
+    document.getElementById('gh-modal-msg').textContent = 'Error: ' + r.msg;
+  }
+}
+function disconnectGH() { GHSync.saveCreds(null); updateSyncBadge('disconnected'); closeGHModal(); }
+```
+
+### Init (last lines of `<script>`)
+
+Add the `GHSync` fallback **before** the init call, so the page works even if `github-sync.js` fails to load:
+
+```js
+if (typeof GHSync === 'undefined') {
+  window.GHSync = {
+    isConnected: () => false, saveCreds: () => {}, getCreds: () => null,
+    connect: async () => ({ok:false,msg:''}), fetchState: async () => null,
+    pushState: async () => false, saveDebounced: () => {},
+    testConnection: async () => ({ok:false,msg:''}),
+    exportConfig: () => '', importConfig: () => null, getLastSynced: () => null
+  };
+}
+
 loadState().then(renderAll);
 ```
 
@@ -747,14 +911,22 @@ No Jupyter notebooks are generated for `standard` courses.
 - [ ] `dayTopics` reverse index is built and `goToDay(i)` function is present
 - [ ] Topic pills appear in each day card body (clickable → Topics tab)
 - [ ] Topics tab shows clickable day buttons (completed days highlighted green)
-- [ ] `renderAI()` has 3 cards with prompts tailored to this course
+- [ ] `renderAI()` has 3 cards using `.ai-card` / `.ai-card-head` / `.ai-prompt-box` / `.ai-link-btn` structure, prompts tailored to this course
+- [ ] `renderResources()` has 4 sections (`.res-section` + `.res-section-title` + `.res-link-list`), links numbered sequentially, minimum 12 total
 - [ ] Dark mode CSS variables are correct
 - [ ] `.breadcrumb-sep` rule has no trailing `"`
 - [ ] `notes/day-01.md` through `notes/day-NN.md` template files generated
 - [ ] GitHub sync: `loadState` is `async`, `saveState` calls `GHSync.saveDebounced`
 - [ ] GitHub sync: modal (`id="gh-modal"`), sync badge (`id="sync-badge"`) present in HTML
 - [ ] GitHub sync: `<script src="../../github-sync.js"></script>` loads before inline script
+- [ ] GitHub sync: `GHSync` fallback object defined after `github-sync.js` `<script>` tag
+- [ ] `openGHModal` populates fields from `GHSync.getCreds()` and toggles disconnect button visibility
+- [ ] `saveGHCreds` validates all fields, calls `GHSync.testConnection()`, shows inline message
 - [ ] Init is `loadState().then(renderAll)` — not `loadState(); renderAll()`
+- [ ] Hero has exactly 4 meta items: Cost, Duration ([TOTAL_DAYS] days), Provider, Difficulty
+- [ ] `.gh-modal`, `.gh-field`, `.gh-btn-save`, `.gh-btn-cancel`, `.gh-btn-disconnect`, `.gh-modal-msg` CSS present
+- [ ] `.ai-prompt-box` and `.ai-link-btn` CSS present
+- [ ] `.score-row`, `.hours-row`, `.complete-btn` CSS present
 
 ### `notebook` type only
 - [ ] `const NOTEBOOKS` array present, one slug per day
