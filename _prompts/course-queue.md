@@ -307,4 +307,40 @@ EXAM_NOTES:       No formal exam. Complete all checks and the capstone pipeline 
 
 ---
 
-*Queue v1.0 — 8 courses — created 2026-06-06*
+---
+
+### 9. pandera-certified
+
+```
+COURSE_ID:        pandera-certified
+COURSE_FULL_NAME: Pandera for Data Validation
+ICON:             PA
+ACCENT_COLOR:     #7C3AED
+ACCENT_LIGHT:     #EDE9FE
+ACCENT_DARK:      #5B21B6
+ACCENT_DARK_DIM:  #150D3A
+PROVIDER:         Self-paced
+COST:             Free
+TOTAL_DAYS:       7
+DIFFICULTY:       Intermediate
+TAGS:             Data Validation, Python, DataFrames, Testing
+EXAM_LINK:        https://pandera.readthedocs.io/en/stable/
+EXAM_QUESTIONS:   null
+EXAM_MINUTES:     null
+EXAM_PASS_SCORE:  N/A
+EXAM_NOTES:       No formal exam. Seven focused days covering Pandera from schema basics to production pipeline validation.
+```
+
+**Core topics for Design Agent to expand:**
+- DataFrameSchema: defining column types, nullable, coerce, checks
+- Check built-ins: `Check.greater_than`, `Check.isin`, `Check.str_matches`, custom lambdas
+- SchemaModel (class-based API): `pa.DataFrameModel`, `Field`, `@pa.check`
+- Validating Pandas, Polars, and Modin DataFrames with the same schema
+- `@pa.check_input` and `@pa.check_output` decorators for function-level validation
+- Hypothesis integration: property-based testing with Pandera-generated DataFrames
+- Schema inference: `pa.infer_schema()` to bootstrap schemas from existing data
+- Capstone: add Pandera validation to a multi-step Pandas pipeline with full test coverage
+
+---
+
+*Queue v1.0 — 9 courses — updated 2026-06-06*
