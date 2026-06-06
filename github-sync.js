@@ -153,11 +153,11 @@ const GHSync = (() => {
           files: { [FILENAME]: { content: JSON.stringify(allProgress, null, 2) } },
         }),
       });
-      if (!res.ok) { if (onDone) onDone(false); return false; }
+      if (!res.ok) { try { window.dispatchEvent(new CustomEvent('cj-sync-failed')); } catch(e2) {} if (onDone) onDone(false); return false; }
       markSynced();
       if (onDone) onDone(true);
       return true;
-    } catch(e) { console.warn('GHSync.pushAll:', e); if (onDone) onDone(false); return false; }
+    } catch(e) { console.warn('GHSync.pushAll:', e); try { window.dispatchEvent(new CustomEvent('cj-sync-failed')); } catch(e2) {} if (onDone) onDone(false); return false; }
   }
 
   // ── course-page API (backward-compatible) ─────────────────
