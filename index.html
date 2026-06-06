@@ -21,7 +21,8 @@
   --text: #18181A;
   --text2: #52524E;
   --text3: #767676;
-  --r: 14px;
+  --r: 14px; --radius: 14px; --radius-sm: 9px; --radius-xs: 5px;
+  --surface3: #E8E6DF;
   --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
 }
 @media (prefers-color-scheme: dark) {
@@ -158,14 +159,19 @@ nav {
 .stat-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
 
 /* Grid */
-.grid-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+.grid-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 1rem; }
+.grid-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+.filter-bar { display: flex; gap: 4px; flex-wrap: wrap; }
+.filter-btn { font-size: 11px; padding: 4px 12px; border-radius: 99px; border: 1px solid var(--border2); color: var(--text2); background: none; cursor: pointer; font-family: inherit; font-weight: 500; transition: all 0.15s; }
+.filter-btn:hover { background: var(--surface2); color: var(--text); }
+.filter-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
 .course-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 @media (max-width: 800px) { .course-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 520px) { .course-grid { grid-template-columns: 1fr; } .hero h1 { font-size: 24px; } }
 
 /* Card */
 .card {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
   padding: 1.25rem; transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
   display: flex; flex-direction: column;
 }
@@ -208,7 +214,7 @@ nav {
 /* Footer note */
 .note {
   margin-top: 2rem; padding: 1rem 1.25rem;
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
   font-size: 13px; color: var(--text2); line-height: 1.7;
 }
 .note strong { color: var(--text); font-weight: 500; }
@@ -325,7 +331,18 @@ nav {
     </div>
   </div>
 
-  <div class="grid-label">Certification journeys</div>
+  <div class="grid-header">
+    <div class="grid-label">Certification journeys</div>
+    <div class="filter-bar" id="filter-bar">
+      <button class="filter-btn active" onclick="setFilter('All',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('Cloud',this)">Cloud</button>
+      <button class="filter-btn" onclick="setFilter('AI',this)">AI</button>
+      <button class="filter-btn" onclick="setFilter('Data',this)">Data</button>
+      <button class="filter-btn" onclick="setFilter('Python',this)">Python</button>
+      <button class="filter-btn" onclick="setFilter('Agile',this)">Agile</button>
+      <button class="filter-btn" onclick="setFilter('IaC',this)">IaC</button>
+    </div>
+  </div>
   <div class="course-grid" id="course-grid"></div>
 
   <div class="note">
@@ -395,16 +412,16 @@ nav {
 <script src="github-sync.js"></script>
 <script>
 const COURSES = [
-  {id:'claude-api-certified', name:'Claude API', fullName:'Building with the Claude API',            icon:'CL', color:'#d97757', colorDim:'#faede8', provider:'Anthropic',   cost:'Free', totalDays:10, tags:['Claude','Python','AI'], examLink:'https://anthropic.skilljar.com/claude-with-the-anthropic-api'},
-  {id:'pspo-certified',    name:'PSPO I',    fullName:'Professional Scrum Product Owner I',         icon:'PO', color:'#16a37f', colorDim:'#dcf5ed', provider:'Scrum.org',   cost:'$200', totalDays:14, tags:['Agile','Scrum'],   examLink:'https://www.scrum.org/assessments/professional-scrum-product-owner-i-certification'},
-  {id:'aws-ml-certified',  name:'AWS ML',    fullName:'AWS Certified ML – Specialty',                icon:'ML', color:'#e8890c', colorDim:'#fef3e2', provider:'Amazon',      cost:'$300', totalDays:21, tags:['AWS','MLOps'],      examLink:'https://aws.amazon.com/certification/certified-machine-learning-specialty/'},
-  {id:'dlt-certified',     name:'dlt',       fullName:'dlt (data load tool) Practitioner',           icon:'DL', color:'#2563eb', colorDim:'#dbeafe', provider:'dltHub',      cost:'Free', totalDays:10, tags:['Data Eng','ETL'],   examLink:'https://dlthub.com/docs/intro'},
-  {id:'polars-certified',  name:'Polars',    fullName:'Polars DataFrame Mastery',                    icon:'PL', color:'#0891b2', colorDim:'#e0f5fa', provider:'Self-paced',  cost:'Free', totalDays:10, tags:['Python','Analytics'],examLink:'https://docs.pola.rs/'},
-  {id:'terraform-certified',name:'Terraform',fullName:'HashiCorp Terraform Associate (003)',         icon:'TF', color:'#7f77dd', colorDim:'#eeedfe', provider:'HashiCorp',   cost:'$70',  totalDays:14, tags:['IaC','DevOps'],     examLink:'https://developer.hashicorp.com/certifications/infrastructure-automation'},
-  {id:'powerbi-certified', name:'Power BI',  fullName:'Microsoft PL-300: Power BI Data Analyst',    icon:'BI', color:'#d85a30', colorDim:'#faede8', provider:'Microsoft',   cost:'$165', totalDays:14, tags:['BI','Analytics'],   examLink:'https://learn.microsoft.com/certifications/power-bi-data-analyst-associate/'},
-  {id:'typer-cli-certified',name:'Typer CLI',fullName:'Typer CLI Mastery',                           icon:'TY', color:'#6C47FF', colorDim:'#EEE9FF', provider:'Self-paced',  cost:'Free', totalDays:3,  tags:['Python','CLI'],      examLink:'https://typer.tiangolo.com/'},
-  {id:'hamilton-certified', name:'Hamilton',fullName:'Hamilton — Python Dataflows & Feature Pipelines',icon:'HM', color:'#3B82F6', colorDim:'#EFF6FF', provider:'DAGWorks',    cost:'Free', totalDays:14, tags:['Python','Data Eng','DAGs'], examLink:'https://hamilton.dagworks.io/en/latest/'},
-  {id:'metaflow-certified', name:'Metaflow', fullName:'Metaflow for ML Engineers',                    icon:'MF', color:'#00B4A0', colorDim:'#E0FAF7', provider:'Outerbounds', cost:'Free', totalDays:14, tags:['MLOps','Python','Workflows'], examLink:'https://outerbounds.com/engineering/'}
+  {id:'claude-api-certified', name:'Claude API', fullName:'Building with the Claude API',              icon:'CL', color:'#d97757', colorDim:'#faede8', provider:'Anthropic',   cost:'Free', totalDays:10, tags:['Claude','Python','AI'],         domains:['AI','Python'],    examLink:'https://anthropic.skilljar.com/claude-with-the-anthropic-api'},
+  {id:'pspo-certified',       name:'PSPO I',     fullName:'Professional Scrum Product Owner I',        icon:'PO', color:'#16a37f', colorDim:'#dcf5ed', provider:'Scrum.org',   cost:'$200', totalDays:14, tags:['Agile','Scrum'],                domains:['Agile'],          examLink:'https://www.scrum.org/assessments/professional-scrum-product-owner-i-certification'},
+  {id:'aws-ml-certified',     name:'AWS ML',     fullName:'AWS Certified ML – Specialty',               icon:'ML', color:'#e8890c', colorDim:'#fef3e2', provider:'Amazon',      cost:'$300', totalDays:21, tags:['AWS','MLOps'],                  domains:['Cloud','AI'],     examLink:'https://aws.amazon.com/certification/certified-machine-learning-specialty/'},
+  {id:'dlt-certified',        name:'dlt',        fullName:'dlt (data load tool) Practitioner',          icon:'DL', color:'#2563eb', colorDim:'#dbeafe', provider:'dltHub',      cost:'Free', totalDays:10, tags:['Data Eng','ETL'],               domains:['Data','Python'],  examLink:'https://dlthub.com/docs/intro'},
+  {id:'polars-certified',     name:'Polars',     fullName:'Polars DataFrame Mastery',                   icon:'PL', color:'#0891b2', colorDim:'#e0f5fa', provider:'Self-paced',  cost:'Free', totalDays:10, tags:['Python','Analytics'],           domains:['Data','Python'],  examLink:'https://docs.pola.rs/'},
+  {id:'terraform-certified',  name:'Terraform',  fullName:'HashiCorp Terraform Associate (003)',        icon:'TF', color:'#7f77dd', colorDim:'#eeedfe', provider:'HashiCorp',   cost:'$70',  totalDays:14, tags:['IaC','DevOps'],                 domains:['IaC','Cloud'],    examLink:'https://developer.hashicorp.com/certifications/infrastructure-automation'},
+  {id:'powerbi-certified',    name:'Power BI',   fullName:'Microsoft PL-300: Power BI Data Analyst',   icon:'BI', color:'#d85a30', colorDim:'#faede8', provider:'Microsoft',   cost:'$165', totalDays:14, tags:['BI','Analytics'],               domains:['Data'],           examLink:'https://learn.microsoft.com/certifications/power-bi-data-analyst-associate/'},
+  {id:'typer-cli-certified',  name:'Typer CLI',  fullName:'Typer CLI Mastery',                          icon:'TY', color:'#6C47FF', colorDim:'#EEE9FF', provider:'Self-paced',  cost:'Free', totalDays:3,  tags:['Python','CLI'],                 domains:['Python'],         examLink:'https://typer.tiangolo.com/'},
+  {id:'hamilton-certified',   name:'Hamilton',   fullName:'Hamilton — Python Dataflows & Feature Pipelines', icon:'HM', color:'#3B82F6', colorDim:'#EFF6FF', provider:'DAGWorks', cost:'Free', totalDays:14, tags:['Python','Data Eng','DAGs'], domains:['Data','Python'],  examLink:'https://hamilton.dagworks.io/en/latest/'},
+  {id:'metaflow-certified',   name:'Metaflow',   fullName:'Metaflow for ML Engineers',                  icon:'MF', color:'#00B4A0', colorDim:'#E0FAF7', provider:'Outerbounds', cost:'Free', totalDays:14, tags:['MLOps','Python','Workflows'],   domains:['AI','Python'],    examLink:'https://outerbounds.com/engineering/'}
 ];
 
 function getProgress(id) {
@@ -453,12 +470,17 @@ const NEXT_JOURNEY = {
   'metaflow-certified':     'hamilton-certified',
 };
 
+let activeFilter = 'All';
+
+function setFilter(domain, btn) {
+  activeFilter = domain;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
+}
+
 function render() {
   const all = COURSES.map(c => ({ c, p: getProgress(c.id) }));
-
-  // Sort: in_progress first, then not_started, then completed
-  const ORDER = { in_progress: 0, not_started: 1, completed: 2 };
-  all.sort((a, b) => (ORDER[a.p.status] ?? 1) - (ORDER[b.p.status] ?? 1));
 
   const inProg = all.filter(x => x.p.status === 'in_progress').length;
   const done   = all.filter(x => x.p.status === 'completed').length;
@@ -480,8 +502,22 @@ function render() {
   // If no activity, the HTML default "—" placeholders remain with muted color
 
   document.getElementById('hs-total').textContent = COURSES.length;
+  renderGrid();
+}
 
-  document.getElementById('course-grid').innerHTML = all.map(({ c, p }) => {
+function renderGrid() {
+  const all = COURSES.map(c => ({ c, p: getProgress(c.id) }));
+
+  // Apply domain filter
+  const filtered = activeFilter === 'All'
+    ? all
+    : all.filter(({ c }) => c.domains && c.domains.includes(activeFilter));
+
+  // Sort: in_progress first, then not_started, then completed
+  const ORDER = { in_progress: 0, not_started: 1, completed: 2 };
+  filtered.sort((a, b) => (ORDER[a.p.status] ?? 1) - (ORDER[b.p.status] ?? 1));
+
+  document.getElementById('course-grid').innerHTML = filtered.map(({ c, p }) => {
     const pct  = Math.round((p.completed / c.totalDays) * 100);
     const si   = statusInfo(p.status);
     const ago  = p.status !== 'not_started' ? timeAgo(p.lastActivity) : null;
