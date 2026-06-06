@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hamilton — Python Dataflows & Feature Pipelines · certified-journeys</title>
+<title>Metaflow for ML Engineers · certified-journeys</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --green:#3B82F6; --green-light:#EFF6FF; --green-dark:#1D4ED8;
+  --green:#00B4A0; --green-light:#E0FAF7; --green-dark:#007A6D;
   --blue:#378ADD; --blue-light:#EAF3FD; --blue-dark:#185FA5;
   --amber:#BA7517; --amber-light:#FDF3E3;
   --coral:#D85A30; --coral-light:#FAEDE8; --coral-dark:#993C1D;
@@ -25,35 +25,11 @@
   --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
   --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
   --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
-  --green-light:#0A1A3E;
+  --green-light:#001F1C;
   --blue-light:#061E38; --amber-light:#221900;
   --coral-light:#2A0E05; --purple-light:#161440;
   --orange-light:#1F1200; --teal-light:#021E26;
 }}
-[data-theme="dark"]{
-  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
-  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
-  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
-  --green-light:#0A1A3E;
-  --blue-light:#061E38; --amber-light:#221900;
-  --coral-light:#2A0E05; --purple-light:#161440;
-  --orange-light:#1F1200; --teal-light:#021E26;
-}
-/* Nav */
-nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);border-bottom:0.5px solid var(--border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav{background:rgba(26,26,26,0.85);}}
-[data-theme="dark"] nav{background:rgba(26,26,26,0.85);}
-.nav-inner{max-width:860px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
-.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-0.025em;color:var(--text);text-decoration:none;}
-.nav-brand:hover{text-decoration:none;opacity:0.85;}
-.brand-mark{width:30px;height:30px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
-.nav-right{display:flex;align-items:center;gap:8px;}
-.nav-gh{font-size:12px;padding:6px 14px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;gap:5px;transition:all 0.15s;text-decoration:none;font-weight:500;}
-.nav-gh:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
-.theme-btn{width:34px;height:34px;border-radius:99px;flex-shrink:0;border:0.5px solid var(--border2);background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;}
-.theme-btn:hover{background:var(--surface2);color:var(--text);}
-@media(max-width:600px){.nav-gh{display:none;}}
-
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1rem;}
 a{color:var(--green-dark);text-decoration:none;}
@@ -211,52 +187,38 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
   .course-hero-top{flex-direction:column;}
 }
 </style>
-<script>(function(){const t=localStorage.getItem('cj-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
 </head>
 <body>
-<nav>
-  <div class="nav-inner">
-    <a class="nav-brand" href="../../index.html">
-      <div class="brand-mark">CJ</div>
-      certified-journeys
-    </a>
-    <div class="nav-right">
-      <button class="theme-btn" id="theme-btn" aria-label="Switch to dark mode" onclick="toggleTheme()"></button>
-      <a class="nav-gh" href="https://github.com/certified-journeys" target="_blank">⭐ GitHub</a>
-    </div>
-  </div>
-</nav>
 <div class="app">
 
   <div class="breadcrumb">
     <a href="../../index.html">certified-journeys</a>
     <span class="breadcrumb-sep">›</span>
-    <span>Hamilton — Python Dataflows & Feature Pipelines</span>
+    <span>Metaflow for ML Engineers</span>
   </div>
 
   <div class="course-hero">
     <div class="course-hero-top">
       <div style="display:flex;align-items:flex-start;gap:14px;">
         <div class="course-icon-wrap">
-          <div class="course-icon">HM</div>
+          <div class="course-icon">MF</div>
         </div>
         <div class="course-title-block">
-          <h1>Hamilton — Python Dataflows & Feature Pipelines</h1>
+          <h1>Metaflow for ML Engineers</h1>
           <div class="tag-row">
-            <span class="tag">Python</span>
-            <span class="tag">DAGs</span>
-            <span class="tag">Feature Engineering</span>
             <span class="tag">MLOps</span>
-            <span class="tag">Data Engineering</span>
+            <span class="tag">Python</span>
+            <span class="tag">Workflows</span>
+            <span class="tag">Data Science</span>
+            <span class="tag">Machine Learning</span>
           </div>
         </div>
       </div>
     </div>
-    <!-- 4 meta items: Cost, Duration, Provider, Difficulty -->
     <div class="hero-meta">
       <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val">Free</div></div>
       <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">14 days</div></div>
-      <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">DAGWorks</div></div>
+      <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Outerbounds</div></div>
       <div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Intermediate</div></div>
     </div>
   </div>
@@ -291,7 +253,7 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 
   <div class="page-footer">
     <button class="sync-badge" id="sync-badge" onclick="openGHModal()">☁ Connect GitHub</button>
-    · <span id="sk-display">cj_hamilton-certified_v1</span> · <a href="../../index.html">← All journeys</a>
+    · <span id="sk-display">cj_metaflow-certified_v1</span> · <a href="../../index.html">← All journeys</a>
   </div>
 
 </div>
@@ -299,7 +261,7 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 <div class="gh-modal" id="gh-modal" onclick="if(event.target===this)closeGHModal()">
   <div class="gh-modal-box">
     <h3>☁ GitHub Sync</h3>
-    <p class="gh-modal-sub">Progress is committed to <code>courses/hamilton-certified/progress.json</code> in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
+    <p class="gh-modal-sub">Progress is committed to <code>courses/metaflow-certified/progress.json</code> in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
     <div class="gh-field"><label>Personal Access Token</label><input id="gh-pat" type="password" placeholder="github_pat_…" autocomplete="off"></div>
     <div class="gh-field"><label>Owner</label><input id="gh-owner" type="text" placeholder="your-username"></div>
     <div class="gh-field"><label>Repository</label><input id="gh-repo" type="text" placeholder="certified-journeys.github.io"></div>
@@ -317,272 +279,303 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 <script>
 if(typeof GHSync==='undefined'){window.GHSync={isConnected:()=>false,saveCreds:()=>{},getCreds:()=>null,connect:async()=>({ok:false,msg:''}),fetchState:async()=>null,pushState:async()=>false,saveDebounced:()=>{},testConnection:async()=>({ok:false,msg:''}),exportConfig:()=>'',importConfig:()=>null,getLastSynced:()=>null};}
 
-const COURSE_ID   = 'hamilton-certified';
-const STORAGE_KEY = 'cj_hamilton-certified_v1';
+const COURSE_ID   = 'metaflow-certified';
+const STORAGE_KEY = 'cj_metaflow-certified_v1';
 const TOTAL_DAYS  = 14;
 
 const NOTEBOOKS = [
-  'day-01-intro-dag-thinking',
-  'day-02-drivers-execution',
-  'day-03-config-tag-decorators',
-  'day-04-feature-pipeline-part1',
-  'day-05-modules-namespacing',
-  'day-06-etl-transformation',
-  'day-07-testing-pipelines',
-  'day-08-pipe-mutate-resolve',
-  'day-09-async-parallel',
-  'day-10-polars-backends',
-  'day-11-lifecycle-hooks',
-  'day-12-materializers',
-  'day-13-review-architecture',
-  'day-14-capstone'
+  'day-01-intro-metaflow',
+  'day-02-flow-architecture',
+  'day-03-data-artifacts',
+  'day-04-branching-merging',
+  'day-05-scaling-resources',
+  'day-06-conda-dependencies',
+  'day-07-retry-timeout',
+  'day-08-parameterized-flows',
+  'day-09-client-api-debug',
+  'day-10-feature-pipelines',
+  'day-11-model-training',
+  'day-12-production-flows',
+  'day-13-cards-notifications',
+  'day-14-capstone-pipeline'
 ];
 
 const days = [
   {
-    title:'What is Hamilton & DAG Thinking', badge:'learn', sub:'Day 1 · Foundations',
+    title:'Introduction to Metaflow: Why Workflows Matter',
+    badge:'learn',
+    sub:'Day 1 · Core Concepts',
     tasks:[
-      {text:'Read the Hamilton docs introduction', url:'https://hamilton.dagworks.io/en/latest/'},
-      {text:'Install Hamilton and run the Hello World example', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/hello_world'},
-      'Understand how Python functions become DAG nodes',
-      'Draw your first dataflow by hand (inputs → transforms → outputs)',
+      {text:'Read the Metaflow introduction docs', url:'https://docs.metaflow.org/introduction/what-is-metaflow'},
+      'Install Metaflow: pip install metaflow',
+      'Write your first HelloWorldFlow with two @step methods',
+      'Run the flow locally with python flow.py run',
+      'Inspect the execution logs and understand the output',
     ],
     resources:[
-      {text:'Hamilton Official Docs', url:'https://hamilton.dagworks.io/en/latest/'},
-      {text:'Hamilton GitHub', url:'https://github.com/DAGWorks-Inc/hamilton'},
-      {text:'Hello World example', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/hello_world'},
+      {text:'Metaflow Docs', url:'https://docs.metaflow.org'},
+      {text:'Metaflow GitHub', url:'https://github.com/Netflix/metaflow'},
+      {text:'Outerbounds Blog', url:'https://outerbounds.com/blog/'},
     ],
-    tip:"Hamilton's core insight: function name = node name, function parameters = edges. Think in nouns (what is being computed), not verbs (how to compute it).",
+    tip:"Metaflow's superpower is the seamless transition from local to cloud — always prototype locally first.",
     hasScore:false,
   },
   {
-    title:'Drivers & Graph Execution', badge:'learn', sub:'Day 2 · Core Mechanics',
+    title:'Flow Architecture and DAG Fundamentals',
+    badge:'learn',
+    sub:'Day 2 · Core Concepts',
     tasks:[
-      {text:'Read the Driver API docs', url:'https://hamilton.dagworks.io/en/latest/reference/drivers/'},
-      'Execute your first dataflow with hamilton.driver.Builder',
-      'Use dr.display_all_functions() to visualize the DAG',
-      'Compare execute() vs. raw_execute() outputs',
+      {text:'Read about Metaflow flow structure', url:'https://docs.metaflow.org/metaflow/basics'},
+      'Create a multi-step flow with 4+ linear steps',
+      'Add the @step decorator correctly to each method',
+      'Pass data between steps using self attributes',
+      'Visualize the flow graph with python flow.py show',
     ],
     resources:[
-      {text:'Driver API Reference', url:'https://hamilton.dagworks.io/en/latest/reference/drivers/'},
-      {text:'Hamilton concepts overview', url:'https://hamilton.dagworks.io/en/latest/concepts/'},
-      {text:'DAGWorks blog', url:'https://blog.dagworks.io'},
+      {text:'Metaflow Basics', url:'https://docs.metaflow.org/metaflow/basics'},
+      {text:'Metaflow Tutorials', url:'https://docs.metaflow.org/getting-started/tutorials'},
     ],
-    tip:'The Driver is the engine — it discovers functions, builds the graph, and executes only what\'s needed for your requested outputs. Always visualize before you execute.',
+    tip:'Every step in Metaflow is a checkpoint — if a step fails, you can resume from where you left off.',
     hasScore:false,
   },
   {
-    title:'Decorators Part 1: @config, @tag, @extract_columns', badge:'learn', sub:'Day 3 · Decorators',
+    title:'Data Artifacts and the Metaflow Store',
+    badge:'learn',
+    sub:'Day 3 · Core Concepts',
     tasks:[
-      {text:'Read the decorator reference', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/'},
-      'Use @config.when to switch between dev and prod data sources',
-      'Tag functions by domain with @tag(owner="team", feature_type="numerical")',
-      'Use @extract_columns to split a DataFrame into named Series',
+      {text:'Read about Metaflow artifacts', url:'https://docs.metaflow.org/metaflow/data'},
+      'Store datasets, models, and metrics as self attributes across steps',
+      'Access previous run artifacts with the Client API',
+      'Understand how Metaflow versions every artifact by run ID',
+      'Explore the .metaflow directory structure on disk',
     ],
     resources:[
-      {text:'Decorator Reference', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/'},
-      {text:'Config docs', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#config'},
-      {text:'Hamilton examples — feature engineering', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/feature_engineering'},
+      {text:'Metaflow Data Guide', url:'https://docs.metaflow.org/metaflow/data'},
+      {text:'Client API Reference', url:'https://docs.metaflow.org/python-api/client'},
     ],
-    tip:'@config.when is how Hamilton handles environment branching without if/else clutter. Name your configs like feature flags — e.g. config.when(data_source="bigquery").',
+    tip:'Any Python object assigned to self in a step becomes a versioned artifact — Metaflow serializes it automatically.',
     hasScore:false,
   },
   {
-    title:'Feature Engineering Pipeline — Part 1', badge:'practice', sub:'Day 4 · Feature Engineering',
+    title:'Branching and Merging Flows',
+    badge:'practice',
+    sub:'Day 4 · Parallelism & Branching',
     tasks:[
-      'Build a feature pipeline for a tabular ML dataset (e.g. Titanic or house prices)',
-      'Define at least 8 raw → derived → model-ready features as Hamilton functions',
-      'Tag each feature with @tag(feature_type="numerical") or @tag(feature_type="categorical")',
-      'Execute with a pandas Driver and collect all features into a single DataFrame',
+      {text:'Read about foreach and branching', url:'https://docs.metaflow.org/metaflow/basics#branch'},
+      'Implement a static branch (split into two named parallel steps)',
+      'Implement a dynamic foreach branch over a list',
+      'Implement a join step that collects results via inputs',
+      'Test both branching patterns locally and inspect artifacts',
     ],
     resources:[
-      {text:'Feature engineering examples', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/feature_engineering'},
-      {text:'Titanic dataset (Kaggle)', url:'https://www.kaggle.com/c/titanic/data'},
-      {text:'Hamilton function best practices', url:'https://hamilton.dagworks.io/en/latest/how-tos/write-hamilton-functions/'},
+      {text:'Branching Docs', url:'https://docs.metaflow.org/metaflow/basics#branch'},
+      {text:'Foreach Tutorial', url:'https://docs.metaflow.org/getting-started/tutorials/episode04-playlist'},
     ],
-    tip:'Keep each function to one transformation. If you find yourself writing two steps in one function, split it — your tests will thank you.',
-    hasScore:true,
-  },
-  {
-    title:'Modularity — Multiple Modules & Namespacing', badge:'learn', sub:'Day 5 · Modularity',
-    tasks:[
-      {text:'Read the multi-module guide', url:'https://hamilton.dagworks.io/en/latest/concepts/modules/'},
-      'Split a pipeline into raw_features.py, derived_features.py, model_inputs.py',
-      'Compose modules in the Driver: driver.Builder().with_modules(m1, m2, m3)',
-      'Use @tag to mark which module/team owns each node',
-    ],
-    resources:[
-      {text:'Modules concept docs', url:'https://hamilton.dagworks.io/en/latest/concepts/modules/'},
-      {text:'Hamilton modular example', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/modular_example'},
-      {text:'Namespace docs', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#subdag'},
-    ],
-    tip:'Hamilton modules are just Python files. Treat each file like a microservice for your data — one responsibility, clear inputs, clear outputs.',
+    tip:'In a join step, inputs is a list of task objects — iterate over it to collect results from all parallel branches.',
     hasScore:false,
   },
   {
-    title:'Data Transformation Patterns & @does', badge:'practice', sub:'Day 6 · ETL Patterns',
+    title:'Scaling with @resources and @batch',
+    badge:'practice',
+    sub:'Day 5 · Scaling & Remote Execution',
     tasks:[
-      'Implement an ETL pipeline: ingest → clean → transform → export',
-      {text:'Use @does to delegate to a reusable base function', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#does'},
-      'Run the same pipeline against a local CSV and a DuckDB source',
-      'Add @check_output to enforce non-null and range constraints on outputs',
+      {text:'Read about @resources and @batch decorators', url:'https://docs.metaflow.org/scaling/remote-tasks/introduction'},
+      'Annotate a step with @resources(cpu=4, memory=8192)',
+      'Understand how to configure AWS Batch or Kubernetes profiles',
+      'Learn the --with batch and --with kubernetes CLI flags',
+      'Read about @environment for passing env vars to remote steps',
     ],
     resources:[
-      {text:'@does decorator docs', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#does'},
-      {text:'@check_output docs', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#check-output'},
-      {text:'DuckDB Python docs', url:'https://duckdb.org/docs/api/python/overview'},
+      {text:'Scaling Remote Tasks', url:'https://docs.metaflow.org/scaling/remote-tasks/introduction'},
+      {text:'AWS Batch Setup', url:'https://docs.metaflow.org/getting-started/infrastructure'},
     ],
-    tip:'@does is Hamilton\'s DRY tool. Use it when multiple nodes share identical logic but different names — e.g. normalize_age and normalize_income both call the same scaler.',
-    hasScore:true,
-  },
-  {
-    title:'Testing Hamilton Pipelines', badge:'practice', sub:'Day 7 · Testing',
-    tasks:[
-      {text:'Read the Hamilton testing guide', url:'https://hamilton.dagworks.io/en/latest/how-tos/run-data-quality-checks/'},
-      'Write pytest unit tests for 5 individual Hamilton functions using plain Python inputs',
-      'Test @config.when branches by injecting different config dicts into the Driver',
-      'Use hamilton.graph_utils.assert_equivalent_dataframes for integration tests',
-    ],
-    resources:[
-      {text:'Testing guide', url:'https://hamilton.dagworks.io/en/latest/how-tos/run-data-quality-checks/'},
-      {text:'pytest docs', url:'https://docs.pytest.org/en/stable/'},
-      {text:'Hamilton graph_utils', url:'https://hamilton.dagworks.io/en/latest/reference/graph-utils/'},
-    ],
-    tip:'Each Hamilton function is a pure Python function — test it exactly like any other. No mocking, no fixtures needed for unit tests. Just call it with inputs and assert on the output.',
-    hasScore:true,
-  },
-  {
-    title:'Decorators Part 2: @pipe, @mutate, @resolve', badge:'learn', sub:'Day 8 · Advanced Decorators',
-    tasks:[
-      {text:'Read the @pipe and @mutate docs', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#pipe'},
-      'Use @pipe to chain a sequence of transformations on a single column',
-      'Use @mutate to apply post-processing to an existing node\'s output',
-      'Use @resolve to dynamically include/exclude nodes based on a config flag',
-    ],
-    resources:[
-      {text:'@pipe decorator', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#pipe'},
-      {text:'@resolve decorator', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#resolve'},
-      {text:'Advanced decorator patterns', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/decorators'},
-    ],
-    tip:'@pipe is a power tool — it makes long transformation chains readable. Use it only when the steps are truly sequential on the same object; otherwise separate functions are clearer.',
+    tip:'Use @resources only on steps that need it — local steps stay fast while expensive compute runs remotely.',
     hasScore:false,
   },
   {
-    title:'Async & Parallel Execution', badge:'learn', sub:'Day 9 · Performance',
+    title:'Dependency Management with @conda and @pypi',
+    badge:'learn',
+    sub:'Day 6 · Dependencies & Environments',
     tasks:[
-      {text:'Read the async Hamilton docs', url:'https://hamilton.dagworks.io/en/latest/concepts/async/'},
-      'Rewrite a synchronous pipeline using async_driver.AsyncDriver',
-      'Use the parallel_executor to fan out across a list of inputs',
-      'Benchmark sequential vs. parallel execution and log the speedup',
+      {text:'Read about @conda and @pypi decorators', url:'https://docs.metaflow.org/scaling/dependencies'},
+      'Pin dependencies per step using @conda(libraries={"pandas": "2.0.0"})',
+      'Use @pypi to install packages from PyPI at the step level',
+      'Build a flow with different environments across two steps',
+      'Understand how Metaflow caches conda environments for reuse',
     ],
     resources:[
-      {text:'Async Hamilton docs', url:'https://hamilton.dagworks.io/en/latest/concepts/async/'},
-      {text:'Parallel execution', url:'https://hamilton.dagworks.io/en/latest/concepts/parallel-task/'},
-      {text:'Hamilton performance examples', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/async'},
+      {text:'Dependencies Docs', url:'https://docs.metaflow.org/scaling/dependencies'},
+      {text:'Conda Environments', url:'https://docs.metaflow.org/scaling/dependencies/conda-environments'},
     ],
-    tip:'Async Hamilton is ideal when nodes call external APIs or I/O-bound services. For CPU-bound tasks, use the multiprocessing-backed parallel executor instead.',
+    tip:"Step-level environments prevent \"it works on my machine\" — each step carries its exact dependency specification.",
     hasScore:false,
   },
   {
-    title:'Polars & Multiple DataFrame Backends', badge:'practice', sub:'Day 10 · Backends',
+    title:'Resilience: @retry, @timeout, and @catch',
+    badge:'practice',
+    sub:'Day 7 · Resilience & Reliability',
     tasks:[
-      {text:'Install hamilton[polars] and swap the pandas Driver for Polars', url:'https://hamilton.dagworks.io/en/latest/integrations/polars/'},
-      'Port Day 4\'s feature pipeline to use Polars DataFrames with minimal code changes',
-      'Use @check_output to validate Polars schema after each transform',
-      'Benchmark pandas vs. Polars on the same pipeline and document the difference',
+      {text:'Read about fault-tolerance decorators', url:'https://docs.metaflow.org/scaling/failures'},
+      'Add @retry(times=3) to a step that simulates a transient failure',
+      'Add @timeout(seconds=60) to a long-running step',
+      'Use @catch(var="error") to capture exceptions without failing the flow',
+      'Test failure scenarios deliberately and observe Metaflow\'s recovery',
     ],
     resources:[
-      {text:'Hamilton Polars integration', url:'https://hamilton.dagworks.io/en/latest/integrations/polars/'},
-      {text:'Polars docs', url:'https://pola.rs/'},
-      {text:'Polars vs pandas benchmark', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/polars'},
+      {text:'Failures & Retries', url:'https://docs.metaflow.org/scaling/failures'},
+      {text:'@retry API', url:'https://docs.metaflow.org/api/step-decorators/retry'},
     ],
-    tip:'Hamilton\'s abstraction means most of your function logic doesn\'t change when switching backends — only the type annotations and driver config. That\'s the point of the framework.',
-    hasScore:true,
-  },
-  {
-    title:'Lifecycle Hooks & Custom Drivers', badge:'learn', sub:'Day 11 · Observability',
-    tasks:[
-      {text:'Read the lifecycle hooks docs', url:'https://hamilton.dagworks.io/en/latest/concepts/graph-executor/'},
-      'Implement a NodeExecutionHook that logs node name, runtime, and output shape',
-      'Build a custom GraphExecutor that caches node outputs to disk',
-      'Add a GraphConstructionHook that validates no node has a missing type annotation',
-    ],
-    resources:[
-      {text:'Lifecycle hooks docs', url:'https://hamilton.dagworks.io/en/latest/concepts/graph-executor/'},
-      {text:'Custom executor examples', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/custom_executor'},
-      {text:'Hamilton observability', url:'https://hamilton.dagworks.io/en/latest/how-tos/use-hamilton-for-lineage/'},
-    ],
-    tip:'Lifecycle hooks are how you add observability without touching your business logic. Think of them as middleware for your DAG — logging, caching, and validation as cross-cutting concerns.',
+    tip:'Always add @retry to steps that call external APIs or download data — transient failures are guaranteed in production.',
     hasScore:false,
   },
   {
-    title:'Materializers & Data Persistence', badge:'practice', sub:'Day 12 · Materialization',
+    title:'Parameterized Flows and Configuration',
+    badge:'practice',
+    sub:'Day 8 · Data & Artifacts',
     tasks:[
-      {text:'Read the materializer docs', url:'https://hamilton.dagworks.io/en/latest/concepts/materialization/'},
-      'Use @datasaver to persist pipeline outputs to Parquet and JSON',
-      'Use @dataloader to load inputs from files declaratively (no pd.read_csv inside functions)',
-      'Build a pipeline that can be re-run incrementally using cached materializer outputs',
+      {text:'Read about Parameter objects', url:'https://docs.metaflow.org/metaflow/basics#how-to-define-parameters-for-flows'},
+      'Add Parameter to your flow for configurable inputs',
+      'Use JSONType for structured parameters (dicts, lists)',
+      'Run the flow with custom parameter values from the CLI',
+      'Implement IncludeFile to pass file contents as a parameter',
     ],
     resources:[
-      {text:'Materializer docs', url:'https://hamilton.dagworks.io/en/latest/concepts/materialization/'},
-      {text:'@datasaver reference', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#datasaver'},
-      {text:'@dataloader reference', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#dataloader'},
+      {text:'Parameters Docs', url:'https://docs.metaflow.org/metaflow/basics#how-to-define-parameters-for-flows'},
+      {text:'IncludeFile', url:'https://docs.metaflow.org/api/flow'},
     ],
-    tip:'Materializers decouple your logic from I/O. Never hardcode pd.read_csv() inside a Hamilton function — use @dataloader so the source is configurable and testable.',
-    hasScore:true,
+    tip:'Parameters make flows reusable — one flow definition can handle dev, staging, and prod configurations.',
+    hasScore:false,
   },
   {
-    title:'Review — Architecture & Best Practices', badge:'review', sub:'Day 13 · Integration',
+    title:'Debugging and the Client API',
+    badge:'review',
+    sub:'Day 9 · ML Workflows',
     tasks:[
-      'Refactor Days 4–6 pipelines to apply all decorator patterns learned this week',
-      'Visualize the full DAG using dr.display_all_functions() and annotate each module boundary',
-      'Write a one-page architecture doc: module boundaries, data contracts, and config strategy',
-      'Run the complete test suite from Days 7 and 10 — all tests green',
+      {text:'Read the Metaflow Client API docs', url:'https://docs.metaflow.org/python-api/client'},
+      'Use Flow(), Run(), Step(), Task() to inspect past executions',
+      'Fetch artifacts from completed runs and analyze them in a notebook',
+      'Resume a failed run with python flow.py resume',
+      'Use @card to generate a visual summary card for a run',
     ],
     resources:[
-      {text:'Hamilton best practices guide', url:'https://hamilton.dagworks.io/en/latest/how-tos/'},
-      {text:'Lineage & DAG visualization', url:'https://hamilton.dagworks.io/en/latest/how-tos/use-hamilton-for-lineage/'},
-      {text:'Hamilton Slack community', url:'https://join.slack.com/t/hamilton-opensource/shared_invite/zt-2niepkra8-DGKGf_tTYhXuJWBTXtIs4g'},
+      {text:'Client API', url:'https://docs.metaflow.org/python-api/client'},
+      {text:'Flow Cards', url:'https://docs.metaflow.org/metaflow/visualizing-results/effortless-task-inspection-with-default-cards'},
     ],
-    tip:'If your DAG visualization is too wide to read, your modules are too coupled. Add subdag() to introduce hierarchy — it\'s the clearest signal that something needs to be refactored.',
-    hasScore:true,
+    tip:'The Client API is your debugging superpower — you can always inspect any previous run\'s artifacts without re-running.',
+    hasScore:false,
   },
   {
-    title:'Capstone — End-to-End ML Feature Pipeline', badge:'exam', sub:'Day 14 · Capstone',
+    title:'Feature Engineering Pipelines',
+    badge:'practice',
+    sub:'Day 10 · Parallelism & Branching',
     tasks:[
-      'Build a Hamilton pipeline: data ingestion → cleaning → feature engineering (10+ features) → model input assembly → materialization',
-      'Support both pandas and Polars backends via @config.when(backend="pandas") and @config.when(backend="polars")',
-      'Write a full pytest suite: unit tests for every function, integration test for the full graph',
-      'Implement a NodeExecutionHook for timing and logging — every node logged on execution',
-      'Push to GitHub with a README explaining the design and a DAG visualization image',
+      'Build a multi-step feature engineering flow from scratch',
+      'Load raw data, clean nulls, and engineer features in separate steps',
+      'Use pandas and scikit-learn inside Metaflow steps',
+      'Store feature matrices as Metaflow artifacts for downstream use',
+      'Add a validation step that asserts feature schema invariants',
     ],
     resources:[
-      {text:'Hamilton capstone examples', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples'},
-      {text:'Hamilton GitHub Actions CI', url:'https://hamilton.dagworks.io/en/latest/how-tos/run-in-ci/'},
-      {text:'DAGWorks Hub (optional)', url:'https://www.dagworks.io/hamilton'},
+      {text:'Statistics Tutorial', url:'https://docs.metaflow.org/getting-started/tutorials/episode02-statistics'},
+      {text:'Data Handling', url:'https://docs.metaflow.org/metaflow/data'},
     ],
-    tip:'The capstone should be a portfolio piece. Use a real-world dataset and document your design decisions in the README — why you split modules the way you did, what the config strategy is, and what you\'d add next.',
+    tip:'Split feature engineering into small, testable steps — each step\'s output can be independently inspected and re-used.',
+    hasScore:false,
+  },
+  {
+    title:'Model Training and Experiment Tracking',
+    badge:'practice',
+    sub:'Day 11 · Scaling & Remote Execution',
+    tasks:[
+      'Build a training flow that splits data, trains, and evaluates a model',
+      'Train multiple models via @foreach over a hyperparameter grid',
+      'Collect metrics from each branch and select the best in a join step',
+      'Store the winning model artifact for downstream inference use',
+      'Add @card with plots to visualize training and evaluation results',
+    ],
+    resources:[
+      {text:'ML Tutorial', url:'https://docs.metaflow.org/getting-started/tutorials/episode03-playlist'},
+      {text:'Cards with Plots', url:'https://docs.metaflow.org/metaflow/visualizing-results/easy-custom-reports-with-card-components'},
+    ],
+    tip:'foreach + join is the Metaflow pattern for hyperparameter search — trivially parallelized, artifacts preserved for every run.',
+    hasScore:false,
+  },
+  {
+    title:'Production Flows: Scheduling and Deployment',
+    badge:'practice',
+    sub:'Day 12 · Observability & Production',
+    tasks:[
+      {text:'Read about Argo Workflows integration', url:'https://docs.metaflow.org/going-to-production-with-metaflow/scheduling-metaflow-flows/scheduling-with-argo-workflows'},
+      'Deploy a flow to Argo Workflows with python flow.py argo-workflows create',
+      {text:'Read about AWS Step Functions deployment', url:'https://docs.metaflow.org/going-to-production-with-metaflow/scheduling-metaflow-flows/scheduling-with-aws-step-functions'},
+      'Understand the @schedule decorator for time-based triggers',
+      'Review the production deployment checklist and best practices',
+    ],
+    resources:[
+      {text:'Going to Production', url:'https://docs.metaflow.org/going-to-production-with-metaflow/'},
+      {text:'Argo Workflows', url:'https://docs.metaflow.org/going-to-production-with-metaflow/scheduling-metaflow-flows/scheduling-with-argo-workflows'},
+    ],
+    tip:'Deploy to Argo or Step Functions with a single command — Metaflow handles the DAG translation automatically.',
+    hasScore:false,
+  },
+  {
+    title:'Flow Cards and Observability',
+    badge:'review',
+    sub:'Day 13 · Observability & Production',
+    tasks:[
+      {text:'Read the Metaflow Cards documentation', url:'https://docs.metaflow.org/metaflow/visualizing-results'},
+      'Use the default @card decorator to auto-generate a run report',
+      'Create a custom card with tables and plots using Card components',
+      'Review all decorators learned so far: @step, @retry, @timeout, @catch, @resources, @conda, @card',
+      'Write a one-page summary of your Metaflow mental model',
+    ],
+    resources:[
+      {text:'Visualizing Results', url:'https://docs.metaflow.org/metaflow/visualizing-results'},
+      {text:'Custom Cards', url:'https://docs.metaflow.org/metaflow/visualizing-results/easy-custom-reports-with-card-components'},
+    ],
+    tip:'Treat flow cards like automated reports — stakeholders can inspect results without touching any code.',
+    hasScore:false,
+  },
+  {
+    title:'Capstone: End-to-End ML Pipeline',
+    badge:'exam',
+    sub:'Day 14 · ML Workflows',
+    tasks:[
+      'Design a complete ML pipeline: ingest → features → train → evaluate → register',
+      'Implement all stages as Metaflow steps with proper decorators',
+      'Add @retry and @timeout to all external-facing steps',
+      'Parameterize the flow for different datasets and model configs',
+      'Generate a summary @card and store all artifacts for reproducibility',
+      'Run the complete flow end-to-end and verify all outputs',
+    ],
+    resources:[
+      {text:'Full Tutorials', url:'https://docs.metaflow.org/getting-started/tutorials'},
+      {text:'Production Guide', url:'https://docs.metaflow.org/going-to-production-with-metaflow/'},
+    ],
+    tip:'Your capstone is proof you can build production-grade ML — structure it as if handing it off to a new team.',
     hasScore:true,
   },
 ];
 
 const topics = [
-  {name:'Core Concepts',         color:'#3B82F6', days:[0,1]},
-  {name:'Decorators & Patterns', color:'#8B5CF6', days:[2,4,7]},
-  {name:'Feature Engineering',   color:'#10B981', days:[3,4,9]},
-  {name:'Testing & Quality',     color:'#F59E0B', days:[6,9,12]},
-  {name:'Execution & Performance',color:'#EC4899', days:[8,9]},
-  {name:'Production & MLOps',    color:'#0891B2', days:[10,11,12,13]},
+  {name:'Core Concepts',             color:'#00B4A0', days:[0,1,2]},
+  {name:'Parallelism & Branching',   color:'#7F77DD', days:[3,9,10]},
+  {name:'Scaling & Remote Execution',color:'#E8890C', days:[4,11]},
+  {name:'Dependencies & Environments',color:'#378ADD', days:[5]},
+  {name:'Resilience & Reliability',  color:'#D85A30', days:[6,7]},
+  {name:'Data & Artifacts',          color:'#BA7517', days:[2,7,8]},
+  {name:'ML Workflows',              color:'#0891B2', days:[9,10,13]},
+  {name:'Observability & Production',color:'#7F77DD', days:[8,11,12,13]},
 ];
 
 const exam = {
   questions: null,
   minutes:   null,
-  passScore: 'Project',
+  passScore: 'N/A',
   cost:      'Free',
-  provider:  'DAGWorks / Self-paced',
-  link:      'https://hamilton.dagworks.io',
-  notes:     'No formal certification exam. Completion is project-based: build and publish a working Hamilton pipeline on GitHub covering feature engineering, multi-backend support, a full test suite, and lifecycle hooks.',
+  provider:  'Outerbounds (Self-paced)',
+  link:      'https://outerbounds.com/engineering/',
+  notes:     'No formal certification exam. Complete all 14 days and build the capstone project to demonstrate Metaflow proficiency.',
 };
 
 let state = {
@@ -793,37 +786,37 @@ function renderAI() {
     <div class="ai-card">
       <div class="ai-card-head">
         <div class="ai-icon" style="background:#E8F0FE;">🎙</div>
-        <div><div class="ai-card-title">NotebookLM — Audio Podcast Summary</div><div class="ai-card-sub">Generate a personalized audio briefing of your Hamilton learning</div></div>
+        <div><div class="ai-card-title">NotebookLM — Audio Podcast Summary</div><div class="ai-card-sub">Generate a personalized audio briefing of your Metaflow learning</div></div>
       </div>
-      <div class="ai-card-body">Upload your day-card notes plus the Hamilton official docs as sources in NotebookLM, then generate a podcast covering key patterns, DAG design principles, and production gotchas.</div>
+      <div class="ai-card-body">Upload your day-card notes plus the Metaflow official docs as sources in NotebookLM, then generate a podcast covering key workflow patterns, decorator usage, and production deployment strategies.</div>
       <div class="ai-prompt-box">Prompt for NotebookLM Audio:
-"Create a 10-minute podcast for an intermediate Python engineer studying the Hamilton dataflow library. Cover: the core DAG model (functions as nodes), the most important decorators (@config, @tag, @pipe, @does), how to test Hamilton pipelines, and the 3 things they must understand before building a production feature pipeline."</div>
+"Create a 10-minute podcast for an intermediate Python engineer studying Metaflow for ML Engineers. Cover: the core @step and DAG model, the most important decorators (@retry, @resources, @conda, @card), how to branch and join flows with foreach, and the 3 things they must understand before deploying a Metaflow pipeline to production."</div>
       <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
     </div>
     <div class="ai-card">
       <div class="ai-card-head">
         <div class="ai-icon" style="background:#FEF3E2;">🃏</div>
-        <div><div class="ai-card-title">NotebookLM — AI Flashcards</div><div class="ai-card-sub">Generate quiz cards from your Hamilton notes</div></div>
+        <div><div class="ai-card-title">NotebookLM — AI Flashcards</div><div class="ai-card-sub">Generate quiz cards from your Metaflow notes</div></div>
       </div>
-      <div class="ai-card-body">Upload your notes and the Hamilton decorator reference to NotebookLM and use the Study Guide feature to generate Q&A flashcards on API details and design patterns.</div>
+      <div class="ai-card-body">Upload your notes and the Metaflow decorator reference to NotebookLM and use the Study Guide feature to generate Q&A flashcards on flow design and API details.</div>
       <div class="ai-prompt-box">Prompt for NotebookLM Quiz:
-"Generate 20 flashcard-style Q&A pairs for someone studying the Hamilton Python library. Focus on: the difference between @config.when and @tag, when to use @does vs @pipe vs @mutate, how @extract_columns works, the role of the Driver vs the modules, and common mistakes in testing Hamilton pipelines."</div>
+"Generate 20 flashcard-style Q&A pairs for someone studying Metaflow for ML Engineers. Focus on: the difference between @retry, @timeout, and @catch, how foreach + join enables parallel hyperparameter search, when to use @resources vs @batch, how the Client API lets you inspect past run artifacts, and common mistakes when branching Metaflow flows."</div>
       <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
     </div>
     <div class="ai-card">
       <div class="ai-card-head">
         <div class="ai-icon" style="background:#EEE9FF;">💬</div>
-        <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore Hamilton patterns with targeted prompts</div></div>
+        <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore Metaflow patterns with targeted prompts</div></div>
       </div>
-      <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific Hamilton pattern.</div>
-      <div class="ai-prompt-box">Prompt 1 — Explain like a senior engineer:
-"I'm studying the Hamilton Python library. Explain [TOPIC, e.g. 'lifecycle hooks and NodeExecutionHook'] as if I'm a senior Python engineer familiar with Airflow and pandas. Skip the basics — focus on nuance, edge cases, and real-world design decisions."
+      <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific Metaflow pattern.</div>
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior ML engineer:
+"I'm studying Metaflow for ML Engineers. Explain [TOPIC, e.g. 'the foreach + join pattern for hyperparameter search'] as if I'm already experienced with pandas and scikit-learn. Skip the basics — focus on nuance, edge cases, and real-world production decisions."
 
-Prompt 2 — Design review:
-"I'm building a Hamilton feature pipeline for an ML project. Here's my module structure: [paste code or describe]. Review it as a senior data engineer. What would you refactor, and why?"
+Prompt 2 — Flow design review:
+"I'm designing a Metaflow pipeline for an ML training job. Here's my step structure: [describe steps]. Review it as a senior MLOps engineer. Which steps need @retry? Which need @resources? What would you refactor and why?"
 
-Prompt 3 — Gap analysis:
-"I've completed the Hamilton basics but I'm unsure about [topic, e.g. 'async execution vs parallel executor']. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+Prompt 3 — Gap analysis study plan:
+"I've studied Metaflow basics but I'm unsure about [TOPIC, e.g. 'deploying flows to Argo Workflows and managing @schedule triggers']. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 
@@ -832,34 +825,35 @@ function renderResources() {
     <div class="res-section">
       <div class="res-section-title">📖 Core Reading</div>
       <div class="res-link-list">
-        <div class="res-link-item"><span class="res-link-index">01</span><div class="res-link-body"><a href="https://hamilton.dagworks.io/en/latest/" target="_blank">Hamilton Official Docs</a><div class="res-link-desc">Complete documentation: concepts, how-tos, decorator reference, and driver API.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">02</span><div class="res-link-body"><a href="https://hamilton.dagworks.io/en/latest/concepts/" target="_blank">Hamilton Concepts Guide</a><div class="res-link-desc">Deep dives into the DAG model, modules, materialization, and async execution.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">03</span><div class="res-link-body"><a href="https://hamilton.dagworks.io/en/latest/reference/decorators/" target="_blank">Decorator Reference</a><div class="res-link-desc">Full API reference for every Hamilton decorator: @config, @tag, @pipe, @does, @check_output, and more.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">04</span><div class="res-link-body"><a href="https://github.com/DAGWorks-Inc/hamilton" target="_blank">Hamilton GitHub Repository</a><div class="res-link-desc">Source code, changelog, open issues, and community discussions.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">01</span><div class="res-link-body"><a href="https://docs.metaflow.org" target="_blank">Metaflow Official Docs</a><div class="res-link-desc">Complete documentation: concepts, tutorials, API reference, and production guides.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">02</span><div class="res-link-body"><a href="https://docs.metaflow.org/metaflow/basics" target="_blank">Metaflow Basics</a><div class="res-link-desc">Core concepts: @step, self artifacts, branching, foreach, and flow execution model.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">03</span><div class="res-link-body"><a href="https://docs.metaflow.org/scaling/failures" target="_blank">Fault Tolerance: @retry, @timeout, @catch</a><div class="res-link-desc">How Metaflow handles failures, retries, and graceful error capture in production flows.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">04</span><div class="res-link-body"><a href="https://docs.metaflow.org/going-to-production-with-metaflow/" target="_blank">Going to Production Guide</a><div class="res-link-desc">Official guide to scheduling, deploying, and operating Metaflow flows in production environments.</div></div></div>
       </div>
     </div>
     <div class="res-section">
       <div class="res-section-title">🛠 Hands-On Resources</div>
       <div class="res-link-list">
-        <div class="res-link-item"><span class="res-link-index">05</span><div class="res-link-body"><a href="https://github.com/DAGWorks-Inc/hamilton/tree/main/examples" target="_blank">Hamilton Examples (GitHub)</a><div class="res-link-desc">Official example pipelines: feature engineering, async, modular ETL, and more.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">06</span><div class="res-link-body"><a href="https://blog.dagworks.io" target="_blank">DAGWorks Blog</a><div class="res-link-desc">Deep dives on Hamilton patterns, case studies, and MLOps best practices from the team.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">07</span><div class="res-link-body"><a href="https://hamilton.dagworks.io/en/latest/how-tos/" target="_blank">Hamilton How-To Guides</a><div class="res-link-desc">Step-by-step guides: writing functions, testing, CI, lineage, and data quality checks.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">05</span><div class="res-link-body"><a href="https://docs.metaflow.org/getting-started/tutorials" target="_blank">Metaflow Tutorials</a><div class="res-link-desc">Official step-by-step tutorials covering linear flows, branching, statistics, and ML training.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">06</span><div class="res-link-body"><a href="https://github.com/Netflix/metaflow" target="_blank">Metaflow GitHub Repository</a><div class="res-link-desc">Source code, examples, changelogs, open issues, and community discussions.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">07</span><div class="res-link-body"><a href="https://docs.metaflow.org/python-api/client" target="_blank">Client API Reference</a><div class="res-link-desc">Full API reference for Flow(), Run(), Step(), Task() — the core debugging and inspection interface.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">08</span><div class="res-link-body"><a href="https://outerbounds.com/blog/" target="_blank">Outerbounds Blog</a><div class="res-link-desc">Deep dives on Metaflow patterns, ML platform design, and best practices from the Metaflow team.</div></div></div>
       </div>
     </div>
     <div class="res-section">
       <div class="res-section-title">🔧 Ecosystem &amp; Tooling</div>
       <div class="res-link-list">
-        <div class="res-link-item"><span class="res-link-index">08</span><div class="res-link-body"><a href="https://pola.rs/" target="_blank">Polars Docs</a><div class="res-link-desc">High-performance DataFrame library — Day 10 backend. Much faster than pandas for large datasets.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">09</span><div class="res-link-body"><a href="https://duckdb.org/docs/api/python/overview" target="_blank">DuckDB Python API</a><div class="res-link-desc">Embedded analytical database used as a free alternative to BigQuery in Day 6 ETL patterns.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">10</span><div class="res-link-body"><a href="https://docs.pytest.org/en/stable/" target="_blank">pytest docs</a><div class="res-link-desc">Test runner used for all Hamilton unit and integration tests in this course.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">09</span><div class="res-link-body"><a href="https://docs.metaflow.org/scaling/dependencies" target="_blank">Dependency Management: @conda &amp; @pypi</a><div class="res-link-desc">Step-level environment pinning — run different Python environments in the same flow.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">10</span><div class="res-link-body"><a href="https://docs.metaflow.org/metaflow/visualizing-results" target="_blank">Flow Cards &amp; Visualizing Results</a><div class="res-link-desc">Auto-generate HTML run reports with @card — tables, plots, and custom components.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">11</span><div class="res-link-body"><a href="https://docs.metaflow.org/scaling/remote-tasks/introduction" target="_blank">Remote Execution: @resources &amp; @batch</a><div class="res-link-desc">Scale individual steps to cloud compute — CPU, memory, and GPU allocation per step.</div></div></div>
       </div>
     </div>
     <div class="res-section">
       <div class="res-section-title">⬆ Upgrade Path</div>
       <div class="res-link-list">
-        <div class="res-link-item"><span class="res-link-index">11</span><div class="res-link-body"><a href="https://github.com/DAGWorks-Inc/burr" target="_blank">Burr — State Machine Library (DAGWorks)</a><div class="res-link-desc">From the same team — build stateful applications and agents using the same philosophy as Hamilton.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">12</span><div class="res-link-body"><a href="https://mlflow.org/docs/latest/" target="_blank">MLflow Docs</a><div class="res-link-desc">Pair Hamilton pipelines with MLflow for experiment tracking and model registry.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">13</span><div class="res-link-body"><a href="https://docs.feast.dev/" target="_blank">Feast Feature Store</a><div class="res-link-desc">Production feature store — the natural next step after mastering Hamilton feature engineering.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">12</span><div class="res-link-body"><a href="https://outerbounds.com/engineering/" target="_blank">Outerbounds Platform</a><div class="res-link-desc">Managed Metaflow infrastructure — the natural next step for teams running Metaflow at scale.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">13</span><div class="res-link-body"><a href="https://mlflow.org/docs/latest/" target="_blank">MLflow Docs</a><div class="res-link-desc">Pair Metaflow pipelines with MLflow for experiment tracking and model registry.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">14</span><div class="res-link-body"><a href="https://docs.metaflow.org/going-to-production-with-metaflow/scheduling-metaflow-flows/scheduling-with-argo-workflows" target="_blank">Argo Workflows Integration</a><div class="res-link-desc">Deploy Metaflow flows to Kubernetes-native Argo Workflows for production scheduling.</div></div></div>
       </div>
     </div>`;
 }
@@ -870,20 +864,20 @@ function renderExam() {
       <div class="exam-card"><div class="exam-card-label">Cost</div><div class="exam-card-val">${exam.cost}</div><div class="exam-card-sub">Self-paced, free</div></div>
       <div class="exam-card"><div class="exam-card-label">Questions</div><div class="exam-card-val">N/A</div><div class="exam-card-sub">No formal exam</div></div>
       <div class="exam-card"><div class="exam-card-label">Time limit</div><div class="exam-card-val">N/A</div><div class="exam-card-sub">Project-based</div></div>
-      <div class="exam-card"><div class="exam-card-label">Pass mark</div><div class="exam-card-val" style="font-size:13px;">${exam.passScore}</div><div class="exam-card-sub">Capstone on GitHub</div></div>
+      <div class="exam-card"><div class="exam-card-label">Pass mark</div><div class="exam-card-val" style="font-size:13px;">${exam.passScore}</div><div class="exam-card-sub">Capstone project</div></div>
     </div>
     <div class="info-box"><strong>Completion format:</strong> ${exam.notes}</div>
     <div class="info-box" style="margin-top:10px;">
       <strong>📋 Readiness checklist — before marking yourself done:</strong><br><br>
       • Completed all ${TOTAL_DAYS} days of the study plan<br>
-      • Built and published the capstone pipeline on GitHub<br>
-      • Full pytest suite passes — unit tests for every function, integration test for the full graph<br>
-      • Pipeline supports both pandas and Polars backends via @config.when<br>
-      • Can explain every Topics tab item without looking at notes<br>
-      • NodeExecutionHook logs timing and shape for every node
+      • Built the capstone end-to-end ML pipeline with all decorator patterns applied<br>
+      • Can explain every Topics tab item without notes<br>
+      • Written a cheat sheet of all decorators from memory and verified it<br>
+      • Capstone flow runs end-to-end and all artifacts are inspectable via the Client API<br>
+      • Consistent progress — not rushed through, each day's tasks genuinely completed
     </div>
     <div style="margin-top:12px;">
-      <a href="${exam.link}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:10px 20px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-weight:500;text-decoration:none;">View Hamilton Docs →</a>
+      <a href="${exam.link}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:10px 20px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-weight:500;text-decoration:none;">View Outerbounds Engineering →</a>
     </div>`;
 }
 

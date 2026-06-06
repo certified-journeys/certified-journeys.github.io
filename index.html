@@ -403,7 +403,8 @@ const COURSES = [
   {id:'terraform-certified',name:'Terraform',fullName:'HashiCorp Terraform Associate (003)',         icon:'TF', color:'#7f77dd', colorDim:'#eeedfe', provider:'HashiCorp',   cost:'$70',  totalDays:14, tags:['IaC','DevOps'],     examLink:'https://developer.hashicorp.com/certifications/infrastructure-automation'},
   {id:'powerbi-certified', name:'Power BI',  fullName:'Microsoft PL-300: Power BI Data Analyst',    icon:'BI', color:'#d85a30', colorDim:'#faede8', provider:'Microsoft',   cost:'$165', totalDays:14, tags:['BI','Analytics'],   examLink:'https://learn.microsoft.com/certifications/power-bi-data-analyst-associate/'},
   {id:'typer-cli-certified',name:'Typer CLI',fullName:'Typer CLI Mastery',                           icon:'TY', color:'#6C47FF', colorDim:'#EEE9FF', provider:'Self-paced',  cost:'Free', totalDays:3,  tags:['Python','CLI'],      examLink:'https://typer.tiangolo.com/'},
-  {id:'hamilton-certified', name:'Hamilton',fullName:'Hamilton — Python Dataflows & Feature Pipelines',icon:'HM', color:'#3B82F6', colorDim:'#EFF6FF', provider:'DAGWorks',    cost:'Free', totalDays:14, tags:['Python','Data Eng','DAGs'], examLink:'https://hamilton.dagworks.io/en/latest/'}
+  {id:'hamilton-certified', name:'Hamilton',fullName:'Hamilton — Python Dataflows & Feature Pipelines',icon:'HM', color:'#3B82F6', colorDim:'#EFF6FF', provider:'DAGWorks',    cost:'Free', totalDays:14, tags:['Python','Data Eng','DAGs'], examLink:'https://hamilton.dagworks.io/en/latest/'},
+  {id:'metaflow-certified', name:'Metaflow', fullName:'Metaflow for ML Engineers',                    icon:'MF', color:'#00B4A0', colorDim:'#E0FAF7', provider:'Outerbounds', cost:'Free', totalDays:14, tags:['MLOps','Python','Workflows'], examLink:'https://outerbounds.com/engineering/'}
 ];
 
 function getProgress(id) {
@@ -449,6 +450,7 @@ const NEXT_JOURNEY = {
   'typer-cli-certified':   'dlt-certified',
   'pspo-certified':        'claude-api-certified',
   'hamilton-certified':    'dlt-certified',
+  'metaflow-certified':     'hamilton-certified',
 };
 
 function render() {

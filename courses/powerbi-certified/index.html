@@ -29,6 +29,28 @@
   --green-light:#0B3326;--blue-light:#061E38;--amber-light:#221900;
   --coral-light:#2A0E05;--purple-light:#161440;--orange-light:#1F1200;--teal-light:#021E26;
 }}
+[data-theme="dark"]{
+  --bg:#111113;--surface:#1C1C1F;--surface2:#252528;--surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA;--text2:#A09F9B;--text3:#5E5D58;
+  --green-light:#0B3326;--blue-light:#061E38;--amber-light:#221900;
+  --coral-light:#2A0E05;--purple-light:#161440;--orange-light:#1F1200;--teal-light:#021E26;
+}
+/* Nav */
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);border-bottom:0.5px solid var(--border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav{background:rgba(26,26,26,0.85);}}
+[data-theme="dark"] nav{background:rgba(26,26,26,0.85);}
+.nav-inner{max-width:860px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-0.025em;color:var(--text);text-decoration:none;}
+.nav-brand:hover{text-decoration:none;opacity:0.85;}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-gh{font-size:12px;padding:6px 14px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;gap:5px;transition:all 0.15s;text-decoration:none;font-weight:500;}
+.nav-gh:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.theme-btn{width:34px;height:34px;border-radius:99px;flex-shrink:0;border:0.5px solid var(--border2);background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;}
+.theme-btn:hover{background:var(--surface2);color:var(--text);}
+@media(max-width:600px){.nav-gh{display:none;}}
+
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;}
 a{color:var(--blue-dark);text-decoration:none;}
@@ -36,7 +58,7 @@ a:hover{text-decoration:underline;}
 button{cursor:pointer;font-family:inherit;}
 code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;border-radius:3px;font-size:0.9em;}
 
-.app{max-width:860px;margin:0 auto;padding:0 1.25rem 4rem;}
+.app{max-width:860px;margin:0 auto;padding:0.75rem 1.25rem 4rem;}
 /* Breadcrumb */
 .breadcrumb{padding:.55rem 0;font-size:13px;display:flex;align-items:center;gap:0;border-bottom:.5px solid var(--border);margin-bottom:1.1rem;}
 .breadcrumb a{color:var(--text2);text-decoration:none;font-weight:500;padding:4px 8px;border-radius:6px;transition:all .15s;}
@@ -190,8 +212,21 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 .sync-badge.error{color:var(--coral-dark);border-color:var(--coral);}
 /* GitHub sync modal */
 </style>
+<script>(function(){const t=localStorage.getItem('cj-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
 </head>
 <body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="../../index.html">
+      <div class="brand-mark">CJ</div>
+      certified-journeys
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" id="theme-btn" aria-label="Switch to dark mode" onclick="toggleTheme()"></button>
+      <a class="nav-gh" href="https://github.com/certified-journeys" target="_blank">⭐ GitHub</a>
+    </div>
+  </div>
+</nav>
 <div class="app">
 
 <div class="breadcrumb">
