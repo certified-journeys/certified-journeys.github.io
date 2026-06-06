@@ -1,0 +1,13 @@
+# Day 13: Review — Architecture & Best Practices
+
+## Notes
+
+_Your notes for today._
+
+## Key takeaways
+
+-
+
+## Questions
+
+-
