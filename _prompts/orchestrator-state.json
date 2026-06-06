@@ -20,6 +20,7 @@
     "pydantic-certified":  { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null },
     "ray-certified":       { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null },
     "sodacore-certified":  { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null },
-    "pandera-certified":   { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null }
+    "pandera-certified":   { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null },
+    "altair-certified":    { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null }
   }
 }

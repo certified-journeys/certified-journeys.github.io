@@ -343,4 +343,42 @@ EXAM_NOTES:       No formal exam. Seven focused days covering Pandera from schem
 
 ---
 
-*Queue v1.0 — 9 courses — updated 2026-06-06*
+---
+
+### 10. altair-certified
+
+```
+COURSE_ID:        altair-certified
+COURSE_FULL_NAME: Vega-Altair for Data Visualization
+ICON:             AL
+ACCENT_COLOR:     #4F86C6
+ACCENT_LIGHT:     #EBF3FB
+ACCENT_DARK:      #2D5F8A
+ACCENT_DARK_DIM:  #0A1A2E
+PROVIDER:         Self-paced
+COST:             Free
+TOTAL_DAYS:       10
+DIFFICULTY:       Intermediate
+TAGS:             Visualization, Python, Data Science, Vega-Lite
+EXAM_LINK:        https://altair-viz.github.io/
+EXAM_QUESTIONS:   null
+EXAM_MINUTES:     null
+EXAM_PASS_SCORE:  N/A
+EXAM_NOTES:       No formal exam. Complete all 10 days and the capstone interactive dashboard.
+```
+
+**Core topics for Design Agent to expand:**
+- Altair fundamentals: declarative grammar, `Chart`, `mark_*`, `encode()`, `alt.X/Y/Color`
+- Data: Pandas DataFrames, Polars, URL sources, long-form vs wide-form, `fold` transform
+- Marks: point, line, bar, area, rect, arc (pie/donut), boxplot, rule, text
+- Encodings: quantitative, ordinal, nominal, temporal — shorthand vs longhand
+- Transforms: filter, calculate, aggregate, bin, window, fold, flatten
+- Compound charts: layering (`+`), faceting (`facet`), concatenation (`|`, `&`)
+- Interactivity: `selection_point`, `selection_interval`, `bind`, linked brushing across charts
+- Customization: themes, color schemes, axis/legend config, `alt.Chart.configure_*`
+- Geographic visualization: choropleth maps with TopoJSON, `mark_geoshape`
+- Capstone: build a fully interactive multi-panel EDA dashboard from a real dataset
+
+---
+
+*Queue v1.0 — 10 courses — updated 2026-06-06*
