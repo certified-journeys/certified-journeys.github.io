@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MLflow for ML Engineers · certified-journeys</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#E8500A; --green-light:#FEF0E7; --green-dark:#B83B00;
+  --blue:#378ADD; --blue-light:#EAF3FD; --blue-dark:#185FA5;
+  --amber:#BA7517; --amber-light:#FDF3E3;
+  --coral:#D85A30; --coral-light:#FAEDE8; --coral-dark:#993C1D;
+  --purple:#7F77DD; --purple-light:#EEEDFE;
+  --orange:#E8890C; --orange-light:#FEF3E2;
+  --teal:#0891B2; --teal-light:#E0F5FA;
+  --bg:#F5F4F0; --surface:#FFFFFF; --surface2:#EEECE5; --surface3:#E8E6DF;
+  --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.16);
+  --text:#18181A; --text2:#52524E; --text3:#8C8B85;
+  --radius:14px; --radius-sm:9px; --radius-xs:5px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.06);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#2A1500;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}}
+[data-theme="dark"]{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#2A1500;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}
+/* Nav */
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);border-bottom:0.5px solid var(--border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav{background:rgba(26,26,26,0.85);}}
+[data-theme="dark"] nav{background:rgba(26,26,26,0.85);}
+.nav-inner{max-width:860px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-0.025em;color:var(--text);text-decoration:none;}
+.nav-brand:hover{text-decoration:none;opacity:0.85;}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-gh{font-size:12px;padding:6px 14px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;gap:5px;transition:all 0.15s;text-decoration:none;font-weight:500;}
+.nav-gh:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.theme-btn{width:34px;height:34px;border-radius:99px;flex-shrink:0;border:0.5px solid var(--border2);background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;}
+.theme-btn:hover{background:var(--surface2);color:var(--text);}
+@media(max-width:600px){.nav-gh{display:none;}}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1rem;}
+a{color:var(--green-dark);text-decoration:none;}
+a:hover{text-decoration:underline;}
+.app{max-width:780px;margin:0 auto;}
+.breadcrumb{font-size:13px;color:var(--text3);margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
+.breadcrumb a{color:var(--text3);}
+.breadcrumb a:hover{color:var(--text);}
+.breadcrumb-sep{opacity:.4;}
+.course-hero{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:0 0 1.25rem;box-shadow:var(--shadow);}
+.course-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.course-icon-wrap{width:52px;height:52px;border-radius:12px;background:var(--green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.course-icon{font-size:15px;font-weight:700;color:var(--green-dark);font-family:'DM Mono',monospace;letter-spacing:-.5px;}
+.course-title-block{flex:1;}
+.course-title-block h1{font-size:20px;font-weight:700;line-height:1.2;margin-bottom:6px;}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;}
+.tag{font-size:11px;padding:2px 9px;border-radius:99px;background:var(--green-light);color:var(--green-dark);font-weight:500;}
+.hero-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.meta-item{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;}
+.meta-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.meta-val{font-size:14px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;}
+.prog-strip{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1.25rem;box-shadow:var(--shadow);}
+.prog-strip-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prog-label{font-size:13px;font-weight:500;}
+.prog-pct{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;color:var(--green);}
+.bar-bg{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:10px;}
+.bar-fill{height:100%;background:var(--green);border-radius:99px;transition:width .4s;}
+.readiness{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;background:var(--surface2);color:var(--text3);margin-bottom:10px;}
+.readiness.early{background:var(--amber-light);color:var(--amber);}
+.readiness.close{background:var(--orange-light);color:var(--orange);}
+.readiness.ready{background:var(--green-light);color:var(--green-dark);}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.stat{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.stat-val{font-size:18px;font-weight:700;font-family:'DM Mono',monospace;}
+.stat-val.ok{color:var(--green-dark);}
+.stat-val.warn{color:var(--amber);}
+.stat-val.danger{color:var(--coral);}
+.tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;}
+.tab{font-size:13px;padding:7px 14px;border-radius:var(--radius-sm);border:.5px solid var(--border);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .15s;}
+.tab:hover{background:var(--surface2);}
+.tab.active{background:var(--surface);border-color:var(--border2);color:var(--text);font-weight:500;box-shadow:var(--shadow);}
+.panel{display:none;}
+.panel.active{display:block;}
+.day-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:8px;box-shadow:var(--shadow);overflow:hidden;transition:box-shadow .2s;}
+.day-card.completed{border-color:var(--green);}
+.day-card.open .day-body{display:block;}
+.day-header{display:flex;align-items:center;gap:12px;padding:1rem 1.1rem;cursor:pointer;user-select:none;}
+.day-num{font-size:11px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text3);min-width:32px;}
+.day-meta{flex:1;}
+.day-title{font-size:14px;font-weight:600;line-height:1.3;}
+.day-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.day-badge{font-size:10px;padding:2px 9px;border-radius:99px;font-weight:600;flex-shrink:0;}
+.badge-learn{background:var(--blue-light);color:var(--blue-dark);}
+.badge-practice{background:var(--green-light);color:var(--green-dark);}
+.badge-review{background:var(--amber-light);color:var(--amber);}
+.badge-exam{background:var(--coral-light);color:var(--coral-dark);}
+.chevron{font-size:11px;color:var(--text3);transition:transform .2s;flex-shrink:0;}
+.day-card.open .chevron{transform:rotate(180deg);}
+.day-body{display:none;padding:0 1.1rem 1.1rem;border-top:.5px solid var(--border);}
+.day-body{padding-top:.9rem;}
+.tip-box{background:var(--green-light);border-radius:var(--radius-sm);padding:.7rem .9rem;margin-bottom:10px;font-size:12px;color:var(--green-dark);line-height:1.6;}
+/* Action row */
+.nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
+.nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
+.nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
+/* Linked resources & tasks */
+a.res-pill{text-decoration:none;cursor:pointer;}
+a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:var(--text);}
+.task-link{color:var(--blue-dark);font-size:11px;margin-left:6px;flex-shrink:0;opacity:0.7;line-height:1.5;}
+.task-link:hover{opacity:1;text-decoration:none;}
+/* Task tick checkboxes */
+.task-tick{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px;background:none;padding:0;}
+.task-tick:hover{border-color:var(--green);}
+.task-tick.ticked{background:var(--green);border-color:var(--green);}
+.task-tick.ticked::after{content:"✓";font-size:10px;color:#fff;font-weight:700;line-height:1;}
+.task.task-done>span{text-decoration:line-through;color:var(--text3);}
+/* Per-day task progress bar */
+.task-progress{height:3px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
+.task-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;}
+.task-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.task{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);}
+.resources-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.res-pill{font-size:11px;padding:4px 10px;border-radius:99px;border:.5px solid var(--border);background:var(--surface2);color:var(--text2);display:inline-flex;align-items:center;gap:4px;}
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.score-row label{font-size:12px;color:var(--text2);}
+.score-row input{width:72px;font-size:13px;padding:5px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.score-badge{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600;}
+.hours-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text2);}
+.hours-row input{width:60px;font-size:13px;padding:4px 8px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.complete-btn{width:100%;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s;font-weight:400;}
+.complete-btn:hover{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+.complete-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);font-weight:500;}
+/* Topic pills */
+.day-topic-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.day-topic-pill{font-size:10px;padding:2px 9px;border-radius:99px;border:.5px solid;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.day-topic-pill:hover{opacity:.7;}
+.topic-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.topic-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;box-shadow:var(--shadow);}
+.topic-card h4{font-size:14px;font-weight:600;margin-bottom:8px;}
+.t-bar-bg{height:6px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:5px;}
+.t-bar-fill{height:100%;border-radius:99px;transition:width .4s;}
+.t-pct{font-size:11px;color:var(--text3);margin-bottom:8px;}
+.topic-days{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.topic-day-btn{font-size:11px;padding:2px 8px;border-radius:99px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
+.topic-day-btn:hover{background:var(--surface3);color:var(--text);}
+.topic-day-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+/* AI cards */
+.ai-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;margin-bottom:10px;box-shadow:var(--shadow);}
+.ai-card-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.ai-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ai-card-title{font-size:14px;font-weight:500;color:var(--text);}
+.ai-card-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.ai-card-body{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:6px;}
+.ai-prompt-box{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:10px;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;line-height:1.7;white-space:pre-wrap;}
+.ai-link-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-family:inherit;text-decoration:none;}
+.ai-link-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+/* Exam */
+.exam-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.exam-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.9rem 1rem;box-shadow:var(--shadow);}
+.exam-card-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.exam-card-val{font-size:18px;font-weight:700;font-family:'DM Mono',monospace;margin-bottom:3px;}
+.exam-card-sub{font-size:11px;color:var(--text3);}
+/* Resources */
+.res-section{margin-bottom:1.25rem;}
+.res-section-title{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.res-link-list{display:flex;flex-direction:column;gap:6px;}
+.res-link-item{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.7rem .9rem;box-shadow:var(--shadow);}
+.res-link-index{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);min-width:20px;padding-top:1px;}
+.res-link-body{flex:1;}
+.res-link-body a{font-size:13px;font-weight:500;}
+.res-link-desc{font-size:12px;color:var(--text3);margin-top:2px;line-height:1.5;}
+/* Shared */
+.info-box{background:var(--surface2);border-radius:var(--radius-sm);padding:.8rem 1rem;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+.page-footer{text-align:center;font-size:12px;color:var(--text3);margin-top:2rem;padding:1rem 0;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.sync-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .2s;}
+.sync-badge:hover{background:var(--surface2);color:var(--text2);}
+.sync-badge.connected{color:var(--green-dark);border-color:var(--green);}
+.sync-badge.syncing{color:var(--blue-dark);border-color:var(--blue);}
+.sync-badge.error{color:var(--coral-dark);border-color:var(--coral);}
+/* GitHub modal */
+.gh-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;}
+.gh-modal.open{display:flex;}
+.gh-modal-box{background:var(--surface);border-radius:var(--radius);padding:1.5rem;max-width:440px;width:90%;box-shadow:var(--shadow-md);}
+.gh-modal-box h3{font-size:17px;font-weight:600;margin-bottom:6px;}
+.gh-modal-sub{font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.6;}
+.gh-field{margin-bottom:10px;}
+.gh-field label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.gh-field input{width:100%;font-size:13px;padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Mono',monospace;}
+.gh-field input:focus{outline:none;border-color:var(--green);}
+.gh-modal-actions{display:flex;gap:8px;align-items:center;margin-top:1rem;flex-wrap:wrap;}
+.gh-btn-save{font-size:13px;padding:8px 18px;border-radius:var(--radius-sm);background:var(--green);color:#fff;border:none;font-family:inherit;font-weight:500;cursor:pointer;}
+.gh-btn-save:hover{background:var(--green-dark);}
+.gh-btn-cancel{font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--text2);border:.5px solid var(--border2);font-family:inherit;cursor:pointer;}
+.gh-btn-cancel:hover{background:var(--surface2);}
+.gh-btn-disconnect{font-size:12px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--coral-dark);border:.5px solid var(--coral);font-family:inherit;cursor:pointer;}
+.gh-modal-msg{font-size:12px;color:var(--text2);}
+@media(max-width:640px){
+  .topic-grid{grid-template-columns:1fr;}
+  .hero-meta{grid-template-columns:repeat(2,1fr);}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .exam-grid{grid-template-columns:repeat(2,1fr);}
+  .course-hero-top{flex-direction:column;}
+}
+</style>
+<script>(function(){const t=localStorage.getItem('cj-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="../../index.html">
+      <div class="brand-mark">CJ</div>
+      certified-journeys
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" id="theme-btn" aria-label="Switch to dark mode" onclick="toggleTheme()"></button>
+      <a class="nav-gh" href="https://github.com/certified-journeys" target="_blank">⭐ GitHub</a>
+    </div>
+  </div>
+</nav>
+<div class="app">
+
+  <div class="breadcrumb">
+    <a href="../../index.html">certified-journeys</a>
+    <span class="breadcrumb-sep">›</span>
+    <span>MLflow for ML Engineers</span>
+  </div>
+
+  <div class="course-hero">
+    <div class="course-hero-top">
+      <div style="display:flex;align-items:flex-start;gap:14px;">
+        <div class="course-icon-wrap">
+          <div class="course-icon">ML</div>
+        </div>
+        <div class="course-title-block">
+          <h1>MLflow for ML Engineers</h1>
+          <div class="tag-row">
+            <span class="tag">MLOps</span>
+            <span class="tag">Python</span>
+            <span class="tag">Experiment Tracking</span>
+            <span class="tag">Model Registry</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val">Free</div></div>
+      <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">14 days</div></div>
+      <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Databricks (Self-paced)</div></div>
+      <div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Intermediate</div></div>
+    </div>
+  </div>
+
+  <div class="prog-strip">
+    <div class="prog-strip-top">
+      <span class="prog-label">Overall progress</span>
+      <span class="prog-pct" id="prog-pct">0%</span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+    <div class="readiness early" id="readiness">🌱 Just getting started</div>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-label">Days done</div><div class="stat-val" id="stat-days">0/14</div></div>
+      <div class="stat"><div class="stat-label">Hours logged</div><div class="stat-val" id="stat-hours">0</div></div>
+      <div class="stat"><div class="stat-label">Avg score</div><div class="stat-val" id="stat-score">—</div></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showPanel('schedule',this)">📅 Daily Plan</button>
+    <button class="tab" onclick="showPanel('topics',this)">📚 Topics</button>
+    <button class="tab" onclick="showPanel('ai',this)">🤖 AI Tools</button>
+    <button class="tab" onclick="showPanel('resources',this)">🔗 Resources</button>
+    <button class="tab" onclick="showPanel('exam',this)">🎓 Exam Prep</button>
+  </div>
+
+  <div id="panel-schedule" class="panel active"></div>
+  <div id="panel-topics"   class="panel"></div>
+  <div id="panel-ai"       class="panel"></div>
+  <div id="panel-resources" class="panel"></div>
+  <div id="panel-exam"     class="panel"></div>
+
+  <div class="page-footer">
+    <button class="sync-badge" id="sync-badge" onclick="openGHModal()">☁ Connect GitHub</button>
+    · <span id="sk-display">cj_mlflow-certified_v1</span> · <a href="../../index.html">← All journeys</a>
+  </div>
+
+</div>
+
+<div class="gh-modal" id="gh-modal" onclick="if(event.target===this)closeGHModal()">
+  <div class="gh-modal-box">
+    <h3>☁ GitHub Sync</h3>
+    <p class="gh-modal-sub">Progress is committed to <code>courses/mlflow-certified/progress.json</code> in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
+    <div class="gh-field"><label>Personal Access Token</label><input id="gh-pat" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+    <div class="gh-field"><label>Owner</label><input id="gh-owner" type="text" placeholder="your-username"></div>
+    <div class="gh-field"><label>Repository</label><input id="gh-repo" type="text" placeholder="certified-journeys.github.io"></div>
+    <div class="gh-field"><label>Branch</label><input id="gh-branch" type="text" placeholder="main"></div>
+    <div class="gh-modal-actions">
+      <button class="gh-btn-save" onclick="saveGHCreds()">Test &amp; Save</button>
+      <button class="gh-btn-cancel" onclick="closeGHModal()">Cancel</button>
+      <button class="gh-btn-disconnect" id="gh-disconnect-btn" style="display:none" onclick="disconnectGH()">Disconnect</button>
+      <span class="gh-modal-msg" id="gh-modal-msg"></span>
+    </div>
+  </div>
+</div>
+
+<script src="../../github-sync.js"></script>
+<script>
+if(typeof GHSync==='undefined'){window.GHSync={isConnected:()=>false,saveCreds:()=>{},getCreds:()=>null,connect:async()=>({ok:false,msg:''}),fetchState:async()=>null,pushState:async()=>false,saveDebounced:()=>{},testConnection:async()=>({ok:false,msg:''}),exportConfig:()=>'',importConfig:()=>null,getLastSynced:()=>null};}
+
+const COURSE_ID   = 'mlflow-certified';
+const STORAGE_KEY = 'cj_mlflow-certified_v1';
+const TOTAL_DAYS  = 14;
+
+const NOTEBOOKS = [
+  'day-01-intro-mlflow',
+  'day-02-tracking-experiments',
+  'day-03-logging-artifacts',
+  'day-04-mlflow-ui',
+  'day-05-autologging',
+  'day-06-model-flavors',
+  'day-07-model-registry',
+  'day-08-mlflow-projects',
+  'day-09-custom-pyfunc',
+  'day-10-model-serving',
+  'day-11-cloud-backends',
+  'day-12-pipelines-preprocessing',
+  'day-13-review-advanced',
+  'day-14-capstone-pipeline'
+];
+
+const days = [
+  {
+    title: 'Introduction to MLflow: Tracking Your First Experiment',
+    badge: 'learn',
+    sub: 'Day 1 · Core Tracking',
+    tasks: [
+      {text: 'Read the MLflow quickstart guide', url: 'https://mlflow.org/docs/latest/getting-started/intro-quickstart/index.html'},
+      'Install mlflow: pip install mlflow',
+      'Launch mlflow ui locally and explore the empty tracking server',
+      'Log params, metrics, and a text artifact with mlflow.start_run()',
+      'Inspect the run in the MLflow UI at localhost:5000',
+    ],
+    resources: [
+      {text: 'MLflow Quickstart', url: 'https://mlflow.org/docs/latest/getting-started/intro-quickstart/index.html'},
+      {text: 'MLflow Docs', url: 'https://mlflow.org/docs/latest/index.html'},
+      {text: 'MLflow GitHub', url: 'https://github.com/mlflow/mlflow'},
+    ],
+    tip: 'Run mlflow ui in one terminal and your Python script in another — the UI updates live as runs complete.',
+    hasScore: false,
+  },
+  {
+    title: 'Tracking Experiments with Runs, Params, and Metrics',
+    badge: 'learn',
+    sub: 'Day 2 · Core Tracking',
+    tasks: [
+      {text: 'Read the MLflow Tracking API reference', url: 'https://mlflow.org/docs/latest/tracking.html'},
+      'Create a named experiment with mlflow.set_experiment()',
+      'Start and end runs explicitly using mlflow.start_run() as a context manager',
+      'Log a time-series metric (e.g. loss per epoch) with step parameter',
+      'Tag runs with key-value metadata and filter by tag in the UI',
+      'Compare two runs side-by-side in the MLflow UI chart view',
+    ],
+    resources: [
+      {text: 'Tracking API Docs', url: 'https://mlflow.org/docs/latest/tracking.html'},
+      {text: 'mlflow.log_metric', url: 'https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.log_metric'},
+    ],
+    tip: 'Always set a descriptive run name with mlflow.set_tag("mlflow.runName", ...) — unnamed runs become unmanageable fast.',
+    hasScore: false,
+  },
+  {
+    title: 'Logging Artifacts and Datasets',
+    badge: 'learn',
+    sub: 'Day 3 · Core Tracking',
+    tasks: [
+      {text: 'Read the MLflow artifact logging guide', url: 'https://mlflow.org/docs/latest/tracking/artifacts-stores.html'},
+      'Log a trained sklearn model as an artifact',
+      'Log a Matplotlib figure with mlflow.log_figure()',
+      'Log a pandas DataFrame as a CSV artifact',
+      'Log an entire directory of outputs with mlflow.log_artifacts()',
+      'Navigate the artifact browser in the MLflow UI',
+    ],
+    resources: [
+      {text: 'Artifact Stores', url: 'https://mlflow.org/docs/latest/tracking/artifacts-stores.html'},
+      {text: 'mlflow.log_artifact', url: 'https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.log_artifact'},
+    ],
+    tip: 'Use subdirectory paths in log_artifact() to keep artifacts organized — e.g. "plots/roc_curve.png" vs "models/model.pkl".',
+    hasScore: false,
+  },
+  {
+    title: 'Mastering the MLflow UI — Comparing and Filtering Runs',
+    badge: 'practice',
+    sub: 'Day 4 · UI and Search',
+    tasks: [
+      {text: 'Read the MLflow Search API docs', url: 'https://mlflow.org/docs/latest/search-runs.html'},
+      'Run 6 training experiments with different hyperparameters',
+      'Use the column selector to add custom param/metric columns',
+      'Apply a filter expression in the UI (e.g. metrics.accuracy > 0.85)',
+      'Use mlflow.search_runs() in Python to retrieve run DataFrames',
+      'Export the comparison table to CSV for offline analysis',
+    ],
+    resources: [
+      {text: 'Search Runs Docs', url: 'https://mlflow.org/docs/latest/search-runs.html'},
+      {text: 'mlflow.search_runs()', url: 'https://mlflow.org/docs/latest/python_api/mlflow.html#mlflow.search_runs'},
+    ],
+    tip: 'mlflow.search_runs() returns a pandas DataFrame — you can sort, filter, and plot results programmatically.',
+    hasScore: false,
+  },
+  {
+    title: 'Autologging with sklearn, XGBoost, and PyTorch',
+    badge: 'learn',
+    sub: 'Day 5 · Autologging and Integrations',
+    tasks: [
+      {text: 'Read the MLflow autologging guide', url: 'https://mlflow.org/docs/latest/tracking/autolog.html'},
+      'Enable global autologging with mlflow.autolog()',
+      'Train a sklearn Pipeline and verify params/metrics were auto-logged',
+      'Train an XGBoost model and inspect eval metric curves',
+      'Disable autologging for a specific library while keeping it for others',
+      'Compare manual logging vs autolog output side-by-side in the UI',
+    ],
+    resources: [
+      {text: 'Autologging Guide', url: 'https://mlflow.org/docs/latest/tracking/autolog.html'},
+      {text: 'mlflow.sklearn.autolog()', url: 'https://mlflow.org/docs/latest/python_api/mlflow.sklearn.html#mlflow.sklearn.autolog'},
+    ],
+    tip: 'Call mlflow.autolog() once at the top of your script before any model training — it instruments all supported libraries automatically.',
+    hasScore: false,
+  },
+  {
+    title: 'MLflow Models and Flavors (sklearn, PyFunc, ONNX)',
+    badge: 'learn',
+    sub: 'Day 6 · Autologging and Integrations',
+    tasks: [
+      {text: 'Read the MLflow Models format docs', url: 'https://mlflow.org/docs/latest/models.html'},
+      'Log a sklearn model and inspect the generated MLmodel YAML file',
+      'Understand model flavors: what python_function, sklearn, and onnx mean',
+      'Add a model signature using mlflow.models.infer_signature()',
+      'Add an input example to the logged model',
+      'Load the model back with mlflow.pyfunc.load_model() and run inference',
+    ],
+    resources: [
+      {text: 'MLflow Models Docs', url: 'https://mlflow.org/docs/latest/models.html'},
+      {text: 'Model Signatures', url: 'https://mlflow.org/docs/latest/models.html#model-signature-and-input-example'},
+    ],
+    tip: 'Always add a model signature — it enables input validation at serving time and makes the model self-documenting.',
+    hasScore: false,
+  },
+  {
+    title: 'The MLflow Model Registry — Staging, Production, Archiving',
+    badge: 'practice',
+    sub: 'Day 7 · Model Registry',
+    tasks: [
+      {text: 'Read the MLflow Model Registry guide', url: 'https://mlflow.org/docs/latest/model-registry.html'},
+      'Register a model from a completed run using mlflow.register_model()',
+      'Transition the model version to Staging stage',
+      'Promote the model version to Production',
+      'Add a description and a version alias (e.g. "champion")',
+      'Load the Production model by stage with mlflow.pyfunc.load_model("models:/name/Production")',
+    ],
+    resources: [
+      {text: 'Model Registry Guide', url: 'https://mlflow.org/docs/latest/model-registry.html'},
+      {text: 'MlflowClient API', url: 'https://mlflow.org/docs/latest/python_api/mlflow.client.html'},
+    ],
+    tip: 'Use model aliases ("champion", "challenger") rather than hardcoding stage names — aliases survive stage deprecation changes.',
+    hasScore: false,
+  },
+  {
+    title: 'MLflow Projects — Packaging Reproducible Code',
+    badge: 'practice',
+    sub: 'Day 8 · Projects and Custom Models',
+    tasks: [
+      {text: 'Read the MLflow Projects guide', url: 'https://mlflow.org/docs/latest/projects.html'},
+      'Create an MLproject YAML file with name, conda_env, and entry_points',
+      'Define a train entry point with typed parameters',
+      'Run the project locally with mlflow run . -P param=value',
+      'Run the project directly from a GitHub URL',
+      'Understand dependency pinning with conda.yaml vs pip requirements',
+    ],
+    resources: [
+      {text: 'MLflow Projects Docs', url: 'https://mlflow.org/docs/latest/projects.html'},
+      {text: 'MLproject File Reference', url: 'https://mlflow.org/docs/latest/projects.html#mlproject-file'},
+    ],
+    tip: 'An MLproject file turns any directory into a reproducible, shareable experiment — anyone can run it with one command.',
+    hasScore: false,
+  },
+  {
+    title: 'Custom Python Function Models and Preprocessing Pipelines',
+    badge: 'practice',
+    sub: 'Day 9 · Projects and Custom Models',
+    tasks: [
+      {text: 'Read the MLflow pyfunc guide', url: 'https://mlflow.org/docs/latest/python_api/mlflow.pyfunc.html'},
+      'Create a class extending mlflow.pyfunc.PythonModel with a predict() method',
+      'Bundle a preprocessing step (e.g. scaler) inside the custom model',
+      'Log the custom pyfunc model with mlflow.pyfunc.log_model()',
+      'Load the model and run inference on raw (unscaled) input',
+      'Use the artifacts dict to pass additional files to the model at load time',
+    ],
+    resources: [
+      {text: 'Custom PyFunc Models', url: 'https://mlflow.org/docs/latest/python_api/mlflow.pyfunc.html'},
+      {text: 'PythonModel Base Class', url: 'https://mlflow.org/docs/latest/python_api/mlflow.pyfunc.html#mlflow.pyfunc.PythonModel'},
+    ],
+    tip: 'Bundle preprocessing inside your pyfunc model — this prevents training/serving skew and makes the model truly portable.',
+    hasScore: false,
+  },
+  {
+    title: 'Model Serving with mlflow models serve and REST API',
+    badge: 'practice',
+    sub: 'Day 10 · Serving and Deployment',
+    tasks: [
+      {text: 'Read the MLflow deployment docs', url: 'https://mlflow.org/docs/latest/deployment/index.html'},
+      'Serve a Production model locally with mlflow models serve --port 5001',
+      'Send a prediction request with curl using the /invocations endpoint',
+      'Test the served model with Python requests library',
+      'Understand the difference between local serving and Databricks model serving',
+      'Build a minimal FastAPI wrapper around the mlflow pyfunc.load_model() call',
+    ],
+    resources: [
+      {text: 'MLflow Deployment Docs', url: 'https://mlflow.org/docs/latest/deployment/index.html'},
+      {text: 'REST API Reference', url: 'https://mlflow.org/docs/latest/rest-api.html'},
+    ],
+    tip: 'Test locally with mlflow models serve before deploying — the /invocations endpoint format is identical between local and cloud.',
+    hasScore: false,
+  },
+  {
+    title: 'Cloud Backends — S3, Azure Blob, and GCS Tracking Stores',
+    badge: 'review',
+    sub: 'Day 11 · Serving and Deployment',
+    tasks: [
+      {text: 'Read the remote tracking server docs', url: 'https://mlflow.org/docs/latest/tracking/server.html'},
+      'Understand the separation between artifact store and tracking backend store',
+      'Configure an S3 artifact store URI (s3://bucket/path/to/mlruns)',
+      'Set MLFLOW_TRACKING_URI environment variable to a remote server',
+      'Use mlflow.set_tracking_uri() programmatically in your scripts',
+      'Review the boto3 credential chain for S3 artifact access',
+    ],
+    resources: [
+      {text: 'Remote Tracking Server', url: 'https://mlflow.org/docs/latest/tracking/server.html'},
+      {text: 'Artifact Store Backends', url: 'https://mlflow.org/docs/latest/tracking/artifacts-stores.html'},
+    ],
+    tip: 'Keep the tracking backend (metadata) and artifact store (files) on separate services — SQLite + S3 is a common minimal production setup.',
+    hasScore: false,
+  },
+  {
+    title: 'Integrating MLflow into Training Pipelines and CI/CD',
+    badge: 'practice',
+    sub: 'Day 12 · Pipelines and CI/CD',
+    tasks: [
+      {text: 'Read the MLflow system tags docs', url: 'https://mlflow.org/docs/latest/tracking/tracking-api.html#system-tags'},
+      'Wrap a multi-step training pipeline in a single parent MLflow run',
+      'Create nested child runs for each pipeline stage',
+      'Tag all runs with the git commit SHA using mlflow.set_tag("git_sha", ...)',
+      'Write a GitHub Actions workflow step that runs mlflow training and logs results',
+      'Add an auto-promotion script that promotes the best run to Production',
+    ],
+    resources: [
+      {text: 'System Tags Reference', url: 'https://mlflow.org/docs/latest/tracking/tracking-api.html#system-tags'},
+      {text: 'Nested Runs', url: 'https://mlflow.org/docs/latest/tracking/tracking-api.html#organizing-runs-in-experiments'},
+    ],
+    tip: 'Nested runs are your audit trail — use a parent run for the whole pipeline and child runs for each stage.',
+    hasScore: false,
+  },
+  {
+    title: 'Review — Advanced Patterns and Real-World Gotchas',
+    badge: 'review',
+    sub: 'Day 13 · Review and Capstone',
+    tasks: [
+      {text: 'Read the MLflow FAQ and troubleshooting guide', url: 'https://mlflow.org/docs/latest/faq.html'},
+      'Review your notes and runs from Days 1–12',
+      'Implement run name deduplication using a timestamp suffix pattern',
+      'Understand mlflow.last_active_run() threading issues in multi-process training',
+      'Compare mlflow.sklearn.load_model(), mlflow.pyfunc.load_model(), and MlflowClient.download_artifacts()',
+      'Write a one-page production runbook: how to debug a failed run end-to-end',
+    ],
+    resources: [
+      {text: 'MLflow FAQ', url: 'https://mlflow.org/docs/latest/faq.html'},
+      {text: 'Common Issues', url: 'https://github.com/mlflow/mlflow/issues'},
+    ],
+    tip: 'The three load APIs serve different purposes: flavor-specific for fast inference, pyfunc for portable serving, MlflowClient for artifact files.',
+    hasScore: false,
+  },
+  {
+    title: 'Capstone — Full MLOps Pipeline: Train → Track → Register → Serve',
+    badge: 'exam',
+    sub: 'Day 14 · Review and Capstone',
+    tasks: [
+      {text: 'Review the MLflow end-to-end guide', url: 'https://mlflow.org/docs/latest/getting-started/logging-first-model/index.html'},
+      'Build a TrainFlow script that trains 3 model variants with different hyperparameters',
+      'Use mlflow.search_runs() to select the best model by validation metric',
+      'Register the winning model and promote it to Production',
+      'Serve the Production model via mlflow models serve and verify predictions via REST API',
+      'Write a retrospective: what MLflow patterns would you use in a real project?',
+    ],
+    resources: [
+      {text: 'End-to-End Guide', url: 'https://mlflow.org/docs/latest/getting-started/logging-first-model/index.html'},
+      {text: 'MLflow Examples', url: 'https://github.com/mlflow/mlflow/tree/master/examples'},
+    ],
+    tip: 'Your capstone is the proof of the full loop — every step from experiment to served API should be reproducible from a single MLproject run.',
+    hasScore: true,
+  },
+];
+
+const topics = [
+  {name: 'Core Tracking',              color: '#378ADD', days: [0, 1, 2]},
+  {name: 'UI and Search',              color: '#0891B2', days: [3]},
+  {name: 'Autologging and Integrations', color: '#7F77DD', days: [4, 5]},
+  {name: 'Model Registry',             color: '#BA7517', days: [6]},
+  {name: 'Projects and Custom Models', color: '#D85A30', days: [7, 8]},
+  {name: 'Serving and Deployment',     color: '#E8500A', days: [9, 10]},
+  {name: 'Pipelines and CI/CD',        color: '#0891B2', days: [11]},
+  {name: 'Review and Capstone',        color: '#7F77DD', days: [12, 13]},
+];
+
+const exam = {
+  questions: null,
+  minutes:   null,
+  passScore: 'N/A',
+  cost:      'Free',
+  provider:  'Databricks (Self-paced)',
+  link:      'https://mlflow.org/docs/latest/index.html',
+  notes:     'No formal exam. Completion of all 14 days and the capstone project demonstrates proficiency.',
+};
+
+let state = {
+  completed: [], scores: {}, hours: {}, completedAt: {}, tasksDone: {},
+  openDay: null, startDate: null, lastActivity: null, status: 'not_started'
+};
+
+async function loadState() {
+  try { const s = localStorage.getItem(STORAGE_KEY); if(s) state = {...state, ...JSON.parse(s)}; } catch(e) {}
+  if(GHSync.isConnected()) {
+    updateSyncBadge('syncing');
+    const gh = await GHSync.fetchState(COURSE_ID);
+    if(gh) { state = {...state, ...gh}; try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
+    updateSyncBadge(gh ? 'connected' : 'error');
+  } else { updateSyncBadge('disconnected'); }
+}
+
+function saveState() {
+  if(state.completed.length > 0 && state.status === 'not_started') {
+    state.status = 'in_progress';
+    state.startDate = state.startDate || new Date().toISOString();
+  }
+  if(state.completed.length === TOTAL_DAYS) state.status = 'completed';
+  state.lastActivity = new Date().toISOString();
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  broadcastStatus();
+  if(GHSync.isConnected())
+    GHSync.saveDebounced(COURSE_ID, state, 2500,
+      () => updateSyncBadge('syncing'),
+      ok => updateSyncBadge(ok ? 'connected' : 'error'));
+}
+
+function broadcastStatus() {
+  const summary = {
+    id: COURSE_ID, status: state.status,
+    completed: state.completed.length, total: TOTAL_DAYS,
+    scores: Object.values(state.scores).filter(s => s > 0),
+    totalHours: Object.values(state.hours).reduce((a, b) => a + b, 0),
+    completedAt: state.completedAt, startDate: state.startDate,
+    lastActivity: state.lastActivity
+  };
+  try { localStorage.setItem('cj_summary_' + COURSE_ID, JSON.stringify(summary)); } catch(e) {}
+}
+
+function resetAll() {
+  if(!confirm('Reset all progress for this course?')) return;
+  state = {completed:[], scores:{}, hours:{}, completedAt:{}, tasksDone:{}, openDay:null, startDate:null, lastActivity:null, status:'not_started'};
+  saveState(); renderAll();
+}
+
+function isCompleted(i) { return state.completed.includes(i); }
+
+function toggleComplete(i) {
+  if(isCompleted(i)) {
+    state.completed = state.completed.filter(x => x !== i);
+    delete state.completedAt[i];
+  } else {
+    state.completed.push(i);
+    state.completedAt[i] = new Date().toISOString();
+  }
+  saveState(); updateStats(); renderSchedule();
+}
+
+function toggleDay(i) {
+  state.openDay = state.openDay === i ? null : i;
+  saveState(); renderSchedule();
+}
+
+function logScore(i, val) {
+  const v = parseInt(val);
+  if(!isNaN(v) && v >= 0 && v <= 100) { state.scores[i] = v; saveState(); updateStats(); }
+}
+
+function logHours(i, val) {
+  const v = parseFloat(val);
+  if(!isNaN(v) && v >= 0) { state.hours[i] = v; saveState(); updateStats(); }
+}
+
+function scoreClass(s) { return s >= 80 ? 'ok' : s >= 60 ? 'warn' : 'danger'; }
+function badgeClass(b) { return 'badge-' + b; }
+function badgeLabel(b) { return {learn:'Learn', practice:'Practice', review:'Review', exam:'Exam'}[b] || b; }
+
+const dayTopics = (() => {
+  const m = {};
+  topics.forEach(t => t.days.forEach(d => { (m[d] = m[d] || []).push(t); }));
+  return m;
+})();
+
+function goToDay(i) {
+  showPanel('schedule', document.querySelector('.tab'));
+  setTimeout(() => {
+    state.openDay = i; saveState(); renderSchedule();
+    const el = document.querySelector('.day-card:nth-child(' + (i + 1) + ')');
+    if(el) el.scrollIntoView({behavior: 'smooth', block: 'start'});
+  }, 50);
+}
+
+function renderTask(t, di, ti) {
+  const done = (state.tasksDone[di] || []).includes(ti);
+  const text = typeof t === 'string' ? t : t.text;
+  const link = (typeof t === 'object' && t.url)
+    ? `<a class="task-link" href="${t.url}" target="_blank" rel="noopener">↗</a>` : '';
+  return `<div class="task${done ? ' task-done' : ''}">
+    <button class="task-tick${done ? ' ticked' : ''}" onclick="event.stopPropagation();tickTask(${di},${ti})"></button>
+    <span>${text}</span>${link}
+  </div>`;
+}
+
+function tickTask(di, ti) {
+  const arr = state.tasksDone[di] || (state.tasksDone[di] = []);
+  const idx = arr.indexOf(ti);
+  if(idx === -1) arr.push(ti); else arr.splice(idx, 1);
+  const total = days[di].tasks.length;
+  const done  = arr.length;
+  if(done === total && !isCompleted(di)) { toggleComplete(di); return; }
+  if(done < total  &&  isCompleted(di)) {
+    state.completed = state.completed.filter(x => x !== di);
+    delete state.completedAt[di];
+  }
+  saveState(); renderSchedule();
+}
+
+function renderRes(r) {
+  if(typeof r === 'string') return `<span class="res-pill">📎 ${r}</span>`;
+  return r.url
+    ? `<a class="res-pill" href="${r.url}" target="_blank" rel="noopener">📎 ${r.text}</a>`
+    : `<span class="res-pill">📎 ${r.text}</span>`;
+}
+
+function updateStats() {
+  const pct = Math.round((state.completed.length / TOTAL_DAYS) * 100);
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('bar-fill').style.width = pct + '%';
+  document.getElementById('stat-days').textContent = state.completed.length + '/' + TOTAL_DAYS;
+  const hrs = Object.values(state.hours).reduce((a, b) => a + b, 0);
+  document.getElementById('stat-hours').textContent = hrs % 1 === 0 ? hrs : hrs.toFixed(1);
+  const scores = Object.values(state.scores).filter(s => s > 0);
+  const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null;
+  const sv = document.getElementById('stat-score');
+  if(avg) { sv.textContent = avg + '%'; sv.className = 'stat-val ' + scoreClass(avg); }
+  else { sv.textContent = '—'; sv.className = 'stat-val'; }
+  const r = document.getElementById('readiness');
+  if(pct === 0)      { r.className = 'readiness early'; r.textContent = '🌱 Just getting started'; }
+  else if(pct < 40)  { r.className = 'readiness early'; r.textContent = '📖 Building foundations'; }
+  else if(pct < 75)  { r.className = 'readiness early'; r.textContent = '⚙️ Making solid progress'; }
+  else if(pct < 100) { r.className = 'readiness close'; r.textContent = '🔥 Almost there'; }
+  else               { r.className = 'readiness ready'; r.textContent = '✅ Course complete!'; }
+}
+
+function renderSchedule() {
+  const el = document.getElementById('panel-schedule');
+  el.innerHTML = days.map((d, i) => {
+    const comp  = isCompleted(i);
+    const open  = state.openDay === i;
+    const score = state.scores[i];
+    const hrs   = state.hours[i];
+    const tot   = d.tasks.length;
+    const done  = (state.tasksDone[i] || []).length;
+    return `<div class="day-card${comp ? ' completed' : ''}${open ? ' open' : ''}" id="day-${i}">
+      <div class="day-header" onclick="toggleDay(${i})">
+        <span class="day-num">${comp ? '✓' : ('0' + (i + 1)).slice(-2)}</span>
+        <div class="day-meta">
+          <div class="day-title">${d.title}</div>
+          <div class="day-sub">${d.sub}</div>
+        </div>
+        <span class="day-badge ${badgeClass(d.badge)}">${badgeLabel(d.badge)}</span>
+        <span class="chevron">▾</span>
+      </div>
+      ${open ? `<div class="day-body">
+        <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
+        <div class="nb-row">
+          <a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a>
+          <a class="nb-btn nb-btn-colab" href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/${COURSE_ID}/notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">▶ Open in Colab</a>
+          <a class="nb-btn" href="https://github.com/certified-journeys/certified-journeys.github.io/edit/main/courses/${COURSE_ID}/notes/day-${String(i + 1).padStart(2, '0')}.md" target="_blank">📝 notes/day-${String(i + 1).padStart(2, '0')}.md</a>
+        </div>
+        ${(dayTopics[i] || []).length ? `<div class="day-topic-pills">${(dayTopics[i] || []).map(t => `<span class="day-topic-pill" style="background:${t.color}18;color:${t.color};border-color:${t.color}40" onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])" title="View topic in Topics tab">${t.name}</span>`).join('')}</div>` : ''}
+        ${tot ? `<div class="task-progress"><div class="task-progress-fill" style="width:${Math.round(done / tot * 100)}%"></div></div>` : ''}
+        <div class="task-list">${d.tasks.map((t, j) => renderTask(t, i, j)).join('')}</div>
+        <div class="resources-row">${d.resources.map(renderRes).join('')}</div>
+        ${d.hasScore ? `<div class="score-row"><label>Practice score (%):</label><input type="number" min="0" max="100" placeholder="e.g. 84" value="${score || ''}" onchange="logScore(${i},this.value)">${score ? `<span class="score-badge ${scoreClass(score) === 'ok' ? 'badge-learn' : scoreClass(score) === 'warn' ? 'badge-review' : 'badge-exam'}">${score}%</span>` : ''}</div>` : ''}
+        <div class="hours-row"><label>Hours spent today:</label><input type="number" min="0" max="24" step="0.5" placeholder="e.g. 2.5" value="${hrs || ''}" onchange="logHours(${i},this.value)"><span style="font-size:11px;color:var(--text3);">hrs</span></div>
+        <button class="complete-btn ${comp ? 'done' : ''}" onclick="event.stopPropagation();toggleComplete(${i})">${comp ? '✓ Completed' : 'Mark as complete'}</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderTopics() {
+  document.getElementById('panel-topics').innerHTML = `<div class="topic-grid">${
+    topics.map(t => {
+      const cov = t.days.filter(d => state.completed.includes(d)).length;
+      const pct = Math.round((cov / t.days.length) * 100);
+      const dayBtns = t.days.map(d =>
+        `<button class="topic-day-btn${state.completed.includes(d) ? ' done' : ''}" onclick="goToDay(${d})">Day ${d + 1}</button>`
+      ).join('');
+      return `<div class="topic-card">
+        <h4>${t.name}</h4>
+        <div class="t-bar-bg"><div class="t-bar-fill" style="width:${pct}%;background:${t.color}"></div></div>
+        <div class="t-pct">${pct}% covered · ${cov}/${t.days.length} sessions</div>
+        <div class="topic-days">${dayBtns}</div>
+      </div>`;
+    }).join('')
+  }</div>`;
+}
+
+function renderAI() {
+  document.getElementById('panel-ai').innerHTML = `
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#E8F0FE;">🎙</div>
+        <div><div class="ai-card-title">NotebookLM — Audio Podcast Summary</div><div class="ai-card-sub">Generate a personalized audio briefing of your MLflow learning</div></div>
+      </div>
+      <div class="ai-card-body">Upload your day-card notes plus the MLflow official docs as sources in NotebookLM, then generate a podcast covering the tracking API, model registry lifecycle, and serving patterns.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Audio:
+"Create a 10-minute podcast for an intermediate Python engineer studying MLflow for ML Engineers. Cover: the core tracking API (runs, params, metrics, artifacts), the Model Registry lifecycle (register → staging → production), autologging vs manual logging tradeoffs, custom PyFunc models for preprocessing pipelines, and the 3 things they must understand before deploying a model to a REST endpoint."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#FEF3E2;">🃏</div>
+        <div><div class="ai-card-title">NotebookLM — AI Flashcards</div><div class="ai-card-sub">Generate quiz cards from your MLflow notes</div></div>
+      </div>
+      <div class="ai-card-body">Upload your notes and the MLflow API reference to NotebookLM and use the Study Guide feature to generate Q&A flashcards on tracking, registry, and deployment details.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Quiz:
+"Generate 20 flashcard-style Q&A pairs for someone studying MLflow for ML Engineers. Focus on: the difference between mlflow.log_param() and mlflow.log_metric(), how model signatures prevent serving errors, when to use mlflow.pyfunc vs flavor-specific loaders, how nested runs model multi-stage pipelines, and common mistakes when configuring remote artifact stores."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#EEE9FF;">💬</div>
+        <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore MLflow patterns with targeted prompts</div></div>
+      </div>
+      <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific MLflow pattern.</div>
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior ML engineer:
+"I'm studying MLflow for ML Engineers. Explain [TOPIC, e.g. 'the Model Registry lifecycle and how aliases replace hardcoded stage names'] as if I'm already experienced with sklearn and pandas. Skip the basics — focus on nuance, edge cases, and real-world MLOps decisions."
+
+Prompt 2 — MLOps design review:
+"I'm designing an MLflow-based experiment tracking setup for a team of 5 ML engineers. Here's my plan: [describe setup]. Review it as a senior MLOps engineer. What tracking patterns are missing? When should we use nested runs? How should we structure model versions?"
+
+Prompt 3 — Gap analysis study plan:
+"I've studied MLflow basics but I'm unsure about [TOPIC, e.g. 'configuring a remote tracking server with S3 artifact store and PostgreSQL backend']. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+    </div>`;
+}
+
+function renderResources() {
+  document.getElementById('panel-resources').innerHTML = `
+    <div class="res-section">
+      <div class="res-section-title">📖 Core Reading</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">01</span><div class="res-link-body"><a href="https://mlflow.org/docs/latest/index.html" target="_blank">MLflow Official Docs</a><div class="res-link-desc">Complete documentation: tracking API, model registry, projects, deployment, and the full Python API reference.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">02</span><div class="res-link-body"><a href="https://mlflow.org/docs/latest/tracking.html" target="_blank">MLflow Tracking Guide</a><div class="res-link-desc">Core concepts: experiments, runs, params, metrics, artifacts, and the tracking API in depth.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">03</span><div class="res-link-body"><a href="https://mlflow.org/docs/latest/model-registry.html" target="_blank">Model Registry Guide</a><div class="res-link-desc">How to register, stage, promote, version, alias, and load models from the MLflow Model Registry.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">04</span><div class="res-link-body"><a href="https://mlflow.org/docs/latest/models.html" target="_blank">MLflow Models Format</a><div class="res-link-desc">Model flavors, signatures, input examples, and the MLmodel YAML specification.</div></div></div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🛠 Hands-On Resources</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">05</span><div class="res-link-body"><a href="https://mlflow.org/docs/latest/getting-started/intro-quickstart/index.html" target="_blank">MLflow Quickstart Tutorial</a><div class="res-link-desc">Official end-to-end quickstart: install, log, view in UI, and register a model in under 30 minutes.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">06</span><div class="res-link-body"><a href="https://github.com/mlflow/mlflow/tree/master/examples" target="_blank">MLflow Examples Repository</a><div class="res-link-desc">Official runnable examples: sklearn, XGBoost, PyTorch, TensorFlow, custom PyFunc, and MLproject files.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">07</span><div class="res-link-body"><a href="https://mlflow.org/docs/latest/tracking/autolog.html" target="_blank">Autologging Reference</a><div class="res-link-desc">Full list of supported frameworks and what is auto-logged: params, metrics, model artifacts, and plots.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">08</span><div class="res-link-body"><a href="https://mlflow.org/docs/latest/python_api/mlflow.client.html" target="_blank">MlflowClient API Reference</a><div class="res-link-desc">Low-level client for managing experiments, runs, model versions, and registry operations programmatically.</div></div></div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🔧 Ecosystem &amp; Tooling</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">09</span><div class="res-link-body"><a href="https://mlflow.org/docs/latest/tracking/server.html" target="_blank">Remote Tracking Server Setup</a><div class="res-link-desc">Configure a production MLflow server with remote artifact stores (S3, Azure Blob, GCS) and SQL backend.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">10</span><div class="res-link-body"><a href="https://mlflow.org/docs/latest/projects.html" target="_blank">MLflow Projects Guide</a><div class="res-link-desc">MLproject file format, entry points, parameter types, conda/pip environments, and running from GitHub URLs.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">11</span><div class="res-link-body"><a href="https://mlflow.org/docs/latest/deployment/index.html" target="_blank">Model Deployment Options</a><div class="res-link-desc">Local serving, Docker, Databricks, SageMaker, Azure ML, and custom deployment plugins.</div></div></div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">⬆ Upgrade Path</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">12</span><div class="res-link-body"><a href="https://www.databricks.com/product/managed-mlflow" target="_blank">Managed MLflow on Databricks</a><div class="res-link-desc">Enterprise MLflow with built-in model serving, Unity Catalog integration, and team access controls.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">13</span><div class="res-link-body"><a href="https://docs.metaflow.org" target="_blank">Metaflow Docs</a><div class="res-link-desc">Pair MLflow experiment tracking with Metaflow workflow orchestration for end-to-end ML pipelines.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">14</span><div class="res-link-body"><a href="https://mlflow.org/docs/latest/llms/index.html" target="_blank">MLflow for LLMs</a><div class="res-link-desc">Tracking LLM experiments, prompt versioning, evaluation, and deploying language models with MLflow.</div></div></div>
+      </div>
+    </div>`;
+}
+
+function renderExam() {
+  document.getElementById('panel-exam').innerHTML = `
+    <div class="exam-grid">
+      <div class="exam-card"><div class="exam-card-label">Cost</div><div class="exam-card-val">${exam.cost}</div><div class="exam-card-sub">Self-paced, free</div></div>
+      <div class="exam-card"><div class="exam-card-label">Questions</div><div class="exam-card-val">N/A</div><div class="exam-card-sub">No formal exam</div></div>
+      <div class="exam-card"><div class="exam-card-label">Time limit</div><div class="exam-card-val">N/A</div><div class="exam-card-sub">Project-based</div></div>
+      <div class="exam-card"><div class="exam-card-label">Pass mark</div><div class="exam-card-val" style="font-size:13px;">${exam.passScore}</div><div class="exam-card-sub">Capstone project</div></div>
+    </div>
+    <div class="info-box"><strong>Completion format:</strong> ${exam.notes}</div>
+    <div class="info-box" style="margin-top:10px;">
+      <strong>📋 Readiness checklist — before marking yourself done:</strong><br><br>
+      • Completed all ${TOTAL_DAYS} days of the study plan<br>
+      • Built the capstone end-to-end pipeline: train → track → register → serve<br>
+      • Can explain every Topics tab item without notes<br>
+      • Written a cheat sheet of the full tracking API from memory and verified it<br>
+      • Capstone model serves predictions via REST API end-to-end<br>
+      • Consistent progress — not rushed through, each day's tasks genuinely completed
+    </div>
+    <div style="margin-top:12px;">
+      <a href="${exam.link}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:10px 20px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-weight:500;text-decoration:none;">View MLflow Docs →</a>
+    </div>`;
+}
+
+function showPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(name === 'topics')    renderTopics();
+  if(name === 'ai')        renderAI();
+  if(name === 'resources') renderResources();
+  if(name === 'exam')      renderExam();
+}
+
+function renderAll() {
+  renderSchedule();
+  updateStats();
+}
+
+function updateSyncBadge(s) {
+  const el = document.getElementById('sync-badge'); if(!el) return;
+  const L = {disconnected: '☁ Connect GitHub', connected: '✓ Synced', syncing: '↑ Syncing…', error: '⚠ Sync failed'};
+  el.textContent = L[s] || L.disconnected;
+  el.className = 'sync-badge' + (s === 'connected' ? ' connected' : s === 'syncing' ? ' syncing' : s === 'error' ? ' error' : '');
+}
+
+function openGHModal() {
+  const creds = GHSync.getCreds();
+  if(creds) {
+    document.getElementById('gh-pat').value    = creds.pat    || '';
+    document.getElementById('gh-owner').value  = creds.owner  || '';
+    document.getElementById('gh-repo').value   = creds.repo   || '';
+    document.getElementById('gh-branch').value = creds.branch || 'main';
+    document.getElementById('gh-disconnect-btn').style.display = 'inline-flex';
+  } else {
+    document.getElementById('gh-disconnect-btn').style.display = 'none';
+  }
+  document.getElementById('gh-modal').classList.add('open');
+}
+function closeGHModal() { document.getElementById('gh-modal').classList.remove('open'); }
+async function saveGHCreds() {
+  const c = {
+    pat:    document.getElementById('gh-pat').value.trim(),
+    owner:  document.getElementById('gh-owner').value.trim(),
+    repo:   document.getElementById('gh-repo').value.trim(),
+    branch: document.getElementById('gh-branch').value.trim() || 'main'
+  };
+  if(!c.pat || !c.owner || !c.repo) { document.getElementById('gh-modal-msg').textContent = 'Fill in all fields.'; return; }
+  document.getElementById('gh-modal-msg').textContent = 'Testing…';
+  GHSync.saveCreds(c);
+  const r = await GHSync.testConnection();
+  if(r.ok) { document.getElementById('gh-modal-msg').textContent = '✓ Connected!'; updateSyncBadge('connected'); setTimeout(closeGHModal, 900); }
+  else { document.getElementById('gh-modal-msg').textContent = 'Error: ' + r.msg; }
+}
+function disconnectGH() { GHSync.saveCreds(null); updateSyncBadge('disconnected'); closeGHModal(); }
+
+loadState().then(renderAll);
+
+// ── Dark mode toggle ──────────────────────────────────────────
+const MOON = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function getEffectiveTheme(){const t=document.documentElement.getAttribute('data-theme');if(t)return t;return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+function applyThemeBtn(){const btn=document.getElementById('theme-btn');if(!btn)return;const dark=getEffectiveTheme()==='dark';btn.innerHTML=dark?SUN:MOON;btn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');}
+window.toggleTheme=function(){const next=getEffectiveTheme()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);localStorage.setItem('cj-theme',next);applyThemeBtn();};
+applyThemeBtn();
+</script>
+</body>
+</html>

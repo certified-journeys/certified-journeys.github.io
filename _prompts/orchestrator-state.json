@@ -9,18 +9,88 @@
   },
   "current_course": null,
   "current_phase": null,
-  "last_updated": null,
+  "last_updated": "2026-06-07T03:45:00.000000+00:00",
   "schedule_id": null,
   "courses": {
-    "mlflow-certified":    { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null },
-    "prefect-certified":   { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null },
-    "duckdb-certified":    { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null },
-    "fastapi-certified":   { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null },
-    "kestra-certified":    { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null },
-    "pydantic-certified":  { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null },
-    "ray-certified":       { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null },
-    "sodacore-certified":  { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null },
-    "pandera-certified":   { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null },
-    "altair-certified":    { "status": "pending", "started_at": null, "designed_at": null, "generated_at": null, "completed_at": null, "error": null }
+    "mlflow-certified": {
+      "status": "done",
+      "started_at": "2026-06-07T02:30:58.339125Z",
+      "designed_at": "2026-06-07T02:33:25.323586+00:00",
+      "generated_at": "2026-06-07T03:40:00.000000+00:00",
+      "completed_at": "2026-06-07T03:45:00.000000+00:00",
+      "error": null
+    },
+    "prefect-certified": {
+      "status": "pending",
+      "started_at": null,
+      "designed_at": null,
+      "generated_at": null,
+      "completed_at": null,
+      "error": null
+    },
+    "duckdb-certified": {
+      "status": "pending",
+      "started_at": null,
+      "designed_at": null,
+      "generated_at": null,
+      "completed_at": null,
+      "error": null
+    },
+    "fastapi-certified": {
+      "status": "pending",
+      "started_at": null,
+      "designed_at": null,
+      "generated_at": null,
+      "completed_at": null,
+      "error": null
+    },
+    "kestra-certified": {
+      "status": "pending",
+      "started_at": null,
+      "designed_at": null,
+      "generated_at": null,
+      "completed_at": null,
+      "error": null
+    },
+    "pydantic-certified": {
+      "status": "pending",
+      "started_at": null,
+      "designed_at": null,
+      "generated_at": null,
+      "completed_at": null,
+      "error": null
+    },
+    "ray-certified": {
+      "status": "pending",
+      "started_at": null,
+      "designed_at": null,
+      "generated_at": null,
+      "completed_at": null,
+      "error": null
+    },
+    "sodacore-certified": {
+      "status": "pending",
+      "started_at": null,
+      "designed_at": null,
+      "generated_at": null,
+      "completed_at": null,
+      "error": null
+    },
+    "pandera-certified": {
+      "status": "pending",
+      "started_at": null,
+      "designed_at": null,
+      "generated_at": null,
+      "completed_at": null,
+      "error": null
+    },
+    "altair-certified": {
+      "status": "pending",
+      "started_at": null,
+      "designed_at": null,
+      "generated_at": null,
+      "completed_at": null,
+      "error": null
+    }
   }
 }
