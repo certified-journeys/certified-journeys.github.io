@@ -7,7 +7,7 @@
     "auto_commit": true,
     "on_validation_failure": "stop"
   },
-  "current_course": "fastapi-certified",
+  "current_course": "kestra-certified",
   "current_phase": "pending",
   "last_updated": "2026-06-07T14:00:00.000000+00:00",
   "schedule_id": null,
@@ -37,11 +37,11 @@
       "error": null
     },
     "fastapi-certified": {
-      "status": "pending",
-      "started_at": null,
-      "designed_at": null,
-      "generated_at": null,
-      "completed_at": null,
+      "status": "done",
+      "started_at": "2026-06-07T18:15:00.000000+00:00",
+      "designed_at": "2026-06-07T18:20:00.000000+00:00",
+      "generated_at": "2026-06-07T19:00:00.000000+00:00",
+      "completed_at": "2026-06-07T19:05:00.000000+00:00",
       "error": null
     },
     "kestra-certified": {

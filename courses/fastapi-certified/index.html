@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FastAPI for Python Engineers · certified-journeys</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#009688; --green-light:#E0F2F1; --green-dark:#00695C;
+  --blue:#378ADD; --blue-light:#EAF3FD; --blue-dark:#185FA5;
+  --amber:#BA7517; --amber-light:#FDF3E3;
+  --coral:#D85A30; --coral-light:#FAEDE8; --coral-dark:#993C1D;
+  --purple:#7F77DD; --purple-light:#EEEDFE;
+  --orange:#E8890C; --orange-light:#FEF3E2;
+  --teal:#0891B2; --teal-light:#E0F5FA;
+  --bg:#F5F4F0; --surface:#FFFFFF; --surface2:#EEECE5; --surface3:#E8E6DF;
+  --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.16);
+  --text:#18181A; --text2:#52524E; --text3:#8C8B85;
+  --radius:14px; --radius-sm:9px; --radius-xs:5px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.06);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#001A17;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}}
+[data-theme="dark"]{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#001A17;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}
+/* Nav */
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);border-bottom:0.5px solid var(--border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav{background:rgba(26,26,26,0.85);}}
+[data-theme="dark"] nav{background:rgba(26,26,26,0.85);}
+.nav-inner{max-width:860px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-0.025em;color:var(--text);text-decoration:none;}
+.nav-brand:hover{text-decoration:none;opacity:0.85;}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-gh{font-size:12px;padding:6px 14px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;gap:5px;transition:all 0.15s;text-decoration:none;font-weight:500;}
+.nav-gh:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.theme-btn{width:34px;height:34px;border-radius:99px;flex-shrink:0;border:0.5px solid var(--border2);background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;}
+.theme-btn:hover{background:var(--surface2);color:var(--text);}
+@media(max-width:600px){.nav-gh{display:none;}}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1rem;}
+a{color:var(--green-dark);text-decoration:none;}
+a:hover{text-decoration:underline;}
+.app{max-width:780px;margin:0 auto;}
+.breadcrumb{font-size:13px;color:var(--text3);margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
+.breadcrumb a{color:var(--text3);}
+.breadcrumb a:hover{color:var(--text);}
+.breadcrumb-sep{opacity:.4;}
+.course-hero{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:0 0 1.25rem;box-shadow:var(--shadow);}
+.course-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.course-icon-wrap{width:52px;height:52px;border-radius:12px;background:var(--green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.course-icon{font-size:15px;font-weight:700;color:var(--green-dark);font-family:'DM Mono',monospace;letter-spacing:-.5px;}
+.course-title-block{flex:1;}
+.course-title-block h1{font-size:20px;font-weight:700;line-height:1.2;margin-bottom:6px;}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;}
+.tag{font-size:11px;padding:2px 9px;border-radius:99px;background:var(--green-light);color:var(--green-dark);font-weight:500;}
+.hero-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.meta-item{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;}
+.meta-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.meta-val{font-size:14px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;}
+.prog-strip{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1.25rem;box-shadow:var(--shadow);}
+.prog-strip-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prog-label{font-size:13px;font-weight:500;}
+.prog-pct{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;color:var(--green);}
+.bar-bg{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:10px;}
+.bar-fill{height:100%;background:var(--green);border-radius:99px;transition:width .4s;}
+.readiness{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;background:var(--surface2);color:var(--text3);margin-bottom:10px;}
+.readiness.early{background:var(--amber-light);color:var(--amber);}
+.readiness.close{background:var(--orange-light);color:var(--orange);}
+.readiness.ready{background:var(--green-light);color:var(--green-dark);}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.stat{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.stat-val{font-size:18px;font-weight:700;font-family:'DM Mono',monospace;}
+.stat-val.ok{color:var(--green-dark);}
+.stat-val.warn{color:var(--amber);}
+.stat-val.danger{color:var(--coral);}
+.tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;}
+.tab{font-size:13px;padding:7px 14px;border-radius:var(--radius-sm);border:.5px solid var(--border);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .15s;}
+.tab:hover{background:var(--surface2);}
+.tab.active{background:var(--surface);border-color:var(--border2);color:var(--text);font-weight:500;box-shadow:var(--shadow);}
+.panel{display:none;}
+.panel.active{display:block;}
+.day-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:8px;box-shadow:var(--shadow);overflow:hidden;transition:box-shadow .2s;}
+.day-card.completed{border-color:var(--green);}
+.day-card.open .day-body{display:block;}
+.day-header{display:flex;align-items:center;gap:12px;padding:1rem 1.1rem;cursor:pointer;user-select:none;}
+.day-num{font-size:11px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text3);min-width:32px;}
+.day-meta{flex:1;}
+.day-title{font-size:14px;font-weight:600;line-height:1.3;}
+.day-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.day-badge{font-size:10px;padding:2px 9px;border-radius:99px;font-weight:600;flex-shrink:0;}
+.badge-learn{background:var(--blue-light);color:var(--blue-dark);}
+.badge-practice{background:var(--green-light);color:var(--green-dark);}
+.badge-review{background:var(--amber-light);color:var(--amber);}
+.badge-exam{background:var(--coral-light);color:var(--coral-dark);}
+.chevron{font-size:11px;color:var(--text3);transition:transform .2s;flex-shrink:0;}
+.day-card.open .chevron{transform:rotate(180deg);}
+.day-body{display:none;padding:0 1.1rem 1.1rem;border-top:.5px solid var(--border);}
+.day-body{padding-top:.9rem;}
+.tip-box{background:var(--green-light);border-radius:var(--radius-sm);padding:.7rem .9rem;margin-bottom:10px;font-size:12px;color:var(--green-dark);line-height:1.6;}
+/* Action row */
+.nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
+.nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
+.nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
+/* Linked resources & tasks */
+a.res-pill{text-decoration:none;cursor:pointer;}
+a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:var(--text);}
+.task-link{color:var(--blue-dark);font-size:11px;margin-left:6px;flex-shrink:0;opacity:0.7;line-height:1.5;}
+.task-link:hover{opacity:1;text-decoration:none;}
+/* Task tick checkboxes */
+.task-tick{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px;background:none;padding:0;}
+.task-tick:hover{border-color:var(--green);}
+.task-tick.ticked{background:var(--green);border-color:var(--green);}
+.task-tick.ticked::after{content:"✓";font-size:10px;color:#fff;font-weight:700;line-height:1;}
+.task.task-done>span{text-decoration:line-through;color:var(--text3);}
+/* Per-day task progress bar */
+.task-progress{height:3px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
+.task-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;}
+.task-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.task{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);}
+.resources-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.res-pill{font-size:11px;padding:4px 10px;border-radius:99px;border:.5px solid var(--border);background:var(--surface2);color:var(--text2);display:inline-flex;align-items:center;gap:4px;}
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.score-row label{font-size:12px;color:var(--text2);}
+.score-row input{width:72px;font-size:13px;padding:5px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.score-badge{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600;}
+.hours-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text2);}
+.hours-row input{width:60px;font-size:13px;padding:4px 8px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.complete-btn{width:100%;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s;font-weight:400;}
+.complete-btn:hover{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+.complete-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);font-weight:500;}
+/* Topic pills */
+.day-topic-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.day-topic-pill{font-size:10px;padding:2px 9px;border-radius:99px;border:.5px solid;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.day-topic-pill:hover{opacity:.7;}
+.topic-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.topic-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;box-shadow:var(--shadow);}
+.topic-card h4{font-size:14px;font-weight:600;margin-bottom:8px;}
+.t-bar-bg{height:6px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:5px;}
+.t-bar-fill{height:100%;border-radius:99px;transition:width .4s;}
+.t-pct{font-size:11px;color:var(--text3);margin-bottom:8px;}
+.topic-days{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.topic-day-btn{font-size:11px;padding:2px 8px;border-radius:99px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
+.topic-day-btn:hover{background:var(--surface3);color:var(--text);}
+.topic-day-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+/* AI cards */
+.ai-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;margin-bottom:10px;box-shadow:var(--shadow);}
+.ai-card-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.ai-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ai-card-title{font-size:14px;font-weight:500;color:var(--text);}
+.ai-card-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.ai-card-body{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:6px;}
+.ai-prompt-box{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:10px;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;line-height:1.7;white-space:pre-wrap;}
+.ai-link-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-family:inherit;text-decoration:none;}
+.ai-link-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+/* Exam */
+.exam-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.exam-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.9rem 1rem;box-shadow:var(--shadow);}
+.exam-card-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.exam-card-val{font-size:18px;font-weight:700;font-family:'DM Mono',monospace;margin-bottom:3px;}
+.exam-card-sub{font-size:11px;color:var(--text3);}
+/* Resources */
+.res-section{margin-bottom:1.25rem;}
+.res-section-title{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.res-link-list{display:flex;flex-direction:column;gap:6px;}
+.res-link-item{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.7rem .9rem;box-shadow:var(--shadow);}
+.res-link-index{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);min-width:20px;padding-top:1px;}
+.res-link-body{flex:1;}
+.res-link-body a{font-size:13px;font-weight:500;}
+.res-link-desc{font-size:12px;color:var(--text3);margin-top:2px;line-height:1.5;}
+/* Shared */
+.info-box{background:var(--surface2);border-radius:var(--radius-sm);padding:.8rem 1rem;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+.page-footer{text-align:center;font-size:12px;color:var(--text3);margin-top:2rem;padding:1rem 0;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.sync-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .2s;}
+.sync-badge:hover{background:var(--surface2);color:var(--text2);}
+.sync-badge.connected{color:var(--green-dark);border-color:var(--green);}
+.sync-badge.syncing{color:var(--blue-dark);border-color:var(--blue);}
+.sync-badge.error{color:var(--coral-dark);border-color:var(--coral);}
+/* GitHub modal */
+.gh-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;}
+.gh-modal.open{display:flex;}
+.gh-modal-box{background:var(--surface);border-radius:var(--radius);padding:1.5rem;max-width:440px;width:90%;box-shadow:var(--shadow-md);}
+.gh-modal-box h3{font-size:17px;font-weight:600;margin-bottom:6px;}
+.gh-modal-sub{font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.6;}
+.gh-field{margin-bottom:10px;}
+.gh-field label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.gh-field input{width:100%;font-size:13px;padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Mono',monospace;}
+.gh-field input:focus{outline:none;border-color:var(--green);}
+.gh-modal-actions{display:flex;gap:8px;align-items:center;margin-top:1rem;flex-wrap:wrap;}
+.gh-btn-save{font-size:13px;padding:8px 18px;border-radius:var(--radius-sm);background:var(--green);color:#fff;border:none;font-family:inherit;font-weight:500;cursor:pointer;}
+.gh-btn-save:hover{background:var(--green-dark);}
+.gh-btn-cancel{font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--text2);border:.5px solid var(--border2);font-family:inherit;cursor:pointer;}
+.gh-btn-cancel:hover{background:var(--surface2);}
+.gh-btn-disconnect{font-size:12px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--coral-dark);border:.5px solid var(--coral);font-family:inherit;cursor:pointer;}
+.gh-modal-msg{font-size:12px;color:var(--text2);}
+@media(max-width:640px){
+  .topic-grid{grid-template-columns:1fr;}
+  .hero-meta{grid-template-columns:repeat(2,1fr);}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .exam-grid{grid-template-columns:repeat(2,1fr);}
+  .course-hero-top{flex-direction:column;}
+}
+</style>
+<script>(function(){const t=localStorage.getItem('cj-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="../../index.html">
+      <div class="brand-mark">CJ</div>
+      certified-journeys
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" id="theme-btn" aria-label="Switch to dark mode" onclick="toggleTheme()"></button>
+      <a class="nav-gh" href="https://github.com/certified-journeys" target="_blank">⭐ GitHub</a>
+    </div>
+  </div>
+</nav>
+<div class="app">
+
+  <div class="breadcrumb">
+    <a href="../../index.html">certified-journeys</a>
+    <span class="breadcrumb-sep">›</span>
+    <span>FastAPI for Python Engineers</span>
+  </div>
+
+  <div class="course-hero">
+    <div class="course-hero-top">
+      <div style="display:flex;align-items:flex-start;gap:14px;">
+        <div class="course-icon-wrap">
+          <div class="course-icon">FA</div>
+        </div>
+        <div class="course-title-block">
+          <h1>FastAPI for Python Engineers</h1>
+          <div class="tag-row">
+            <span class="tag">Python</span>
+            <span class="tag">APIs</span>
+            <span class="tag">Web</span>
+            <span class="tag">Backend</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val">Free</div></div>
+      <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">14 days</div></div>
+      <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">FastAPI (Self-paced)</div></div>
+      <div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Intermediate</div></div>
+    </div>
+  </div>
+
+  <div class="prog-strip">
+    <div class="prog-strip-top">
+      <span class="prog-label">Overall progress</span>
+      <span class="prog-pct" id="prog-pct">0%</span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+    <div class="readiness early" id="readiness">🌱 Just getting started</div>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-label">Days done</div><div class="stat-val" id="stat-days">0/14</div></div>
+      <div class="stat"><div class="stat-label">Hours logged</div><div class="stat-val" id="stat-hours">0</div></div>
+      <div class="stat"><div class="stat-label">Avg score</div><div class="stat-val" id="stat-score">—</div></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showPanel('schedule',this)">📅 Daily Plan</button>
+    <button class="tab" onclick="showPanel('topics',this)">📚 Topics</button>
+    <button class="tab" onclick="showPanel('ai',this)">🤖 AI Tools</button>
+    <button class="tab" onclick="showPanel('resources',this)">🔗 Resources</button>
+    <button class="tab" onclick="showPanel('exam',this)">🎓 Exam Prep</button>
+  </div>
+
+  <div id="panel-schedule" class="panel active"></div>
+  <div id="panel-topics"   class="panel"></div>
+  <div id="panel-ai"       class="panel"></div>
+  <div id="panel-resources" class="panel"></div>
+  <div id="panel-exam"     class="panel"></div>
+
+  <div class="page-footer">
+    <button class="sync-badge" id="sync-badge" onclick="openGHModal()">☁ Connect GitHub</button>
+    · <span id="sk-display">cj_fastapi-certified_v1</span> · <a href="../../index.html">← All journeys</a>
+  </div>
+
+</div>
+
+<div class="gh-modal" id="gh-modal" onclick="if(event.target===this)closeGHModal()">
+  <div class="gh-modal-box">
+    <h3>☁ GitHub Sync</h3>
+    <p class="gh-modal-sub">Progress is committed to <code>courses/fastapi-certified/progress.json</code> in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
+    <div class="gh-field"><label>Personal Access Token</label><input id="gh-pat" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+    <div class="gh-field"><label>Owner</label><input id="gh-owner" type="text" placeholder="your-username"></div>
+    <div class="gh-field"><label>Repository</label><input id="gh-repo" type="text" placeholder="certified-journeys.github.io"></div>
+    <div class="gh-field"><label>Branch</label><input id="gh-branch" type="text" placeholder="main"></div>
+    <div class="gh-modal-actions">
+      <button class="gh-btn-save" onclick="saveGHCreds()">Test &amp; Save</button>
+      <button class="gh-btn-cancel" onclick="closeGHModal()">Cancel</button>
+      <button class="gh-btn-disconnect" id="gh-disconnect-btn" style="display:none" onclick="disconnectGH()">Disconnect</button>
+      <span class="gh-modal-msg" id="gh-modal-msg"></span>
+    </div>
+  </div>
+</div>
+
+<script src="../../github-sync.js"></script>
+<script>
+if(typeof GHSync==='undefined'){window.GHSync={isConnected:()=>false,saveCreds:()=>{},getCreds:()=>null,connect:async()=>({ok:false,msg:''}),fetchState:async()=>null,pushState:async()=>false,saveDebounced:()=>{},testConnection:async()=>({ok:false,msg:''}),exportConfig:()=>'',importConfig:()=>null,getLastSynced:()=>null};}
+
+const COURSE_ID   = 'fastapi-certified';
+const STORAGE_KEY = 'cj_fastapi-certified_v1';
+const TOTAL_DAYS  = 14;
+
+const NOTEBOOKS = [
+  'day-01-quickstart',
+  'day-02-path-query-body',
+  'day-03-pydantic-validation',
+  'day-04-response-models',
+  'day-05-dependency-injection',
+  'day-06-crud-in-memory',
+  'day-07-sqlalchemy-database',
+  'day-08-authentication-jwt',
+  'day-09-background-tasks-middleware',
+  'day-10-testing-testclient',
+  'day-11-file-uploads-forms',
+  'day-12-websockets',
+  'day-13-deployment-docker',
+  'day-14-capstone-rest-api'
+];
+
+const days = [
+  {
+    title: 'FastAPI Quickstart — Your First API in 10 Lines',
+    badge: 'learn',
+    sub: 'Day 1 · Core Concepts',
+    tasks: [
+      {text: 'Read the FastAPI tutorial introduction', url: 'https://fastapi.tiangolo.com/tutorial/'},
+      'Install FastAPI and Uvicorn: pip install fastapi uvicorn',
+      'Create a minimal app.py with a single GET / endpoint returning {"message": "Hello World"}',
+      'Run the server: uvicorn app:app --reload and open http://127.0.0.1:8000',
+      'Explore the auto-generated docs at /docs (Swagger UI) and /redoc',
+      'Add a second endpoint GET /items/{item_id} and verify it appears in /docs',
+    ],
+    resources: [
+      {text: 'FastAPI Tutorial Intro', url: 'https://fastapi.tiangolo.com/tutorial/'},
+      {text: 'FastAPI Docs Home', url: 'https://fastapi.tiangolo.com/'},
+      {text: 'Uvicorn Docs', url: 'https://www.uvicorn.org/'},
+    ],
+    tip: 'Keep --reload on during development — Uvicorn watches for file changes and restarts automatically, so you can iterate fast.',
+    hasScore: false,
+  },
+  {
+    title: 'Path, Query, and Body Parameters',
+    badge: 'learn',
+    sub: 'Day 2 · Core Concepts',
+    tasks: [
+      {text: 'Read the FastAPI path parameters guide', url: 'https://fastapi.tiangolo.com/tutorial/path-params/'},
+      {text: 'Read the FastAPI query parameters guide', url: 'https://fastapi.tiangolo.com/tutorial/query-params/'},
+      'Define a path parameter with type annotation: GET /items/{item_id: int}',
+      'Add optional query parameters with defaults: GET /items?skip=0&limit=10',
+      'Create a POST endpoint that accepts a JSON body with a Pydantic model',
+      'Mix path, query, and body parameters in a single endpoint and verify in /docs',
+    ],
+    resources: [
+      {text: 'Path Parameters', url: 'https://fastapi.tiangolo.com/tutorial/path-params/'},
+      {text: 'Query Parameters', url: 'https://fastapi.tiangolo.com/tutorial/query-params/'},
+      {text: 'Request Body', url: 'https://fastapi.tiangolo.com/tutorial/body/'},
+    ],
+    tip: 'FastAPI uses Python type annotations to parse and validate parameters — declare the type once and get validation, docs, and editor autocomplete for free.',
+    hasScore: false,
+  },
+  {
+    title: 'Pydantic Models — Validation and Serialization',
+    badge: 'learn',
+    sub: 'Day 3 · Core Concepts',
+    tasks: [
+      {text: 'Read the Pydantic v2 getting-started guide', url: 'https://docs.pydantic.dev/latest/concepts/models/'},
+      'Define a Pydantic BaseModel with required and optional fields',
+      'Add field validators using Field() with min_length, max_length, gt, ge constraints',
+      'Use model_validator to cross-validate multiple fields',
+      'Trigger a 422 Unprocessable Entity by sending invalid JSON and inspect the error response',
+      'Serialize a model to dict and JSON with model.model_dump() and model.model_dump_json()',
+    ],
+    resources: [
+      {text: 'Pydantic Models Docs', url: 'https://docs.pydantic.dev/latest/concepts/models/'},
+      {text: 'FastAPI Body — Fields', url: 'https://fastapi.tiangolo.com/tutorial/body-fields/'},
+      {text: 'Pydantic Field Types', url: 'https://docs.pydantic.dev/latest/concepts/types/'},
+    ],
+    tip: 'Pydantic v2 is 5–50x faster than v1 at runtime validation — use it confidently in hot paths. FastAPI ships with Pydantic v2 by default since version 0.100.',
+    hasScore: false,
+  },
+  {
+    title: 'Response Models and Status Codes',
+    badge: 'practice',
+    sub: 'Day 4 · Core Concepts',
+    tasks: [
+      {text: 'Read the FastAPI response model guide', url: 'https://fastapi.tiangolo.com/tutorial/response-model/'},
+      'Define a separate ResponseModel that excludes sensitive fields from the input model',
+      'Use response_model= on a GET endpoint and verify only allowed fields are returned',
+      'Set status_code=201 on a POST endpoint and status_code=204 on a DELETE endpoint',
+      'Return a JSONResponse with a custom status code for error conditions',
+      {text: 'Use HTTPException to return 404 with a detail message', url: 'https://fastapi.tiangolo.com/tutorial/handling-errors/'},
+    ],
+    resources: [
+      {text: 'Response Model Docs', url: 'https://fastapi.tiangolo.com/tutorial/response-model/'},
+      {text: 'HTTP Status Codes', url: 'https://fastapi.tiangolo.com/tutorial/response-status-code/'},
+      {text: 'Handling Errors', url: 'https://fastapi.tiangolo.com/tutorial/handling-errors/'},
+    ],
+    tip: 'Always define a dedicated response_model rather than returning your input model — it prevents accidentally leaking hashed passwords or internal IDs.',
+    hasScore: false,
+  },
+  {
+    title: 'Dependency Injection — Clean, Testable APIs',
+    badge: 'practice',
+    sub: 'Day 5 · Dependencies & CRUD',
+    tasks: [
+      {text: 'Read the FastAPI dependency injection guide', url: 'https://fastapi.tiangolo.com/tutorial/dependencies/'},
+      'Create a reusable get_db() dependency that yields a database session and cleans up on exit',
+      'Inject a dependency into an endpoint using Depends()',
+      'Chain dependencies: create a get_current_user that depends on get_db',
+      'Use a class-based dependency with __call__ for shared state (e.g. pagination params)',
+      'Write a test that overrides a dependency with app.dependency_overrides',
+    ],
+    resources: [
+      {text: 'Dependencies Guide', url: 'https://fastapi.tiangolo.com/tutorial/dependencies/'},
+      {text: 'Classes as Dependencies', url: 'https://fastapi.tiangolo.com/tutorial/dependencies/classes-as-dependencies/'},
+      {text: 'Sub-dependencies', url: 'https://fastapi.tiangolo.com/tutorial/dependencies/sub-dependencies/'},
+    ],
+    tip: 'Dependencies are the FastAPI equivalent of middleware per-endpoint — they run before your handler, yield control, then clean up. Use them for DB sessions, auth, and rate limiting.',
+    hasScore: false,
+  },
+  {
+    title: 'CRUD API with In-Memory Storage',
+    badge: 'practice',
+    sub: 'Day 6 · Dependencies & CRUD',
+    tasks: [
+      {text: 'Read the FastAPI CRUD tutorial section', url: 'https://fastapi.tiangolo.com/tutorial/body/'},
+      'Design Create, Read, Update, Delete endpoints for a single resource (e.g. items)',
+      'Use a Python dict as in-memory storage with a counter for auto-increment IDs',
+      'Add 404 HTTPException in the Read and Update handlers when an item is not found',
+      'Implement PUT (full replace) and PATCH (partial update) variants',
+      'Test all five endpoints through the /docs Swagger UI',
+    ],
+    resources: [
+      {text: 'FastAPI Full Example', url: 'https://fastapi.tiangolo.com/tutorial/sql-databases/'},
+      {text: 'Path Operation Config', url: 'https://fastapi.tiangolo.com/tutorial/path-operation-configuration/'},
+      {text: 'Extra Data Types', url: 'https://fastapi.tiangolo.com/tutorial/extra-data-types/'},
+    ],
+    tip: 'Build the in-memory version first before adding a database — it forces you to design clean API contracts independent of storage details.',
+    hasScore: false,
+  },
+  {
+    title: 'Database Integration with SQLAlchemy',
+    badge: 'practice',
+    sub: 'Day 7 · Database & Auth',
+    tasks: [
+      {text: 'Read the FastAPI SQL databases tutorial', url: 'https://fastapi.tiangolo.com/tutorial/sql-databases/'},
+      'Install sqlalchemy and create a local SQLite database with create_engine()',
+      'Define a SQLAlchemy ORM model mapped to a table',
+      'Create a SessionLocal factory and a get_db() dependency that yields a session',
+      'Implement CRUD endpoints that read and write through the ORM',
+      'Use Alembic or Base.metadata.create_all() to create tables on startup',
+    ],
+    resources: [
+      {text: 'SQL Databases Tutorial', url: 'https://fastapi.tiangolo.com/tutorial/sql-databases/'},
+      {text: 'SQLAlchemy ORM Docs', url: 'https://docs.sqlalchemy.org/en/20/orm/'},
+      {text: 'Alembic Migrations', url: 'https://alembic.sqlalchemy.org/en/latest/'},
+    ],
+    tip: 'Always use yield in your get_db() dependency so the session is closed even if the endpoint raises an exception — prevents connection leaks under load.',
+    hasScore: false,
+  },
+  {
+    title: 'Authentication — OAuth2, Password Hashing, and JWT',
+    badge: 'review',
+    sub: 'Day 8 · Database & Auth',
+    tasks: [
+      {text: 'Read the FastAPI security OAuth2 tutorial', url: 'https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/'},
+      'Install python-jose and passlib: pip install python-jose[cryptography] passlib[bcrypt]',
+      'Implement password hashing with CryptContext and verify_password / get_password_hash',
+      'Create a /token endpoint that validates credentials and returns a signed JWT',
+      'Write a get_current_user dependency that decodes the JWT and fetches the user',
+      'Protect CRUD endpoints by injecting get_current_user via Depends()',
+    ],
+    resources: [
+      {text: 'OAuth2 + JWT Tutorial', url: 'https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/'},
+      {text: 'FastAPI Security Intro', url: 'https://fastapi.tiangolo.com/tutorial/security/'},
+      {text: 'python-jose Docs', url: 'https://python-jose.readthedocs.io/en/latest/'},
+    ],
+    tip: 'Store only the user_id (sub claim) in the JWT, not the full user object — token payload is readable by anyone, so never include passwords or sensitive data.',
+    hasScore: false,
+  },
+  {
+    title: 'Background Tasks, Middleware, and CORS',
+    badge: 'review',
+    sub: 'Day 9 · Advanced Features',
+    tasks: [
+      {text: 'Read the FastAPI background tasks guide', url: 'https://fastapi.tiangolo.com/tutorial/background-tasks/'},
+      'Add a BackgroundTasks parameter to an endpoint and fire an email notification task',
+      'Write a custom middleware using @app.middleware("http") to log request timing',
+      {text: 'Add CORSMiddleware to allow a frontend origin', url: 'https://fastapi.tiangolo.com/tutorial/cors/'},
+      'Test CORS preflight request with curl -X OPTIONS',
+      'Understand when to use BackgroundTasks vs Celery/RQ for heavier async work',
+    ],
+    resources: [
+      {text: 'Background Tasks', url: 'https://fastapi.tiangolo.com/tutorial/background-tasks/'},
+      {text: 'CORS Middleware', url: 'https://fastapi.tiangolo.com/tutorial/cors/'},
+      {text: 'Middleware Docs', url: 'https://fastapi.tiangolo.com/tutorial/middleware/'},
+    ],
+    tip: 'BackgroundTasks runs in the same process after the response is sent — use it for fast fire-and-forget tasks. For CPU-heavy or long-running work, offload to a task queue like Celery.',
+    hasScore: false,
+  },
+  {
+    title: 'Testing with TestClient and pytest',
+    badge: 'review',
+    sub: 'Day 10 · Advanced Features',
+    tasks: [
+      {text: 'Read the FastAPI testing guide', url: 'https://fastapi.tiangolo.com/tutorial/testing/'},
+      'Install httpx and pytest: pip install httpx pytest',
+      'Create a TestClient(app) fixture in conftest.py',
+      'Write tests for all CRUD endpoints covering success and error cases',
+      'Override the get_db() dependency to use an in-memory SQLite test database',
+      'Run pytest -v and aim for 100% endpoint coverage',
+    ],
+    resources: [
+      {text: 'Testing Tutorial', url: 'https://fastapi.tiangolo.com/tutorial/testing/'},
+      {text: 'httpx Docs', url: 'https://www.python-httpx.org/'},
+      {text: 'pytest Docs', url: 'https://docs.pytest.org/en/stable/'},
+    ],
+    tip: 'Use app.dependency_overrides to swap real dependencies with test doubles — this lets you test your endpoint logic independently from the database.',
+    hasScore: false,
+  },
+  {
+    title: 'File Uploads and Form Data',
+    badge: 'practice',
+    sub: 'Day 11 · Advanced Features',
+    tasks: [
+      {text: 'Read the FastAPI file uploads guide', url: 'https://fastapi.tiangolo.com/tutorial/request-files/'},
+      'Install python-multipart: pip install python-multipart',
+      'Create an endpoint that accepts a single UploadFile and saves it to disk',
+      'Accept multiple files with List[UploadFile]',
+      {text: 'Create a form endpoint that combines UploadFile and Form() fields', url: 'https://fastapi.tiangolo.com/tutorial/request-forms-and-files/'},
+      'Return the filename, content_type, and file size in the JSON response',
+    ],
+    resources: [
+      {text: 'Request Files', url: 'https://fastapi.tiangolo.com/tutorial/request-files/'},
+      {text: 'Request Forms', url: 'https://fastapi.tiangolo.com/tutorial/request-forms/'},
+      {text: 'Forms and Files', url: 'https://fastapi.tiangolo.com/tutorial/request-forms-and-files/'},
+    ],
+    tip: 'Use UploadFile (not bytes) for large files — it uses SpooledTemporaryFile under the hood, so big files are written to disk rather than held in RAM.',
+    hasScore: false,
+  },
+  {
+    title: 'WebSockets — Real-Time Communication',
+    badge: 'practice',
+    sub: 'Day 12 · Advanced Features',
+    tasks: [
+      {text: 'Read the FastAPI WebSockets guide', url: 'https://fastapi.tiangolo.com/advanced/websockets/'},
+      'Create a /ws endpoint with WebSocket parameter and an accept/receive/send loop',
+      'Build a simple echo server and test it with wscat or a browser console',
+      'Implement a connection manager class to broadcast messages to multiple clients',
+      'Add an HTTP endpoint that sends a message to all connected WebSocket clients',
+      'Handle WebSocketDisconnect to cleanly remove closed connections from the manager',
+    ],
+    resources: [
+      {text: 'WebSockets Tutorial', url: 'https://fastapi.tiangolo.com/advanced/websockets/'},
+      {text: 'Starlette WebSocket Docs', url: 'https://www.starlette.io/websockets/'},
+      {text: 'wscat npm tool', url: 'https://github.com/websockets/wscat'},
+    ],
+    tip: 'FastAPI WebSocket support is built on Starlette — the WebSocket object gives you send_text, send_json, and receive_text methods to build any real-time protocol.',
+    hasScore: false,
+  },
+  {
+    title: 'Deployment — Uvicorn, Gunicorn, and Docker',
+    badge: 'review',
+    sub: 'Day 13 · Deployment & Testing',
+    tasks: [
+      {text: 'Read the FastAPI deployment guide', url: 'https://fastapi.tiangolo.com/deployment/'},
+      'Run the app with Gunicorn + Uvicorn workers: gunicorn app:app -k uvicorn.workers.UvicornWorker',
+      'Write a Dockerfile using the official tiangolo/uvicorn-gunicorn-fastapi base image',
+      'Build the image and run it: docker build -t myapi . && docker run -p 8000:80 myapi',
+      'Add a .env file and load settings with pydantic-settings BaseSettings',
+      'Understand the difference between --workers (CPU-bound) and async (IO-bound) concurrency models',
+    ],
+    resources: [
+      {text: 'FastAPI Deployment', url: 'https://fastapi.tiangolo.com/deployment/'},
+      {text: 'Docker Best Practices', url: 'https://fastapi.tiangolo.com/deployment/docker/'},
+      {text: 'pydantic-settings', url: 'https://docs.pydantic.dev/latest/concepts/pydantic_settings/'},
+    ],
+    tip: 'Use WORKERS = 2 * CPU_CORES + 1 as your Gunicorn worker count — it balances CPU utilization with request concurrency for IO-heavy APIs.',
+    hasScore: false,
+  },
+  {
+    title: 'Capstone — Build a Complete Bookmarks REST API',
+    badge: 'exam',
+    sub: 'Day 14 · Capstone Project',
+    tasks: [
+      'Plan your Bookmarks API: resources (users, bookmarks, tags), endpoints, and auth strategy',
+      'Set up the project with SQLAlchemy models, Alembic migrations, and a get_db() dependency',
+      'Implement JWT-based auth: /auth/register, /auth/login endpoints',
+      'Build full CRUD for bookmarks: POST/GET/PUT/DELETE /bookmarks with ownership checks',
+      'Add tag support: users can add and filter bookmarks by tag',
+      'Write pytest tests covering auth flows, CRUD, and error cases (401, 403, 404)',
+      'Dockerize the app and verify it starts cleanly with docker-compose up',
+      {text: 'Document the API in /docs and verify all endpoints have response_model defined', url: 'https://fastapi.tiangolo.com/tutorial/response-model/'},
+    ],
+    resources: [
+      {text: 'FastAPI Full App Tutorial', url: 'https://fastapi.tiangolo.com/tutorial/bigger-applications/'},
+      {text: 'FastAPI Best Practices', url: 'https://github.com/zhanymkanov/fastapi-best-practices'},
+      {text: 'FastAPI Docs Home', url: 'https://fastapi.tiangolo.com/'},
+    ],
+    tip: 'Build the capstone from scratch without copying earlier examples — the struggle of wiring everything together is how the patterns become muscle memory.',
+    hasScore: true,
+  },
+];
+
+const topics = [
+  {name: 'Core Concepts',        color: '#0891B2', days: [0, 1, 2, 3]},
+  {name: 'Dependencies & CRUD',  color: '#378ADD', days: [4, 5]},
+  {name: 'Database & Auth',      color: '#7F77DD', days: [6, 7]},
+  {name: 'Advanced Features',    color: '#E8890C', days: [8, 9, 10, 11]},
+  {name: 'Deployment & Testing', color: '#D85A30', days: [12]},
+  {name: 'Capstone Project',     color: '#0891B2', days: [13]},
+];
+
+const exam = {
+  questions: null,
+  minutes:   null,
+  passScore: 'N/A',
+  cost:      'Free',
+  provider:  'FastAPI (Self-paced)',
+  link:      'https://fastapi.tiangolo.com/',
+  notes:     'No formal exam. Complete all 14 days and the capstone REST API to demonstrate proficiency.',
+};
+
+let state = {
+  completed: [], scores: {}, hours: {}, completedAt: {}, tasksDone: {},
+  openDay: null, startDate: null, lastActivity: null, status: 'not_started'
+};
+
+async function loadState() {
+  try { const s = localStorage.getItem(STORAGE_KEY); if(s) state = {...state, ...JSON.parse(s)}; } catch(e) {}
+  if(GHSync.isConnected()) {
+    updateSyncBadge('syncing');
+    const gh = await GHSync.fetchState(COURSE_ID);
+    if(gh) { state = {...state, ...gh}; try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
+    updateSyncBadge(gh ? 'connected' : 'error');
+  } else { updateSyncBadge('disconnected'); }
+}
+
+function saveState() {
+  if(state.completed.length > 0 && state.status === 'not_started') {
+    state.status = 'in_progress';
+    state.startDate = state.startDate || new Date().toISOString();
+  }
+  if(state.completed.length === TOTAL_DAYS) state.status = 'completed';
+  state.lastActivity = new Date().toISOString();
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  broadcastStatus();
+  if(GHSync.isConnected())
+    GHSync.saveDebounced(COURSE_ID, state, 2500,
+      () => updateSyncBadge('syncing'),
+      ok => updateSyncBadge(ok ? 'connected' : 'error'));
+}
+
+function broadcastStatus() {
+  const summary = {
+    id: COURSE_ID, status: state.status,
+    completed: state.completed.length, total: TOTAL_DAYS,
+    scores: Object.values(state.scores).filter(s => s > 0),
+    totalHours: Object.values(state.hours).reduce((a, b) => a + b, 0),
+    completedAt: state.completedAt, startDate: state.startDate,
+    lastActivity: state.lastActivity
+  };
+  try { localStorage.setItem('cj_summary_' + COURSE_ID, JSON.stringify(summary)); } catch(e) {}
+}
+
+function resetAll() {
+  if(!confirm('Reset all progress for this course?')) return;
+  state = {completed:[], scores:{}, hours:{}, completedAt:{}, tasksDone:{}, openDay:null, startDate:null, lastActivity:null, status:'not_started'};
+  saveState(); renderAll();
+}
+
+function isCompleted(i) { return state.completed.includes(i); }
+
+function toggleComplete(i) {
+  if(isCompleted(i)) {
+    state.completed = state.completed.filter(x => x !== i);
+    delete state.completedAt[i];
+  } else {
+    state.completed.push(i);
+    state.completedAt[i] = new Date().toISOString();
+  }
+  saveState(); updateStats(); renderSchedule();
+}
+
+function toggleDay(i) {
+  state.openDay = state.openDay === i ? null : i;
+  saveState(); renderSchedule();
+}
+
+function logScore(i, val) {
+  const v = parseInt(val);
+  if(!isNaN(v) && v >= 0 && v <= 100) { state.scores[i] = v; saveState(); updateStats(); }
+}
+
+function logHours(i, val) {
+  const v = parseFloat(val);
+  if(!isNaN(v) && v >= 0) { state.hours[i] = v; saveState(); updateStats(); }
+}
+
+function scoreClass(s) { return s >= 80 ? 'ok' : s >= 60 ? 'warn' : 'danger'; }
+function badgeClass(b) { return 'badge-' + b; }
+function badgeLabel(b) { return {learn:'Learn', practice:'Practice', review:'Review', exam:'Exam'}[b] || b; }
+
+const dayTopics = (() => {
+  const m = {};
+  topics.forEach(t => t.days.forEach(d => { (m[d] = m[d] || []).push(t); }));
+  return m;
+})();
+
+function goToDay(i) {
+  showPanel('schedule', document.querySelector('.tab'));
+  setTimeout(() => {
+    state.openDay = i; saveState(); renderSchedule();
+    const el = document.querySelector('.day-card:nth-child(' + (i + 1) + ')');
+    if(el) el.scrollIntoView({behavior: 'smooth', block: 'start'});
+  }, 50);
+}
+
+function renderTask(t, di, ti) {
+  const done = (state.tasksDone[di] || []).includes(ti);
+  const text = typeof t === 'string' ? t : t.text;
+  const link = (typeof t === 'object' && t.url)
+    ? `<a class="task-link" href="${t.url}" target="_blank" rel="noopener">↗</a>` : '';
+  return `<div class="task${done ? ' task-done' : ''}">
+    <button class="task-tick${done ? ' ticked' : ''}" onclick="event.stopPropagation();tickTask(${di},${ti})"></button>
+    <span>${text}</span>${link}
+  </div>`;
+}
+
+function tickTask(di, ti) {
+  const arr = state.tasksDone[di] || (state.tasksDone[di] = []);
+  const idx = arr.indexOf(ti);
+  if(idx === -1) arr.push(ti); else arr.splice(idx, 1);
+  const total = days[di].tasks.length;
+  const done  = arr.length;
+  if(done === total && !isCompleted(di)) { toggleComplete(di); return; }
+  if(done < total  &&  isCompleted(di)) {
+    state.completed = state.completed.filter(x => x !== di);
+    delete state.completedAt[di];
+  }
+  saveState(); renderSchedule();
+}
+
+function renderRes(r) {
+  if(typeof r === 'string') return `<span class="res-pill">📎 ${r}</span>`;
+  return r.url
+    ? `<a class="res-pill" href="${r.url}" target="_blank" rel="noopener">📎 ${r.text}</a>`
+    : `<span class="res-pill">📎 ${r.text}</span>`;
+}
+
+function updateStats() {
+  const pct = Math.round((state.completed.length / TOTAL_DAYS) * 100);
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('bar-fill').style.width = pct + '%';
+  document.getElementById('stat-days').textContent = state.completed.length + '/' + TOTAL_DAYS;
+  const hrs = Object.values(state.hours).reduce((a, b) => a + b, 0);
+  document.getElementById('stat-hours').textContent = hrs % 1 === 0 ? hrs : hrs.toFixed(1);
+  const scores = Object.values(state.scores).filter(s => s > 0);
+  const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null;
+  const sv = document.getElementById('stat-score');
+  if(avg) { sv.textContent = avg + '%'; sv.className = 'stat-val ' + scoreClass(avg); }
+  else { sv.textContent = '—'; sv.className = 'stat-val'; }
+  const r = document.getElementById('readiness');
+  if(pct === 0)      { r.className = 'readiness early'; r.textContent = '🌱 Just getting started'; }
+  else if(pct < 40)  { r.className = 'readiness early'; r.textContent = '📖 Building foundations'; }
+  else if(pct < 75)  { r.className = 'readiness early'; r.textContent = '⚙️ Making solid progress'; }
+  else if(pct < 100) { r.className = 'readiness close'; r.textContent = '🔥 Almost there'; }
+  else               { r.className = 'readiness ready'; r.textContent = '✅ Course complete!'; }
+}
+
+function renderSchedule() {
+  const el = document.getElementById('panel-schedule');
+  el.innerHTML = days.map((d, i) => {
+    const comp  = isCompleted(i);
+    const open  = state.openDay === i;
+    const score = state.scores[i];
+    const hrs   = state.hours[i];
+    const tot   = d.tasks.length;
+    const done  = (state.tasksDone[i] || []).length;
+    return `<div class="day-card${comp ? ' completed' : ''}${open ? ' open' : ''}" id="day-${i}">
+      <div class="day-header" onclick="toggleDay(${i})">
+        <span class="day-num">${comp ? '✓' : ('0' + (i + 1)).slice(-2)}</span>
+        <div class="day-meta">
+          <div class="day-title">${d.title}</div>
+          <div class="day-sub">${d.sub}</div>
+        </div>
+        <span class="day-badge ${badgeClass(d.badge)}">${badgeLabel(d.badge)}</span>
+        <span class="chevron">▾</span>
+      </div>
+      ${open ? `<div class="day-body">
+        <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
+        <div class="nb-row">
+          <a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a>
+          <a class="nb-btn nb-btn-colab" href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/${COURSE_ID}/notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">▶ Open in Colab</a>
+          <a class="nb-btn" href="https://github.com/certified-journeys/certified-journeys.github.io/edit/main/courses/${COURSE_ID}/notes/day-${String(i + 1).padStart(2, '0')}.md" target="_blank">📝 notes/day-${String(i + 1).padStart(2, '0')}.md</a>
+        </div>
+        ${(dayTopics[i] || []).length ? `<div class="day-topic-pills">${(dayTopics[i] || []).map(t => `<span class="day-topic-pill" style="background:${t.color}18;color:${t.color};border-color:${t.color}40" onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])" title="View topic in Topics tab">${t.name}</span>`).join('')}</div>` : ''}
+        ${tot ? `<div class="task-progress"><div class="task-progress-fill" style="width:${Math.round(done / tot * 100)}%"></div></div>` : ''}
+        <div class="task-list">${d.tasks.map((t, j) => renderTask(t, i, j)).join('')}</div>
+        <div class="resources-row">${d.resources.map(renderRes).join('')}</div>
+        ${d.hasScore ? `<div class="score-row"><label>Practice score (%):</label><input type="number" min="0" max="100" placeholder="e.g. 84" value="${score || ''}" onchange="logScore(${i},this.value)">${score ? `<span class="score-badge ${scoreClass(score) === 'ok' ? 'badge-learn' : scoreClass(score) === 'warn' ? 'badge-review' : 'badge-exam'}">${score}%</span>` : ''}</div>` : ''}
+        <div class="hours-row"><label>Hours spent today:</label><input type="number" min="0" max="24" step="0.5" placeholder="e.g. 2.5" value="${hrs || ''}" onchange="logHours(${i},this.value)"><span style="font-size:11px;color:var(--text3);">hrs</span></div>
+        <button class="complete-btn ${comp ? 'done' : ''}" onclick="event.stopPropagation();toggleComplete(${i})">${comp ? '✓ Completed' : 'Mark as complete'}</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderTopics() {
+  document.getElementById('panel-topics').innerHTML = `<div class="topic-grid">${
+    topics.map(t => {
+      const cov = t.days.filter(d => state.completed.includes(d)).length;
+      const pct = Math.round((cov / t.days.length) * 100);
+      const dayBtns = t.days.map(d =>
+        `<button class="topic-day-btn${state.completed.includes(d) ? ' done' : ''}" onclick="goToDay(${d})">Day ${d + 1}</button>`
+      ).join('');
+      return `<div class="topic-card">
+        <h4>${t.name}</h4>
+        <div class="t-bar-bg"><div class="t-bar-fill" style="width:${pct}%;background:${t.color}"></div></div>
+        <div class="t-pct">${pct}% covered · ${cov}/${t.days.length} sessions</div>
+        <div class="topic-days">${dayBtns}</div>
+      </div>`;
+    }).join('')
+  }</div>`;
+}
+
+function renderAI() {
+  document.getElementById('panel-ai').innerHTML = `
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#E8F0FE;">🎙</div>
+        <div><div class="ai-card-title">NotebookLM — Audio Podcast Summary</div><div class="ai-card-sub">Generate a personalized audio briefing of your FastAPI learning</div></div>
+      </div>
+      <div class="ai-card-body">Upload your day-card notes plus the FastAPI official docs as sources in NotebookLM, then generate a podcast covering path parameters, dependency injection, auth patterns, and deployment.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Audio:
+"Create a 10-minute podcast for an intermediate Python engineer studying FastAPI for Python Engineers. Cover: how Pydantic models power request validation and response serialization, the dependency injection system and why it matters for testability, JWT auth with OAuth2 password flow, and the 3 things they must understand before deploying a FastAPI app to production with Docker and Gunicorn."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#FEF3E2;">🃏</div>
+        <div><div class="ai-card-title">NotebookLM — AI Flashcards</div><div class="ai-card-sub">Generate quiz cards from your FastAPI notes</div></div>
+      </div>
+      <div class="ai-card-body">Upload your notes and the FastAPI API reference to NotebookLM and use the Study Guide feature to generate Q&A flashcards on routing, validation, auth, and testing.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Quiz:
+"Generate 20 flashcard-style Q&A pairs for someone studying FastAPI for Python Engineers. Focus on: the difference between Path(), Query(), and Body() parameters, how response_model prevents data leaks, why yield in a dependency enables cleanup, how dependency_overrides enable testable endpoints without a real database, and the correct Gunicorn worker class for async FastAPI apps."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#EEE9FF;">💬</div>
+        <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore FastAPI patterns with targeted prompts</div></div>
+      </div>
+      <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific FastAPI pattern.</div>
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior Python engineer:
+"I'm studying FastAPI for Python Engineers. Explain [TOPIC, e.g. 'how the dependency injection graph resolves nested Depends() calls and manages resource cleanup with yield'] as if I'm already experienced with Python async. Skip the basics — focus on nuance, edge cases, and real-world API design decisions."
+
+Prompt 2 — API design review:
+"I'm designing a FastAPI service for [use case]. Here's my router structure and Pydantic models: [paste code]. Review it as a senior backend engineer. What validation is missing? Are the response_models correct? How should I structure the dependency graph for testability?"
+
+Prompt 3 — Gap analysis study plan:
+"I've studied FastAPI basics but I'm unsure about [TOPIC, e.g. 'structuring a larger app with APIRouter, sub-applications, and shared dependencies across modules']. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+    </div>`;
+}
+
+function renderResources() {
+  document.getElementById('panel-resources').innerHTML = `
+    <div class="res-section">
+      <div class="res-section-title">📖 Core Reading</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">01</span><div class="res-link-body"><a href="https://fastapi.tiangolo.com/tutorial/" target="_blank">FastAPI Official Tutorial</a><div class="res-link-desc">The complete step-by-step tutorial from the FastAPI author — covers every core concept from path params to auth and testing.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">02</span><div class="res-link-body"><a href="https://fastapi.tiangolo.com/reference/" target="_blank">FastAPI API Reference</a><div class="res-link-desc">Full Python API reference for FastAPI, APIRouter, Request, Response, Depends, and all built-in utilities.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">03</span><div class="res-link-body"><a href="https://docs.pydantic.dev/latest/" target="_blank">Pydantic v2 Docs</a><div class="res-link-desc">Comprehensive Pydantic v2 documentation: models, validators, field types, settings management, and migration from v1.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">04</span><div class="res-link-body"><a href="https://fastapi.tiangolo.com/advanced/" target="_blank">FastAPI Advanced User Guide</a><div class="res-link-desc">Advanced topics: custom responses, background tasks, WebSockets, sub-applications, events, and OpenAPI customization.</div></div></div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🛠 Hands-On Resources</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">05</span><div class="res-link-body"><a href="https://fastapi.tiangolo.com/tutorial/sql-databases/" target="_blank">SQL Databases Tutorial</a><div class="res-link-desc">End-to-end walkthrough of connecting FastAPI to a SQLite database with SQLAlchemy ORM and session dependency injection.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">06</span><div class="res-link-body"><a href="https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/" target="_blank">OAuth2 + JWT Tutorial</a><div class="res-link-desc">Complete auth implementation: password hashing with passlib, token generation with python-jose, and protected endpoints.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">07</span><div class="res-link-body"><a href="https://fastapi.tiangolo.com/tutorial/testing/" target="_blank">Testing with TestClient</a><div class="res-link-desc">How to write pytest tests for FastAPI using TestClient (backed by httpx) and dependency overrides for isolation.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">08</span><div class="res-link-body"><a href="https://github.com/tiangolo/full-stack-fastapi-template" target="_blank">Full Stack FastAPI Template</a><div class="res-link-desc">Official production-ready template: FastAPI + SQLModel + Alembic + React frontend with auth, Docker, and CI/CD.</div></div></div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🔧 Ecosystem &amp; Tooling</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">09</span><div class="res-link-body"><a href="https://sqlmodel.tiangolo.com/" target="_blank">SQLModel Docs</a><div class="res-link-desc">SQLModel combines SQLAlchemy and Pydantic into one model class — written by the FastAPI author for seamless integration.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">10</span><div class="res-link-body"><a href="https://alembic.sqlalchemy.org/en/latest/" target="_blank">Alembic Migrations</a><div class="res-link-desc">Database schema migration tool for SQLAlchemy — generate, apply, and roll back migrations in FastAPI projects.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">11</span><div class="res-link-body"><a href="https://github.com/zhanymkanov/fastapi-best-practices" target="_blank">FastAPI Best Practices</a><div class="res-link-desc">Community-maintained guide covering project structure, naming conventions, async patterns, and production pitfalls.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">12</span><div class="res-link-body"><a href="https://www.starlette.io/" target="_blank">Starlette Docs</a><div class="res-link-desc">FastAPI is built on Starlette — read the Starlette docs for deeper understanding of middleware, routing, and WebSocket internals.</div></div></div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">⬆ Upgrade Path</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">13</span><div class="res-link-body"><a href="https://fastapi.tiangolo.com/deployment/docker/" target="_blank">FastAPI with Docker</a><div class="res-link-desc">Official Docker deployment guide: Dockerfile patterns, multi-stage builds, Gunicorn+Uvicorn worker configuration, and environment variables.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">14</span><div class="res-link-body"><a href="https://docs.celeryq.dev/en/stable/" target="_blank">Celery for Async Tasks</a><div class="res-link-desc">Move beyond BackgroundTasks to a distributed task queue — integrate Celery with FastAPI for heavy background processing.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">15</span><div class="res-link-body"><a href="https://beanie-odm.dev/" target="_blank">Beanie ODM (MongoDB)</a><div class="res-link-desc">Async MongoDB ODM built on Pydantic — pair with FastAPI for document-store backends with full type safety.</div></div></div>
+      </div>
+    </div>`;
+}
+
+function renderExam() {
+  document.getElementById('panel-exam').innerHTML = `
+    <div class="exam-grid">
+      <div class="exam-card"><div class="exam-card-label">Cost</div><div class="exam-card-val">${exam.cost}</div><div class="exam-card-sub">Self-paced, free</div></div>
+      <div class="exam-card"><div class="exam-card-label">Questions</div><div class="exam-card-val">N/A</div><div class="exam-card-sub">No formal exam</div></div>
+      <div class="exam-card"><div class="exam-card-label">Time limit</div><div class="exam-card-val">N/A</div><div class="exam-card-sub">Project-based</div></div>
+      <div class="exam-card"><div class="exam-card-label">Pass mark</div><div class="exam-card-val" style="font-size:13px;">${exam.passScore}</div><div class="exam-card-sub">Capstone project</div></div>
+    </div>
+    <div class="info-box"><strong>Completion format:</strong> ${exam.notes}</div>
+    <div class="info-box" style="margin-top:10px;">
+      <strong>📋 Readiness checklist — before marking yourself done:</strong><br><br>
+      • Completed all ${TOTAL_DAYS} days of the study plan<br>
+      • Built the capstone Bookmarks REST API end-to-end: auth, CRUD, tags, Docker<br>
+      • Can explain every Topics tab item without notes<br>
+      • Written a cheat sheet of FastAPI patterns from memory and verified it<br>
+      • Capstone API tests pass, all endpoints have response_model defined<br>
+      • Consistent progress — not rushed through, each day's tasks genuinely completed
+    </div>
+    <div style="margin-top:12px;">
+      <a href="${exam.link}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:10px 20px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-weight:500;text-decoration:none;">View FastAPI Docs →</a>
+    </div>`;
+}
+
+function showPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(name === 'topics')    renderTopics();
+  if(name === 'ai')        renderAI();
+  if(name === 'resources') renderResources();
+  if(name === 'exam')      renderExam();
+}
+
+function renderAll() {
+  renderSchedule();
+  updateStats();
+}
+
+function updateSyncBadge(s) {
+  const el = document.getElementById('sync-badge'); if(!el) return;
+  const L = {disconnected: '☁ Connect GitHub', connected: '✓ Synced', syncing: '↑ Syncing…', error: '⚠ Sync failed'};
+  el.textContent = L[s] || L.disconnected;
+  el.className = 'sync-badge' + (s === 'connected' ? ' connected' : s === 'syncing' ? ' syncing' : s === 'error' ? ' error' : '');
+}
+
+function openGHModal() {
+  const creds = GHSync.getCreds();
+  if(creds) {
+    document.getElementById('gh-pat').value    = creds.pat    || '';
+    document.getElementById('gh-owner').value  = creds.owner  || '';
+    document.getElementById('gh-repo').value   = creds.repo   || '';
+    document.getElementById('gh-branch').value = creds.branch || 'main';
+    document.getElementById('gh-disconnect-btn').style.display = 'inline-flex';
+  } else {
+    document.getElementById('gh-disconnect-btn').style.display = 'none';
+  }
+  document.getElementById('gh-modal').classList.add('open');
+}
+function closeGHModal() { document.getElementById('gh-modal').classList.remove('open'); }
+async function saveGHCreds() {
+  const c = {
+    pat:    document.getElementById('gh-pat').value.trim(),
+    owner:  document.getElementById('gh-owner').value.trim(),
+    repo:   document.getElementById('gh-repo').value.trim(),
+    branch: document.getElementById('gh-branch').value.trim() || 'main'
+  };
+  if(!c.pat || !c.owner || !c.repo) { document.getElementById('gh-modal-msg').textContent = 'Fill in all fields.'; return; }
+  document.getElementById('gh-modal-msg').textContent = 'Testing…';
+  GHSync.saveCreds(c);
+  const r = await GHSync.testConnection();
+  if(r.ok) { document.getElementById('gh-modal-msg').textContent = '✓ Connected!'; updateSyncBadge('connected'); setTimeout(closeGHModal, 900); }
+  else { document.getElementById('gh-modal-msg').textContent = 'Error: ' + r.msg; }
+}
+function disconnectGH() { GHSync.saveCreds(null); updateSyncBadge('disconnected'); closeGHModal(); }
+
+loadState().then(renderAll);
+
+// ── Dark mode toggle ──────────────────────────────────────────
+const MOON = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function getEffectiveTheme(){const t=document.documentElement.getAttribute('data-theme');if(t)return t;return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+function applyThemeBtn(){const btn=document.getElementById('theme-btn');if(!btn)return;const dark=getEffectiveTheme()==='dark';btn.innerHTML=dark?SUN:MOON;btn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');}
+window.toggleTheme=function(){const next=getEffectiveTheme()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);localStorage.setItem('cj-theme',next);applyThemeBtn();};
+applyThemeBtn();
+</script>
+</body>
+</html>
