@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prefect for Data Engineers · certified-journeys</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --green:#2563EB;--green-light:#EFF6FF;--green-dark:#1D4ED8;
+  --blue:#378ADD;--blue-light:#EAF3FD;--blue-dark:#185FA5;
+  --amber:#BA7517;--amber-light:#FDF3E3;
+  --coral:#D85A30;--coral-light:#FAEDE8;--coral-dark:#993C1D;
+  --purple:#7F77DD;--purple-light:#EEEDFE;
+  --orange:#E8890C;--orange-light:#FEF3E2;
+  --teal:#0891B2;--teal-light:#E0F5FA;
+  --bg:#F5F4F0;--surface:#FFFFFF;--surface2:#EEECE5;--surface3:#E8E6DF;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.16);
+  --text:#18181A;--text2:#52524E;--text3:#8C8B85;
+  --radius:14px;--radius-sm:9px;--radius-xs:5px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.06);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111113;--surface:#1C1C1F;--surface2:#252528;--surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA;--text2:#A09F9B;--text3:#5E5D58;
+  --green-light:#0A1A3E;--blue-light:#061E38;--amber-light:#221900;
+  --coral-light:#2A0E05;--purple-light:#161440;--orange-light:#1F1200;--teal-light:#021E26;
+}}
+[data-theme="dark"]{
+  --bg:#111113;--surface:#1C1C1F;--surface2:#252528;--surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA;--text2:#A09F9B;--text3:#5E5D58;
+  --green-light:#0A1A3E;--blue-light:#061E38;--amber-light:#221900;
+  --coral-light:#2A0E05;--purple-light:#161440;--orange-light:#1F1200;--teal-light:#021E26;
+}
+/* Nav */
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);border-bottom:0.5px solid var(--border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav{background:rgba(26,26,26,0.85);}}
+[data-theme="dark"] nav{background:rgba(26,26,26,0.85);}
+.nav-inner{max-width:860px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-0.025em;color:var(--text);text-decoration:none;}
+.nav-brand:hover{text-decoration:none;opacity:0.85;}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-gh{font-size:12px;padding:6px 14px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;gap:5px;transition:all 0.15s;text-decoration:none;font-weight:500;}
+.nav-gh:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.theme-btn{width:34px;height:34px;border-radius:99px;flex-shrink:0;border:0.5px solid var(--border2);background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;}
+.theme-btn:hover{background:var(--surface2);color:var(--text);}
+@media(max-width:600px){.nav-gh{display:none;}}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;}
+a{color:var(--blue-dark);text-decoration:none;}
+a:hover{text-decoration:underline;}
+button{cursor:pointer;font-family:inherit;}
+code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;border-radius:3px;font-size:0.9em;}
+
+.app{max-width:860px;margin:0 auto;padding:0.75rem 1.25rem 4rem;}
+/* Breadcrumb */
+.breadcrumb{padding:.55rem 0;font-size:13px;display:flex;align-items:center;gap:0;border-bottom:.5px solid var(--border);margin-bottom:1.1rem;}
+.breadcrumb a{color:var(--text2);text-decoration:none;font-weight:500;padding:4px 8px;border-radius:6px;transition:all .15s;}
+.breadcrumb a:first-child{color:var(--green-dark);font-weight:600;}
+.breadcrumb a:hover{color:var(--text);background:var(--surface2);text-decoration:none;}
+.breadcrumb>span:last-child{color:var(--text);font-weight:600;padding:4px 8px;background:var(--surface2);border-radius:6px;}
+.breadcrumb-sep{color:var(--border2);padding:0 2px;font-size:16px;user-select:none;line-height:1;}
+/* Course Header */
+.course-hero{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:1rem 0 1.25rem;box-shadow:var(--shadow);}
+.course-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.course-icon-wrap{display:flex;align-items:center;gap:12px;}
+.course-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;letter-spacing:0.02em;}
+.course-title-block h1{font-size:22px;font-weight:600;letter-spacing:-0.02em;color:var(--text);line-height:1.2;}
+.course-title-block p{font-size:13px;color:var(--text2);margin-top:3px;}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.tag{font-size:11px;padding:3px 10px;border-radius:99px;background:var(--surface2);color:var(--text2);border:0.5px solid var(--border);}
+.hero-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.meta-item{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;}
+.meta-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.meta-val{font-size:14px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;}
+/* Progress */
+.prog-strip{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.25rem;}
+.prog-strip-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;}
+.prog-label{font-size:13px;color:var(--text2);}
+.prog-pct{font-size:32px;font-weight:600;letter-spacing:-0.03em;color:var(--text);font-family:'DM Mono',monospace;line-height:1;}
+.bar-bg{background:var(--surface2);border-radius:99px;height:8px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:99px;background:var(--green);transition:width .7s cubic-bezier(.4,0,.2,1);}
+.readiness{margin-top:8px;font-size:13px;color:var(--text2);}
+.readiness span{font-weight:500;}
+.readiness.ready span{color:var(--green);}
+.readiness.close span{color:var(--amber);}
+.readiness.early span{color:var(--coral);}
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:1.25rem;}
+.stat{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:.9rem;}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.stat-val{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.02em;font-family:'DM Mono',monospace;}
+.stat-val.ok{color:var(--green);} .stat-val.warn{color:var(--amber);} .stat-val.danger{color:var(--coral);}
+/* Tabs */
+.tabs{display:flex;gap:2px;margin-bottom:1.25rem;background:var(--surface2);border-radius:99px;padding:4px;overflow-x:auto;}
+.tab{flex:1;min-width:max-content;font-size:12px;padding:7px 14px;cursor:pointer;color:var(--text2);border-radius:99px;border:none;background:none;font-family:inherit;font-weight:400;transition:all .2s;text-align:center;white-space:nowrap;}
+.tab.active{background:var(--surface);color:var(--text);font-weight:500;box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+.panel{display:none;} .panel.active{display:block;}
+/* Day cards */
+.day-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;transition:border-color .2s;}
+.day-card.completed{border-color:var(--green-dark);}
+.day-card.completed .day-num{background:var(--green);color:#fff;border-color:var(--green);}
+.day-header{display:flex;align-items:center;gap:12px;padding:.95rem 1.1rem;cursor:pointer;user-select:none;}
+.day-header:hover{background:var(--surface2);}
+.day-num{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--text2);flex-shrink:0;font-family:'DM Mono',monospace;transition:all .2s;}
+.day-meta{flex:1;min-width:0;}
+.day-title{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.day-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.day-badge{font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500;flex-shrink:0;}
+.badge-learn{background:var(--green-light);color:var(--green-dark);}
+.badge-practice{background:var(--blue-light);color:var(--blue-dark);}
+.badge-review{background:var(--amber-light);color:var(--amber);}
+.badge-exam{background:var(--coral-light);color:var(--coral-dark);}
+.chevron{font-size:11px;color:var(--text3);flex-shrink:0;transition:transform .2s;}
+.day-card.open .chevron{transform:rotate(180deg);}
+.day-body{display:none;padding:0 1.1rem 1.1rem;border-top:.5px solid var(--border);}
+.day-card.open .day-body{display:block;}
+.tip-box{background:var(--green-light);border-left:3px solid var(--green);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:.7rem .9rem;margin:1rem 0 .75rem;}
+.tip-box p{font-size:13px;color:var(--green-dark);line-height:1.6;}
+.tip-box strong{font-weight:600;}
+.task-list{margin-bottom:.75rem;}
+.task{display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:13px;color:var(--text2);border-bottom:.5px solid var(--border);line-height:1.5;}
+.task:last-child{border-bottom:none;}
+/* Task tick checkboxes */
+.task-tick{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px;background:none;padding:0;}
+.task-tick:hover{border-color:var(--green);}
+.task-tick.ticked{background:var(--green);border-color:var(--green);}
+.task-tick.ticked::after{content:"✓";font-size:10px;color:#fff;font-weight:700;line-height:1;}
+.task.task-done>span{text-decoration:line-through;color:var(--text3);}
+/* Per-day task progress bar */
+.task-progress{height:3px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
+.task-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;}
+.resources-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.res-pill{font-size:11px;padding:4px 11px;border-radius:99px;background:var(--surface2);border:.5px solid var(--border);color:var(--text2);}
+a.res-pill{text-decoration:none;cursor:pointer;}
+a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:var(--text);}
+.task-link{color:var(--blue-dark);font-size:11px;margin-left:6px;flex-shrink:0;opacity:0.7;line-height:1.5;}
+.task-link:hover{opacity:1;text-decoration:none;}
+/* Action row — notebook buttons + notes link */
+.nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
+.nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
+.nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
+/* Score, hours, complete */
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.score-row label{font-size:12px;color:var(--text2);}
+.score-row input{width:72px;font-size:13px;padding:5px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.score-badge{font-size:12px;font-weight:500;padding:3px 10px;border-radius:99px;}
+.hours-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text2);}
+.hours-row input{width:60px;font-size:13px;padding:4px 8px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.complete-btn{width:100%;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s;font-weight:400;}
+.complete-btn:hover{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+.complete-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);font-weight:500;}
+/* Topics */
+.topic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.topic-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;}
+.topic-card h4{font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px;line-height:1.4;}
+.t-bar-bg{background:var(--surface2);border-radius:99px;height:5px;margin-bottom:4px;overflow:hidden;}
+.t-bar-fill{height:100%;border-radius:99px;transition:width .7s cubic-bezier(.4,0,.2,1);}
+.t-pct{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
+/* Topic ↔ Day connections */
+.day-topic-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.day-topic-pill{font-size:10px;padding:2px 9px;border-radius:99px;border:.5px solid;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.day-topic-pill:hover{opacity:.7;}
+.topic-days{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.topic-day-btn{font-size:11px;padding:2px 8px;border-radius:99px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
+.topic-day-btn:hover{background:var(--surface3);color:var(--text);}
+.topic-day-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+/* Exam prep */
+.exam-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:1rem;}
+.exam-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;}
+.exam-card-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.exam-card-val{font-size:16px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;}
+.exam-card-sub{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.5;}
+.info-box{background:var(--surface2);border-radius:var(--radius-sm);padding:.9rem 1rem;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+.info-box strong{color:var(--text);font-weight:500;}
+/* AI tools */
+.ai-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;margin-bottom:10px;}
+.ai-card-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.ai-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ai-card-title{font-size:14px;font-weight:500;color:var(--text);}
+.ai-card-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.ai-card-body{font-size:13px;color:var(--text2);line-height:1.7;}
+.ai-prompt-box{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:10px;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;line-height:1.7;white-space:pre-wrap;}
+.ai-link-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-family:inherit;text-decoration:none;}
+.ai-link-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+/* Footer */
+.page-footer{font-size:11px;color:var(--text3);text-align:center;margin-top:2rem;padding-top:1rem;border-top:.5px solid var(--border);}
+.page-footer span{color:var(--green);}
+/* Reset btn */
+.reset-btn{font-size:11px;color:var(--text3);background:none;border:.5px solid var(--border2);border-radius:99px;padding:5px 12px;cursor:pointer;font-family:inherit;transition:all .2s;}
+.reset-btn:hover{color:var(--coral);border-color:var(--coral);}
+/* Resources panel */
+.res-section{margin-bottom:1.25rem;}
+.res-section-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:8px;padding-bottom:6px;border-bottom:.5px solid var(--border);}
+.res-link-list{display:flex;flex-direction:column;gap:0;}
+.res-link-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:.5px solid var(--border);}
+.res-link-item:last-child{border-bottom:none;}
+.res-link-index{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);min-width:24px;padding-top:2px;}
+.res-link-body{flex:1;min-width:0;}
+.res-link-body a{font-size:13px;font-weight:500;color:var(--blue-dark);text-decoration:none;}
+.res-link-body a:hover{text-decoration:underline;}
+.res-link-desc{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.5;}
+/* GitHub sync badge */
+.sync-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .2s;}
+.sync-badge:hover{background:var(--surface2);color:var(--text2);}
+.sync-badge.connected{color:var(--green-dark);border-color:var(--green);}
+.sync-badge.syncing{color:var(--blue-dark);border-color:var(--blue);}
+.sync-badge.error{color:var(--coral-dark);border-color:var(--coral);}
+/* GitHub sync modal */
+.gh-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;}
+.gh-modal.open{display:flex;}
+.gh-modal-box{background:var(--surface);border-radius:var(--radius);padding:1.5rem;max-width:440px;width:90%;box-shadow:var(--shadow-md);}
+.gh-modal-box h3{font-size:17px;font-weight:600;margin-bottom:6px;}
+.gh-modal-sub{font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.6;}
+.gh-field{margin-bottom:10px;}
+.gh-field label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.gh-field input{width:100%;font-size:13px;padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Mono',monospace;}
+.gh-field input:focus{outline:none;border-color:var(--green);}
+.gh-modal-actions{display:flex;gap:8px;align-items:center;margin-top:1rem;flex-wrap:wrap;}
+.gh-btn-save{font-size:13px;padding:8px 18px;border-radius:var(--radius-sm);background:var(--green);color:#fff;border:none;font-family:inherit;font-weight:500;cursor:pointer;}
+.gh-btn-save:hover{background:var(--green-dark);}
+.gh-btn-cancel{font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--text2);border:.5px solid var(--border2);font-family:inherit;cursor:pointer;}
+.gh-btn-cancel:hover{background:var(--surface2);}
+.gh-btn-disconnect{font-size:12px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--coral-dark);border:.5px solid var(--coral);font-family:inherit;cursor:pointer;}
+.gh-modal-msg{font-size:12px;color:var(--text2);}
+@media(max-width:600px){
+  .hero-meta{grid-template-columns:repeat(2,1fr);}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .topic-grid{grid-template-columns:1fr;}
+  .exam-grid{grid-template-columns:1fr;}
+  .course-hero-top{flex-direction:column;}
+  .tab{font-size:11px;padding:6px 8px;}
+}
+</style>
+<script>(function(){const t=localStorage.getItem('cj-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="../../index.html">
+      <div class="brand-mark">CJ</div>
+      certified-journeys
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" id="theme-btn" aria-label="Switch to dark mode" onclick="toggleTheme()"></button>
+      <a class="nav-gh" href="https://github.com/certified-journeys" target="_blank">⭐ GitHub</a>
+    </div>
+  </div>
+</nav>
+<div class="app">
+
+<div class="breadcrumb">
+  <a href="../../index.html">certified-journeys</a>
+  <span class="breadcrumb-sep">›</span>
+  <a href="../../index.html#courses">All journeys</a>
+  <span class="breadcrumb-sep">›</span>
+  <span>Prefect for Data Engineers</span>
+</div>
+
+<div class="course-hero">
+  <div class="course-hero-top">
+    <div class="course-icon-wrap">
+      <div class="course-icon" style="background:#EFF6FF;color:#2563EB;">PF</div>
+      <div class="course-title-block">
+        <h1>Prefect for Data Engineers</h1>
+        <p>Prefect (Self-paced) · Intermediate · 14 days</p>
+        <div class="tag-row">
+          <span class="tag">MLOps</span>
+          <span class="tag">Python</span>
+          <span class="tag">Workflows</span>
+          <span class="tag">Data Engineering</span>
+        </div>
+      </div>
+    </div>
+    <button class="reset-btn" onclick="resetAll()">Reset progress</button>
+  </div>
+  <div class="hero-meta">
+    <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val">Free</div></div>
+    <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">14 days</div></div>
+    <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:12px;font-family:'DM Sans',system-ui;">Prefect</div></div>
+    <div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-val" style="font-size:12px;font-family:'DM Sans',system-ui;">Intermediate</div></div>
+  </div>
+</div>
+
+<div class="prog-strip">
+  <div class="prog-strip-top">
+    <div class="prog-label">Overall completion</div>
+    <div class="prog-pct" id="pct-display">0%</div>
+  </div>
+  <div class="bar-bg"><div class="bar-fill" id="main-bar" style="width:0%"></div></div>
+  <div class="readiness early" id="readiness-row">Status: <span id="status-txt">Not started</span></div>
+</div>
+
+<div class="stats-grid">
+  <div class="stat"><div class="stat-label">Days done</div><div class="stat-val" id="days-done">0/14</div></div>
+  <div class="stat"><div class="stat-label">Avg score</div><div class="stat-val" id="avg-score">—</div></div>
+  <div class="stat"><div class="stat-label">Hours logged</div><div class="stat-val" id="hrs-logged">0 h</div></div>
+  <div class="stat"><div class="stat-label">Days left</div><div class="stat-val" id="days-left">14</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showPanel('schedule',this)">📅 Daily Plan</button>
+  <button class="tab" onclick="showPanel('topics',this)">📚 Topics</button>
+  <button class="tab" onclick="showPanel('ai',this)">🤖 AI Tools</button>
+  <button class="tab" onclick="showPanel('resources',this)">🔗 Resources</button>
+  <button class="tab" onclick="showPanel('exam',this)">🎓 Exam Prep</button>
+</div>
+
+<div id="panel-schedule" class="panel active"></div>
+<div id="panel-topics" class="panel"></div>
+<div id="panel-ai" class="panel"></div>
+<div id="panel-resources" class="panel"></div>
+<div id="panel-exam" class="panel"></div>
+
+<div class="page-footer">
+  <button class="sync-badge" id="sync-badge" onclick="openGHModal()">☁ Connect GitHub</button>
+  · <span id="sk-display">cj_prefect-certified_v1</span> · <a href="../../index.html">← All journeys</a>
+</div>
+
+</div>
+
+<!-- GitHub sync modal -->
+<div class="gh-modal" id="gh-modal" onclick="if(event.target===this)closeGHModal()">
+  <div class="gh-modal-box">
+    <h3>☁ GitHub Sync</h3>
+    <p class="gh-modal-sub">Progress is committed to <code>courses/prefect-certified/progress.json</code>
+    in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
+    <div class="gh-field"><label>Personal Access Token</label><input id="gh-pat" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+    <div class="gh-field"><label>Owner</label><input id="gh-owner" type="text" placeholder="your-username"></div>
+    <div class="gh-field"><label>Repository</label><input id="gh-repo" type="text" placeholder="certified-journeys.github.io"></div>
+    <div class="gh-field"><label>Branch</label><input id="gh-branch" type="text" placeholder="main"></div>
+    <div class="gh-modal-actions">
+      <button class="gh-btn-save" onclick="saveGHCreds()">Test &amp; Save</button>
+      <button class="gh-btn-cancel" onclick="closeGHModal()">Cancel</button>
+      <button class="gh-btn-disconnect" id="gh-disconnect-btn" style="display:none" onclick="disconnectGH()">Disconnect</button>
+      <span class="gh-modal-msg" id="gh-modal-msg"></span>
+    </div>
+  </div>
+</div>
+
+<script src="../../github-sync.js"></script>
+
+<script>
+// GHSync fallback — in case github-sync.js fails to load
+if(typeof GHSync==='undefined'){window.GHSync={isConnected:()=>false,saveCreds:()=>{},getCreds:()=>null,connect:async()=>({ok:false,msg:''}),fetchState:async()=>null,pushState:async()=>false,saveDebounced:()=>{},testConnection:async()=>({ok:false,msg:''}),exportConfig:()=>'',importConfig:()=>null,getLastSynced:()=>null};}
+
+const COURSE_ID='prefect-certified';
+const STORAGE_KEY='cj_prefect-certified_v1';
+const TOTAL_DAYS=14;
+
+const NOTEBOOKS=[
+  'day-01-intro-prefect',
+  'day-02-flows-tasks',
+  'day-03-task-dependencies',
+  'day-04-retries-caching',
+  'day-05-subflows-modular',
+  'day-06-results-artifacts',
+  'day-07-deployments-basics',
+  'day-08-work-pools-workers',
+  'day-09-schedules-automations',
+  'day-10-prefect-cloud-server',
+  'day-11-notifications-states',
+  'day-12-docker-kubernetes',
+  'day-13-review-advanced',
+  'day-14-capstone-etl-pipeline'
+];
+
+const days=[
+  {
+    title:"Introduction to Prefect: From Script to Workflow",
+    badge:"learn",
+    sub:"Day 1 · Core Concepts",
+    tasks:[
+      {text:"Install Prefect and verify: pip install prefect, prefect version","url":"https://docs.prefect.io/latest/getting-started/installation/"},
+      "Start a local Prefect server: prefect server start",
+      {text:"Add @flow decorator to a plain Python function and run it","url":"https://docs.prefect.io/latest/concepts/flows/"},
+      "Open the Prefect UI and observe the flow run state and logs"
+    ],
+    resources:[
+      {text:"Prefect Quickstart","url":"https://docs.prefect.io/latest/getting-started/quickstart/"},
+      {text:"Prefect Concepts — Flows","url":"https://docs.prefect.io/latest/concepts/flows/"}
+    ],
+    tip:"Prefect's biggest win over raw scripts is automatic state tracking.",
+    hasScore:false
+  },
+  {
+    title:"Flows and Tasks — The Building Blocks",
+    badge:"learn",
+    sub:"Day 2 · Core Concepts",
+    tasks:[
+      {text:"Add @task decorator to functions within a flow","url":"https://docs.prefect.io/latest/concepts/tasks/"},
+      "Understand the distinction between a flow and a task in Prefect",
+      "Pass data between tasks through return values",
+      "Inspect the task run dependency graph in the Prefect UI"
+    ],
+    resources:[
+      {text:"Prefect Concepts — Tasks","url":"https://docs.prefect.io/latest/concepts/tasks/"},
+      {text:"Prefect Tutorial","url":"https://docs.prefect.io/latest/tutorial/"}
+    ],
+    tip:"Keep tasks small and single-purpose.",
+    hasScore:false
+  },
+  {
+    title:"Task Dependencies and Data Passing",
+    badge:"learn",
+    sub:"Day 3 · Core Concepts",
+    tasks:[
+      "Build a linear chain of tasks where each depends on the prior",
+      {text:"Use task.submit() for non-blocking concurrent task execution","url":"https://docs.prefect.io/latest/concepts/tasks/#task-runners"},
+      "Apply task.map() to process a list of items in parallel",
+      "Use wait_for= to express explicit dependencies without data flow",
+      "Observe parallel task timelines in the Prefect UI flow run graph"
+    ],
+    resources:[
+      {text:"Task Runners — concurrent execution","url":"https://docs.prefect.io/latest/concepts/task-runners/"},
+      {text:"Prefect .map() docs","url":"https://docs.prefect.io/latest/concepts/tasks/#map"}
+    ],
+    tip:"Use task.submit() for non-blocking concurrent execution.",
+    hasScore:false
+  },
+  {
+    title:"Retries, Timeouts, and Caching with cache_key_fn",
+    badge:"practice",
+    sub:"Day 4 · Reliability Patterns",
+    tasks:[
+      {text:"Configure retries=3 and retry_delay_seconds on a flaky task","url":"https://docs.prefect.io/latest/concepts/tasks/#retries"},
+      "Add timeout_seconds to prevent hung tasks",
+      {text:"Enable result caching with task_input_hash as cache_key_fn","url":"https://docs.prefect.io/latest/concepts/tasks/#caching"},
+      "Write a custom cache_key_fn that ignores certain arguments",
+      "Set cache_expiration to control how long cached results are valid"
+    ],
+    resources:[
+      {text:"Task Retries and Caching","url":"https://docs.prefect.io/latest/concepts/tasks/#retries"},
+      {text:"task_input_hash reference","url":"https://docs.prefect.io/latest/api-ref/prefect/tasks/#prefect.tasks.task_input_hash"}
+    ],
+    tip:"task_input_hash hashes all task arguments — cache aggressively for expensive steps.",
+    hasScore:false
+  },
+  {
+    title:"Subflows and Modular Pipeline Design",
+    badge:"learn",
+    sub:"Day 5 · Core Concepts",
+    tasks:[
+      "Create a parent flow that calls two subflows",
+      "Pass parameters from the parent flow to subflows",
+      "Observe how failed subflow state bubbles up to the parent",
+      {text:"Use return_state=True to inspect subflow state from the parent","url":"https://docs.prefect.io/latest/concepts/flows/#subflows"},
+      "Navigate the subflow hierarchy in the Prefect UI"
+    ],
+    resources:[
+      {text:"Subflows in Prefect","url":"https://docs.prefect.io/latest/concepts/flows/#subflows"},
+      "Prefect tutorial — modular pipelines"
+    ],
+    tip:"Break large pipelines into subflows by domain.",
+    hasScore:false
+  },
+  {
+    title:"Results, Artifacts, and State Persistence",
+    badge:"practice",
+    sub:"Day 6 · Results and Artifacts",
+    tasks:[
+      {text:"Configure LocalFileSystemResultStorage and enable persist_result=True","url":"https://docs.prefect.io/latest/concepts/results/"},
+      "Verify persisted results survive flow re-runs",
+      {text:"Create a table artifact with create_table_artifact()","url":"https://docs.prefect.io/latest/concepts/artifacts/"},
+      "Create a link artifact with create_link_artifact()",
+      "Understand the distinction between results (data) and artifacts (human-readable reports)"
+    ],
+    resources:[
+      {text:"Prefect Results","url":"https://docs.prefect.io/latest/concepts/results/"},
+      {text:"Prefect Artifacts","url":"https://docs.prefect.io/latest/concepts/artifacts/"}
+    ],
+    tip:"Use create_markdown_artifact() for human-readable summaries.",
+    hasScore:false
+  },
+  {
+    title:"Prefect Deployments — Packaging Flows for Scheduled Execution",
+    badge:"practice",
+    sub:"Day 7 · Deployments",
+    tasks:[
+      {text:"Use flow.from_source().deploy() to create a deployment","url":"https://docs.prefect.io/latest/concepts/deployments/"},
+      "Inspect the deployment manifest in the Prefect UI",
+      "Trigger a Quick Run from the UI",
+      "Override a parameter on the Quick Run form",
+      "Review deployment run history in the Prefect UI"
+    ],
+    resources:[
+      {text:"Prefect Deployments overview","url":"https://docs.prefect.io/latest/concepts/deployments/"},
+      {text:"Deploy a flow — tutorial","url":"https://docs.prefect.io/latest/tutorial/deployments/"}
+    ],
+    tip:"A deployment is the bridge between flow code and runtime environment.",
+    hasScore:false
+  },
+  {
+    title:"Work Pools and Workers — Local, Docker, and Subprocess",
+    badge:"practice",
+    sub:"Day 8 · Deployments",
+    tasks:[
+      {text:"Create a process work pool: prefect work-pool create","url":"https://docs.prefect.io/latest/concepts/work-pools/"},
+      "Start a worker to poll the work pool",
+      "Deploy a flow to the process work pool and run it",
+      "Explore Docker work pool configuration options",
+      "Adjust worker polling interval and observe scheduling latency"
+    ],
+    resources:[
+      {text:"Work Pools and Workers","url":"https://docs.prefect.io/latest/concepts/work-pools/"},
+      {text:"Workers concept","url":"https://docs.prefect.io/latest/concepts/workers/"}
+    ],
+    tip:"Work pools decouple scheduling from execution.",
+    hasScore:false
+  },
+  {
+    title:"Schedules, Automations, and Event-Driven Triggers",
+    badge:"practice",
+    sub:"Day 9 · Scheduling and Automation",
+    tasks:[
+      {text:"Configure a CronSchedule on a deployment","url":"https://docs.prefect.io/latest/concepts/schedules/"},
+      "Configure an IntervalSchedule and compare with CronSchedule",
+      {text:"Create an automation that triggers on a Failed flow run state","url":"https://docs.prefect.io/latest/concepts/automations/"},
+      "Configure a webhook-triggered automation",
+      "Pause and resume a schedule from the UI"
+    ],
+    resources:[
+      {text:"Prefect Schedules","url":"https://docs.prefect.io/latest/concepts/schedules/"},
+      {text:"Prefect Automations","url":"https://docs.prefect.io/latest/concepts/automations/"}
+    ],
+    tip:"Automations are the glue of event-driven pipelines.",
+    hasScore:false
+  },
+  {
+    title:"Prefect Cloud vs Self-Hosted Server — Setup and Tradeoffs",
+    badge:"review",
+    sub:"Day 10 · Prefect Cloud and Notifications",
+    tasks:[
+      {text:"Create a free Prefect Cloud account","url":"https://app.prefect.cloud/"},
+      "Connect your local environment via an API key: prefect cloud login",
+      "Verify a flow run appears in the Prefect Cloud UI",
+      "Compare 5 features between Cloud and self-hosted server (e.g. RBAC, rate limits, managed workers)",
+      "Understand workspace isolation in Prefect Cloud"
+    ],
+    resources:[
+      {text:"Prefect Cloud overview","url":"https://docs.prefect.io/latest/cloud/"},
+      {text:"Prefect Cloud vs. server comparison","url":"https://docs.prefect.io/latest/cloud/cloud-vs-server/"}
+    ],
+    tip:"Prefect Cloud's free tier covers everything for small teams.",
+    hasScore:false
+  },
+  {
+    title:"Notifications — Email, Slack, and PagerDuty on Flow State Changes",
+    badge:"learn",
+    sub:"Day 11 · Prefect Cloud and Notifications",
+    tasks:[
+      {text:"Create a Slack automation triggered on Failed flow state","url":"https://docs.prefect.io/latest/concepts/automations/"},
+      "Configure a Slack webhook block in Prefect",
+      "Set up an email notification on flow completion",
+      "Use on_failure and on_completion flow hooks for immediate reactions",
+      "Write a custom on_failure hook that logs context to a file"
+    ],
+    resources:[
+      {text:"Prefect Notifications","url":"https://docs.prefect.io/latest/concepts/notifications/"},
+      {text:"Flow run hooks","url":"https://docs.prefect.io/latest/concepts/flows/#flow-run-hooks"}
+    ],
+    tip:"Use hooks for immediate reactions, automations for cross-flow triggers.",
+    hasScore:false
+  },
+  {
+    title:"Docker and Kubernetes Infrastructure for Production Flows",
+    badge:"practice",
+    sub:"Day 12 · Production Infrastructure",
+    tasks:[
+      "Write a Dockerfile that packages a Prefect flow and its dependencies",
+      "Build the Docker image: docker build -t my-prefect-flow .",
+      "Configure a Docker work pool that uses the built image",
+      "Deploy a flow to the Docker work pool and run it end-to-end",
+      "Read the Prefect Kubernetes work pool documentation and understand its concepts"
+    ],
+    resources:[
+      {text:"Prefect Docker guide","url":"https://docs.prefect.io/latest/guides/docker/"},
+      {text:"Prefect Kubernetes work pool","url":"https://docs.prefect.io/latest/guides/deployment/kubernetes/"}
+    ],
+    tip:"Pin image tags to specific versions in production.",
+    hasScore:false
+  },
+  {
+    title:"Review — Advanced Patterns and Real-World Gotchas",
+    badge:"review",
+    sub:"Day 13 · Review and Capstone",
+    tasks:[
+      "Inspect a failed flow's state and extract the traceback from the UI",
+      "Refactor a task to be idempotent using caching and result persistence",
+      "Combine retry + timeout on an HTTP-fetching task and test edge cases",
+      "Document 3 deployment strategies: script-based, Docker, and Kubernetes",
+      "Write a one-page production runbook for a Prefect flow"
+    ],
+    resources:[
+      {text:"Prefect production guide","url":"https://docs.prefect.io/latest/guides/"},
+      "Write your own runbook from the day's exercises"
+    ],
+    tip:"Set up an automation to alert if no runs complete within a time window.",
+    hasScore:false
+  },
+  {
+    title:"Capstone — Production ETL Pipeline with Scheduling, Retries, and Notifications",
+    badge:"exam",
+    sub:"Day 14 · Review and Capstone",
+    tasks:[
+      "Build a full ETL flow: extract from a public API, transform with Pandas, write to Parquet",
+      "Add retries + caching to the extract and transform tasks",
+      "Break the pipeline into subflows (extract, transform, load)",
+      "Create a CronSchedule deployment and run it via a worker",
+      "Execute the flow end-to-end through the worker",
+      "Configure a Slack failure alert automation"
+    ],
+    resources:[
+      {text:"Prefect ETL tutorial","url":"https://docs.prefect.io/latest/tutorial/"},
+      {text:"Prefect Deployments + Schedules","url":"https://docs.prefect.io/latest/concepts/deployments/"}
+    ],
+    tip:"Design each subflow as a deployable unit for maintainability.",
+    hasScore:true
+  }
+];
+
+const topics=[
+  {name:"Core Concepts",color:"#0891B2",days:[0,1,2]},
+  {name:"Reliability Patterns",color:"#BA7517",days:[3,4]},
+  {name:"Results and Artifacts",color:"#D85A30",days:[5]},
+  {name:"Deployments",color:"#7F77DD",days:[6,7]},
+  {name:"Scheduling and Automation",color:"#E8890C",days:[8]},
+  {name:"Prefect Cloud and Notifications",color:"#0891B2",days:[9,10]},
+  {name:"Production Infrastructure",color:"#BA7517",days:[11]},
+  {name:"Review and Capstone",color:"#D85A30",days:[12,13]}
+];
+
+const exam={
+  questions:null,
+  minutes:null,
+  passScore:"N/A",
+  cost:"Free",
+  provider:"Prefect (Self-paced)",
+  link:"https://docs.prefect.io/latest/",
+  notes:"No formal exam. Build the capstone pipeline to demonstrate proficiency."
+};
+
+let state={completed:[],scores:{},hours:{},completedAt:{},tasksDone:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
+
+async function loadState(){
+  try{const s=localStorage.getItem(STORAGE_KEY);if(s)state={...state,...JSON.parse(s)};}catch(e){}
+  if(GHSync.isConnected()){
+    updateSyncBadge('syncing');
+    const gh=await GHSync.fetchState(COURSE_ID);
+    if(gh){state={...state,...gh};try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}}
+    updateSyncBadge(gh?'connected':'error');
+  }else{updateSyncBadge('disconnected');}
+}
+
+function saveState(){
+  state.lastActivity=Date.now();
+  if(state.completed.length>0&&state.status==='not_started')state.status='in_progress';
+  if(state.completed.length>=TOTAL_DAYS)state.status='completed';
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
+  broadcastStatus();
+  if(GHSync.isConnected())GHSync.saveDebounced(COURSE_ID,state,2500,()=>updateSyncBadge('syncing'),ok=>updateSyncBadge(ok?'connected':'error'));
+}
+
+function broadcastStatus(){
+  const summary={id:COURSE_ID,status:state.status,completed:state.completed.length,total:TOTAL_DAYS,scores:Object.values(state.scores).filter(s=>s>0),totalHours:Object.values(state.hours).reduce((a,b)=>a+b,0),completedAt:state.completedAt,startDate:state.startDate,lastActivity:state.lastActivity};
+  try{localStorage.setItem('cj_summary_'+COURSE_ID,JSON.stringify(summary));}catch(e){}
+}
+
+function resetAll(){
+  if(!confirm('Reset all progress? This cannot be undone.'))return;
+  state={completed:[],scores:{},hours:{},completedAt:{},tasksDone:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
+  saveState();renderAll();
+}
+
+function isCompleted(i){return state.completed.includes(i);}
+
+function toggleComplete(i){
+  if(isCompleted(i)){state.completed=state.completed.filter(x=>x!==i);delete state.completedAt[i];}
+  else{
+    state.completed.push(i);
+    state.completedAt[i]=Date.now();
+    if(!state.startDate)state.startDate=Date.now();
+  }
+  saveState();updateStats();renderSchedule();
+  if(document.getElementById('panel-topics').classList.contains('active'))renderTopics();
+}
+
+function toggleDay(i){state.openDay=state.openDay===i?null:i;saveState();renderSchedule();}
+function logScore(i,val){const v=parseInt(val);if(!isNaN(v)&&v>=0&&v<=100){state.scores[i]=v;saveState();updateStats();}}
+function logHours(i,val){const v=parseFloat(val);if(!isNaN(v)&&v>=0){state.hours[i]=v;saveState();updateStats();}}
+function scoreClass(s){return s>=90?'ok':s>=80?'warn':'danger';}
+function badgeClass(b){return{learn:'badge-learn',practice:'badge-practice',review:'badge-review',exam:'badge-exam'}[b]||'badge-learn';}
+function badgeLabel(b){return{learn:'Learn',practice:'Practice',review:'Review',exam:'Exam'}[b]||b;}
+
+// Topic ↔ Day reverse index
+const dayTopics=(()=>{const m={};topics.forEach(t=>t.days.forEach(d=>{(m[d]=m[d]||[]).push(t);}));return m;})();
+
+function goToDay(i){
+  showPanel('schedule',document.querySelector('.tab'));
+  setTimeout(()=>{
+    state.openDay=i;saveState();renderSchedule();
+    const el=document.querySelector('.day-card:nth-child('+(i+1)+')');
+    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  },50);
+}
+
+function renderTask(t,di,ti){
+  const done=(state.tasksDone[di]||[]).includes(ti);
+  const text=typeof t==='string'?t:t.text;
+  const link=(typeof t==='object'&&t.url)?`<a class="task-link" href="${t.url}" target="_blank" rel="noopener">↗</a>`:'';
+  return`<div class="task${done?' task-done':''}"><button class="task-tick${done?' ticked':''}" onclick="event.stopPropagation();tickTask(${di},${ti})"></button><span>${text}</span>${link}</div>`;
+}
+
+function tickTask(di,ti){
+  const arr=state.tasksDone[di]||(state.tasksDone[di]=[]);
+  const idx=arr.indexOf(ti);
+  if(idx===-1)arr.push(ti);else arr.splice(idx,1);
+  const total=days[di].tasks.length;
+  const done=arr.length;
+  if(done===total&&!isCompleted(di)){toggleComplete(di);return;}
+  if(done<total&&isCompleted(di)){state.completed=state.completed.filter(x=>x!==di);delete state.completedAt[di];}
+  saveState();renderSchedule();
+}
+
+function renderRes(r){
+  if(typeof r==='string')return`<span class="res-pill">📎 ${r}</span>`;
+  return r.url?`<a class="res-pill" href="${r.url}" target="_blank" rel="noopener">📎 ${r.text}</a>`:`<span class="res-pill">📎 ${r.text}</span>`;
+}
+
+function updateStats(){
+  const done=state.completed.length,total=TOTAL_DAYS;
+  const pct=Math.round((done/total)*100);
+  document.getElementById('pct-display').textContent=pct+'%';
+  document.getElementById('main-bar').style.width=pct+'%';
+  document.getElementById('days-done').textContent=done+'/'+total;
+  document.getElementById('days-left').textContent=(total-done);
+  const sv=Object.values(state.scores).filter(s=>!isNaN(s)&&s>0);
+  const avgEl=document.getElementById('avg-score');
+  if(sv.length){const avg=Math.round(sv.reduce((a,b)=>a+b,0)/sv.length);avgEl.textContent=avg+'%';avgEl.className='stat-val '+scoreClass(avg);}
+  else{avgEl.textContent='—';avgEl.className='stat-val';}
+  const totalHrs=Object.values(state.hours).reduce((a,b)=>a+b,0);
+  document.getElementById('hrs-logged').textContent=totalHrs>0?totalHrs.toFixed(1)+' h':'0 h';
+  const rRow=document.getElementById('readiness-row'),sTxt=document.getElementById('status-txt');
+  if(done>=total){sTxt.textContent='Completed! 🎉';rRow.className='readiness ready';}
+  else if(done>=Math.floor(total*0.75)){sTxt.textContent='Almost there — final stretch';rRow.className='readiness close';}
+  else if(done>=Math.floor(total*0.4)){sTxt.textContent='On track — great progress';rRow.className='readiness close';}
+  else if(done>=1){sTxt.textContent='In progress — keep going';rRow.className='readiness early';}
+  else{sTxt.textContent='Not started yet';rRow.className='readiness early';}
+}
+
+function renderSchedule(){
+  document.getElementById('panel-schedule').innerHTML=days.map((d,i)=>{
+    const comp=isCompleted(i),open=state.openDay===i,score=state.scores[i],hrs=state.hours[i];
+    return`<div class="day-card ${comp?'completed':''} ${open?'open':''}">
+      <div class="day-header" onclick="toggleDay(${i})">
+        <div class="day-num">${comp?'✓':(i+1)}</div>
+        <div class="day-meta"><div class="day-title">Day ${i+1}: ${d.title}</div><div class="day-sub">${d.sub}</div></div>
+        <span class="day-badge ${badgeClass(d.badge)}">${badgeLabel(d.badge)}</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="day-body">
+        <div class="nb-row">
+          <a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a>
+          <a class="nb-btn nb-btn-colab" href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/prefect-certified/notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">▶ Open in Colab</a>
+          <a class="nb-btn" href="https://github.com/certified-journeys/certified-journeys.github.io/edit/main/courses/${COURSE_ID}/notes/day-${String(i+1).padStart(2,'0')}.md" target="_blank">📝 notes/day-${String(i+1).padStart(2,'0')}.md</a>
+        </div>
+        <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
+        ${(dayTopics[i]||[]).length?`<div class="day-topic-pills">${(dayTopics[i]||[]).map(t=>`<span class="day-topic-pill" style="background:${t.color}18;color:${t.color};border-color:${t.color}40" onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])" title="View topic in Topics tab">${t.name}</span>`).join('')}</div>`:''}
+        ${(()=>{const tot=d.tasks.length;const done=(state.tasksDone[i]||[]).length;return tot?`<div class="task-progress"><div class="task-progress-fill" style="width:${Math.round(done/tot*100)}%"></div></div>`:''})()}
+        <div class="task-list">${d.tasks.map((t,j)=>renderTask(t,i,j)).join('')}</div>
+        <div class="resources-row">${d.resources.map(renderRes).join('')}</div>
+        ${d.hasScore?`<div class="score-row"><label>Practice score (%):</label><input type="number" min="0" max="100" placeholder="e.g. 84" value="${score||''}" onchange="logScore(${i},this.value)">${score?`<span class="score-badge ${scoreClass(score)==='ok'?'badge-learn':scoreClass(score)==='warn'?'badge-review':'badge-exam'}">${score}%</span>`:''}</div>`:''}
+        <div class="hours-row"><label>Hours spent today:</label><input type="number" min="0" max="24" step="0.5" placeholder="e.g. 2.5" value="${hrs||''}" onchange="logHours(${i},this.value)"><span style="font-size:11px;color:var(--text3);">hrs</span></div>
+        <button class="complete-btn ${comp?'done':''}" onclick="event.stopPropagation();toggleComplete(${i})">${comp?'✓ Completed':'Mark as complete'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTopics(){
+  document.getElementById('panel-topics').innerHTML=`<div class="topic-grid">${
+    topics.map(t=>{
+      const cov=t.days.filter(d=>state.completed.includes(d)).length;
+      const pct=Math.round((cov/t.days.length)*100);
+      const dayBtns=t.days.map(d=>`<button class="topic-day-btn${state.completed.includes(d)?' done':''}" onclick="goToDay(${d})">Day ${d+1}</button>`).join('');
+      return`<div class="topic-card"><h4>${t.name}</h4><div class="t-bar-bg"><div class="t-bar-fill" style="width:${pct}%;background:${t.color}"></div></div><div class="t-pct">${pct}% covered · ${cov}/${t.days.length} sessions</div><div class="topic-days">${dayBtns}</div></div>`;
+    }).join('')
+  }</div>`;
+}
+
+function renderAI(){
+  document.getElementById('panel-ai').innerHTML=`
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#E8F0FE;">🎙</div>
+        <div>
+          <div class="ai-card-title">NotebookLM — Audio Podcast Summary</div>
+          <div class="ai-card-sub">Generate a personalized audio briefing of your Prefect learning</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Upload your day-card notes plus the Prefect official docs as sources in NotebookLM, then generate a podcast covering key workflow orchestration concepts and production deployment patterns.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Audio:
+"Create a 10-minute podcast episode for someone studying Prefect for Data Engineers. Cover: the most important concepts (flows, tasks, deployments, work pools), common production gotchas, and the 3 things they absolutely must understand to build reliable data pipelines."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#FEF3E2;">🃏</div>
+        <div>
+          <div class="ai-card-title">NotebookLM — AI Flashcards</div>
+          <div class="ai-card-sub">Generate quiz cards from your Prefect notes</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Upload your notes and the Prefect docs to NotebookLM and use the Study Guide feature to generate Q&A flashcards covering flows, tasks, deployments, caching, and production patterns.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Quiz:
+"Generate 20 flashcard-style Q&A pairs for someone studying Prefect for Data Engineers. Focus on: the difference between flows and tasks, deployment vs. deployment run, work pools vs. workers, caching strategies, retry configuration, and Prefect Cloud vs. self-hosted server."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#EEE9FF;">💬</div>
+        <div>
+          <div class="ai-card-title">Claude — Deep Dive Prompts</div>
+          <div class="ai-card-sub">Explore difficult Prefect concepts with targeted prompts</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Use these prompts when a Prefect concept isn't clicking or you want a deeper explanation of orchestration patterns.</div>
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior data engineer:
+"I'm studying Prefect for Data Engineers. Explain [TOPIC — e.g. work pools vs. workers, or result caching] as if I'm already an experienced Python developer. Skip the basics — focus on nuance, edge cases, and real-world production decisions."
+
+Prompt 2 — Design scenario:
+"Give me 5 scenario-based questions about designing reliable data pipelines with Prefect. After each question, explain why the correct answer is right and why common alternatives are wrong. Topics: retries, caching, subflows, deployment strategies."
+
+Prompt 3 — Gap analysis study plan:
+"I've studied Prefect for Data Engineers but I'm unsure about [TOPIC — e.g. Docker work pools or automations]. Give me a focused 30-minute study plan with concrete hands-on exercises to fill that gap."</div>
+    </div>`;
+}
+
+function renderResources(){
+  document.getElementById('panel-resources').innerHTML=`
+    <div class="res-section">
+      <div class="res-section-title">📖 Core Reading</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">01</span>
+          <div class="res-link-body"><a href="https://docs.prefect.io/latest/" target="_blank">Prefect Documentation (official)</a><div class="res-link-desc">The primary reference — flows, tasks, deployments, work pools, and Cloud.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">02</span>
+          <div class="res-link-body"><a href="https://docs.prefect.io/latest/concepts/flows/" target="_blank">Flows concept reference</a><div class="res-link-desc">Complete API surface for @flow: parameters, subflows, state hooks, and timeouts.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">03</span>
+          <div class="res-link-body"><a href="https://docs.prefect.io/latest/concepts/tasks/" target="_blank">Tasks concept reference</a><div class="res-link-desc">@task decorator, retries, caching, task runners, and .map().</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">04</span>
+          <div class="res-link-body"><a href="https://docs.prefect.io/latest/concepts/deployments/" target="_blank">Deployments concept reference</a><div class="res-link-desc">How to package and schedule flows for execution in any infrastructure.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🛠 Hands-On Resources</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">05</span>
+          <div class="res-link-body"><a href="https://docs.prefect.io/latest/tutorial/" target="_blank">Prefect Tutorial</a><div class="res-link-desc">Step-by-step guide from first flow to scheduled deployment with a worker.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">06</span>
+          <div class="res-link-body"><a href="https://docs.prefect.io/latest/guides/" target="_blank">Prefect How-To Guides</a><div class="res-link-desc">Task-based guides for Docker, Kubernetes, CI/CD, and more.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">07</span>
+          <div class="res-link-body"><a href="https://github.com/PrefectHQ/prefect" target="_blank">Prefect GitHub repository</a><div class="res-link-desc">Source code, open issues, and example recipes in the tests and docs folders.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">08</span>
+          <div class="res-link-body"><a href="https://docs.prefect.io/latest/concepts/automations/" target="_blank">Automations reference</a><div class="res-link-desc">Event-driven triggers, state-change notifications, and webhook integrations.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🔧 Ecosystem &amp; Tooling</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">09</span>
+          <div class="res-link-body"><a href="https://docs.prefect.io/latest/concepts/work-pools/" target="_blank">Work Pools and Workers</a><div class="res-link-desc">How work pools decouple scheduling from execution across local, Docker, and Kubernetes.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">10</span>
+          <div class="res-link-body"><a href="https://docs.prefect.io/latest/concepts/results/" target="_blank">Results and Caching</a><div class="res-link-desc">Persist task results, configure result storage, and design cache_key_fn strategies.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">11</span>
+          <div class="res-link-body"><a href="https://docs.prefect.io/latest/cloud/" target="_blank">Prefect Cloud documentation</a><div class="res-link-desc">Managed Prefect server with RBAC, managed workers, and event history.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">12</span>
+          <div class="res-link-body"><a href="https://docs.prefect.io/latest/guides/docker/" target="_blank">Docker and Kubernetes for Prefect</a><div class="res-link-desc">Containerizing flows, building images, and running workers in Docker or K8s.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">⬆ Upgrade Path</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">13</span>
+          <div class="res-link-body"><a href="https://docs.prefect.io/latest/integrations/" target="_blank">Prefect Integrations library</a><div class="res-link-desc">Pre-built blocks for AWS, GCP, Azure, dbt, Slack, and more.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">14</span>
+          <div class="res-link-body"><a href="https://docs.prefect.io/latest/guides/deployment/kubernetes/" target="_blank">Production Kubernetes deployment</a><div class="res-link-desc">Run Prefect workers on Kubernetes with Helm charts and CRDs.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">15</span>
+          <div class="res-link-body"><a href="https://www.getdbt.com/learn" target="_blank">dbt + Prefect data engineering stack</a><div class="res-link-desc">Pair Prefect orchestration with dbt transformations for a complete modern data stack.</div></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderExam(){
+  const e=exam;
+  document.getElementById('panel-exam').innerHTML=`
+    <div class="exam-grid">
+      <div class="exam-card"><div class="exam-card-label">Cost</div><div class="exam-card-val">${e.cost}</div><div class="exam-card-sub">${e.provider}</div></div>
+      <div class="exam-card"><div class="exam-card-label">Questions</div><div class="exam-card-val">${e.questions||'N/A'}</div><div class="exam-card-sub">no formal exam</div></div>
+      <div class="exam-card"><div class="exam-card-label">Time limit</div><div class="exam-card-val">${e.minutes?e.minutes+' min':'N/A'}</div><div class="exam-card-sub">project-based</div></div>
+      <div class="exam-card"><div class="exam-card-label">Pass mark</div><div class="exam-card-val" style="font-size:13px;">${e.passScore}</div><div class="exam-card-sub">capstone pipeline required</div></div>
+    </div>
+    <div class="info-box"><strong>Notes:</strong> ${e.notes}</div>
+    <div class="info-box"><strong>Upgrade path:</strong> Pair with dbt and Kubernetes for a full production data engineering stack.</div>
+    <div style="margin-top:12px;">
+      <a href="${e.link}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:10px 20px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-weight:500;text-decoration:none;">Prefect Docs →</a>
+    </div>
+    <div class="info-box" style="margin-top:12px;">
+      <strong>📋 Readiness checklist:</strong><br>
+      Before considering yourself proficient:<br>
+      • Completed all ${TOTAL_DAYS} days of the study plan<br>
+      • Scored N/A or higher on practice exercises<br>
+      • Can explain every topic in the Topics tab without notes<br>
+      • Have written a cheat sheet on deployments and work pools from memory and verified it<br>
+      • Built and deployed the Day 14 capstone pipeline end-to-end
+    </div>`;
+}
+
+function showPanel(name,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(name==='topics')renderTopics();
+  if(name==='ai')renderAI();
+  if(name==='exam')renderExam();
+  if(name==='resources')renderResources();
+}
+
+function renderAll(){
+  updateStats();
+  renderSchedule();
+  broadcastStatus();
+}
+
+function updateSyncBadge(s){
+  const el=document.getElementById('sync-badge');if(!el)return;
+  const L={disconnected:'☁ Connect GitHub',connected:'✓ Synced',syncing:'↑ Syncing…',error:'⚠ Sync failed'};
+  el.textContent=L[s]||L.disconnected;
+  el.className='sync-badge'+(s==='connected'?' connected':s==='syncing'?' syncing':s==='error'?' error':'');
+}
+
+function openGHModal(){
+  const creds=GHSync.getCreds();
+  if(creds){
+    document.getElementById('gh-pat').value=creds.pat||'';
+    document.getElementById('gh-owner').value=creds.owner||'';
+    document.getElementById('gh-repo').value=creds.repo||'';
+    document.getElementById('gh-branch').value=creds.branch||'main';
+    document.getElementById('gh-disconnect-btn').style.display='inline-flex';
+  }else{
+    document.getElementById('gh-disconnect-btn').style.display='none';
+  }
+  document.getElementById('gh-modal').classList.add('open');
+}
+
+function closeGHModal(){document.getElementById('gh-modal').classList.remove('open');}
+
+async function saveGHCreds(){
+  const c={
+    pat:document.getElementById('gh-pat').value.trim(),
+    owner:document.getElementById('gh-owner').value.trim(),
+    repo:document.getElementById('gh-repo').value.trim(),
+    branch:document.getElementById('gh-branch').value.trim()||'main'
+  };
+  if(!c.pat||!c.owner||!c.repo){document.getElementById('gh-modal-msg').textContent='Fill in all fields.';return;}
+  document.getElementById('gh-modal-msg').textContent='Testing…';
+  GHSync.saveCreds(c);
+  const r=await GHSync.testConnection();
+  if(r.ok){
+    document.getElementById('gh-modal-msg').textContent='✓ Connected!';
+    updateSyncBadge('connected');
+    setTimeout(closeGHModal,900);
+  }else{
+    document.getElementById('gh-modal-msg').textContent='Error: '+r.msg;
+  }
+}
+
+function disconnectGH(){GHSync.saveCreds(null);updateSyncBadge('disconnected');closeGHModal();}
+
+loadState().then(renderAll);
+
+// ── Dark mode toggle ──────────────────────────────────────────
+const MOON='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function getEffectiveTheme(){const t=document.documentElement.getAttribute('data-theme');if(t)return t;return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+function applyThemeBtn(){const btn=document.getElementById('theme-btn');if(!btn)return;const dark=getEffectiveTheme()==='dark';btn.innerHTML=dark?SUN:MOON;btn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');}
+window.toggleTheme=function(){const next=getEffectiveTheme()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);localStorage.setItem('cj-theme',next);applyThemeBtn();};
+applyThemeBtn();
+</script>
+
+</body>
+</html>

@@ -422,7 +422,8 @@ const COURSES = [
   {id:'typer-cli-certified',  name:'Typer CLI',  fullName:'Typer CLI Mastery',                          icon:'TY', color:'#6C47FF', colorDim:'#EEE9FF', provider:'Self-paced',  cost:'Free', totalDays:3,  tags:['Python','CLI'],                 domains:['Python'],         examLink:'https://typer.tiangolo.com/'},
   {id:'hamilton-certified',   name:'Hamilton',   fullName:'Hamilton — Python Dataflows & Feature Pipelines', icon:'HM', color:'#3B82F6', colorDim:'#EFF6FF', provider:'DAGWorks', cost:'Free', totalDays:14, tags:['Python','Data Eng','DAGs'], domains:['Data','Python'],  examLink:'https://hamilton.dagworks.io/en/latest/'},
   {id:'metaflow-certified',   name:'Metaflow',   fullName:'Metaflow for ML Engineers',                  icon:'MF', color:'#00B4A0', colorDim:'#E0FAF7', provider:'Outerbounds', cost:'Free', totalDays:14, tags:['MLOps','Python','Workflows'],   domains:['AI','Python'],    examLink:'https://outerbounds.com/engineering/'},
-  {id:'mlflow-certified',    name:'MLflow',     fullName:'MLflow for ML Engineers',                    icon:'ML', color:'#E8500A', colorDim:'#FEF0E7', provider:'Databricks',  cost:'Free', totalDays:14, tags:['MLOps','Python','Experiment Tracking','Model Registry'], domains:['AI','Python'], examLink:'https://mlflow.org/docs/latest/index.html'}
+  {id:'mlflow-certified',    name:'MLflow',     fullName:'MLflow for ML Engineers',                    icon:'ML', color:'#E8500A', colorDim:'#FEF0E7', provider:'Databricks',  cost:'Free', totalDays:14, tags:['MLOps','Python','Experiment Tracking','Model Registry'], domains:['AI','Python'], examLink:'https://mlflow.org/docs/latest/index.html'},
+  {id:'prefect-certified',   name:'Prefect',    fullName:'Prefect for Data Engineers',                  icon:'PF', color:'#2563EB', colorDim:'#EFF6FF', provider:'Prefect (Self-paced)', cost:'Free', totalDays:14, tags:['MLOps','Python','Workflows','Data Engineering'], domains:['Data','Python'], examLink:'https://docs.prefect.io/latest/'}
 ];
 
 function getProgress(id) {
@@ -470,6 +471,7 @@ const NEXT_JOURNEY = {
   'hamilton-certified':    'dlt-certified',
   'metaflow-certified':     'hamilton-certified',
   'mlflow-certified':      'metaflow-certified',
+  'prefect-certified':     'mlflow-certified',
 };
 
 let activeFilter = 'All';
