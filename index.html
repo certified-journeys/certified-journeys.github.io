@@ -425,7 +425,8 @@ const COURSES = [
   {id:'mlflow-certified',    name:'MLflow',     fullName:'MLflow for ML Engineers',                    icon:'ML', color:'#E8500A', colorDim:'#FEF0E7', provider:'Databricks',  cost:'Free', totalDays:14, tags:['MLOps','Python','Experiment Tracking','Model Registry'], domains:['AI','Python'], examLink:'https://mlflow.org/docs/latest/index.html'},
   {id:'prefect-certified',   name:'Prefect',    fullName:'Prefect for Data Engineers',                  icon:'PF', color:'#2563EB', colorDim:'#EFF6FF', provider:'Prefect (Self-paced)', cost:'Free', totalDays:14, tags:['MLOps','Python','Workflows','Data Engineering'], domains:['Data','Python'], examLink:'https://docs.prefect.io/latest/'},
   {id:'duckdb-certified',    name:'DuckDB',     fullName:'DuckDB for Analytical Engineers',              icon:'DB', color:'#EAB308', colorDim:'#FEFCE8', provider:'DuckDB Labs (Self-paced)', cost:'Free', totalDays:10, tags:['Analytics','SQL','Python','Data Engineering'], domains:['Data','Python'], examLink:'https://duckdb.org/docs/'},
-  {id:'fastapi-certified',   name:'FastAPI',    fullName:'FastAPI for Python Engineers',                 icon:'FA', color:'#009688', colorDim:'#E0F2F1', provider:'FastAPI (Self-paced)', cost:'Free', totalDays:14, tags:['Python','APIs','Web','Backend'], domains:['Data','Python'], examLink:'https://fastapi.tiangolo.com/'}
+  {id:'fastapi-certified',   name:'FastAPI',    fullName:'FastAPI for Python Engineers',                 icon:'FA', color:'#009688', colorDim:'#E0F2F1', provider:'FastAPI (Self-paced)', cost:'Free', totalDays:14, tags:['Python','APIs','Web','Backend'], domains:['Data','Python'], examLink:'https://fastapi.tiangolo.com/'},
+  {id:'kestra-certified',   name:'Kestra',     fullName:'Kestra for Data Engineers',                    icon:'KS', color:'#6366F1', colorDim:'#EEF2FF', provider:'Kestra (Self-paced)', cost:'Free', totalDays:10, tags:['Orchestration','Workflows','Python','Data Engineering'], domains:['Data','Python'], examLink:'https://kestra.io/docs/'}
 ];
 
 function getProgress(id) {
@@ -476,6 +477,7 @@ const NEXT_JOURNEY = {
   'prefect-certified':     'mlflow-certified',
   'duckdb-certified':      'prefect-certified',
   'fastapi-certified':     'duckdb-certified',
+  'kestra-certified':      'prefect-certified',
 };
 
 let activeFilter = 'All';
