@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soda Core for Data Quality · certified-journeys</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --green:#0D9488;--green-light:#CCFBF1;--green-dark:#0F766E;
+  --blue:#378ADD;--blue-light:#EAF3FD;--blue-dark:#185FA5;
+  --amber:#BA7517;--amber-light:#FDF3E3;
+  --coral:#D85A30;--coral-light:#FAEDE8;--coral-dark:#993C1D;
+  --purple:#7F77DD;--purple-light:#EEEDFE;
+  --orange:#E8890C;--orange-light:#FEF3E2;
+  --teal:#0891B2;--teal-light:#E0F5FA;
+  --bg:#F5F4F0;--surface:#FFFFFF;--surface2:#EEECE5;--surface3:#E8E6DF;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.16);
+  --text:#18181A;--text2:#52524E;--text3:#8C8B85;
+  --radius:14px;--radius-sm:9px;--radius-xs:5px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.06);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111113;--surface:#1C1C1F;--surface2:#252528;--surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA;--text2:#A09F9B;--text3:#5E5D58;
+  --green-light:#012220;--blue-light:#061E38;--amber-light:#221900;
+  --coral-light:#2A0E05;--purple-light:#161440;--orange-light:#1F1200;--teal-light:#021E26;
+}}
+[data-theme="dark"]{
+  --bg:#111113;--surface:#1C1C1F;--surface2:#252528;--surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA;--text2:#A09F9B;--text3:#5E5D58;
+  --green-light:#012220;--blue-light:#061E38;--amber-light:#221900;
+  --coral-light:#2A0E05;--purple-light:#161440;--orange-light:#1F1200;--teal-light:#021E26;
+}
+/* Nav */
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);border-bottom:0.5px solid var(--border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav{background:rgba(26,26,26,0.85);}}
+[data-theme="dark"] nav{background:rgba(26,26,26,0.85);}
+.nav-inner{max-width:860px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-0.025em;color:var(--text);text-decoration:none;}
+.nav-brand:hover{text-decoration:none;opacity:0.85;}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-gh{font-size:12px;padding:6px 14px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;gap:5px;transition:all 0.15s;text-decoration:none;font-weight:500;}
+.nav-gh:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.theme-btn{width:34px;height:34px;border-radius:99px;flex-shrink:0;border:0.5px solid var(--border2);background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;}
+.theme-btn:hover{background:var(--surface2);color:var(--text);}
+@media(max-width:600px){.nav-gh{display:none;}}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;}
+a{color:var(--blue-dark);text-decoration:none;}
+a:hover{text-decoration:underline;}
+button{cursor:pointer;font-family:inherit;}
+code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;border-radius:3px;font-size:0.9em;}
+
+.app{max-width:860px;margin:0 auto;padding:0.75rem 1.25rem 4rem;}
+/* Breadcrumb */
+.breadcrumb{padding:.55rem 0;font-size:13px;display:flex;align-items:center;gap:0;border-bottom:.5px solid var(--border);margin-bottom:1.1rem;}
+.breadcrumb a{color:var(--text2);text-decoration:none;font-weight:500;padding:4px 8px;border-radius:6px;transition:all .15s;}
+.breadcrumb a:first-child{color:var(--green-dark);font-weight:600;}
+.breadcrumb a:hover{color:var(--text);background:var(--surface2);text-decoration:none;}
+.breadcrumb>span:last-child{color:var(--text);font-weight:600;padding:4px 8px;background:var(--surface2);border-radius:6px;}
+.breadcrumb-sep{color:var(--border2);padding:0 2px;font-size:16px;user-select:none;line-height:1;}
+/* Course hero */
+.course-hero{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:1rem 0 1.25rem;box-shadow:var(--shadow);}
+.course-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.course-icon-wrap{display:flex;align-items:center;gap:12px;}
+.course-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;letter-spacing:0.02em;}
+.course-title-block h1{font-size:22px;font-weight:600;letter-spacing:-0.02em;color:var(--text);line-height:1.2;}
+.course-title-block p{font-size:13px;color:var(--text2);margin-top:3px;}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.tag{font-size:11px;padding:3px 10px;border-radius:99px;background:var(--surface2);color:var(--text2);border:0.5px solid var(--border);}
+.hero-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.meta-item{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;}
+.meta-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.meta-val{font-size:14px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;}
+/* Progress */
+.prog-strip{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.25rem;}
+.prog-strip-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;}
+.prog-label{font-size:13px;color:var(--text2);}
+.prog-pct{font-size:32px;font-weight:600;letter-spacing:-0.03em;color:var(--text);font-family:'DM Mono',monospace;line-height:1;}
+.bar-bg{background:var(--surface2);border-radius:99px;height:8px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:99px;background:var(--green);transition:width .7s cubic-bezier(.4,0,.2,1);}
+.readiness{margin-top:8px;font-size:13px;color:var(--text2);}
+.readiness span{font-weight:500;}
+.readiness.ready span{color:var(--green);}
+.readiness.close span{color:var(--amber);}
+.readiness.early span{color:var(--coral);}
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:1.25rem;}
+.stat{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:.9rem;}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.stat-val{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.02em;font-family:'DM Mono',monospace;}
+.stat-val.ok{color:var(--green);} .stat-val.warn{color:var(--amber);} .stat-val.danger{color:var(--coral);}
+/* Tabs */
+.tabs{display:flex;gap:2px;margin-bottom:1.25rem;background:var(--surface2);border-radius:99px;padding:4px;overflow-x:auto;}
+.tab{flex:1;min-width:max-content;font-size:12px;padding:7px 14px;cursor:pointer;color:var(--text2);border-radius:99px;border:none;background:none;font-family:inherit;font-weight:400;transition:all .2s;text-align:center;white-space:nowrap;}
+.tab.active{background:var(--surface);color:var(--text);font-weight:500;box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+.panel{display:none;} .panel.active{display:block;}
+/* Day cards */
+.day-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;transition:border-color .2s;}
+.day-card.completed{border-color:var(--green-dark);}
+.day-card.completed .day-num{background:var(--green);color:#fff;border-color:var(--green);}
+.day-header{display:flex;align-items:center;gap:12px;padding:.95rem 1.1rem;cursor:pointer;user-select:none;}
+.day-header:hover{background:var(--surface2);}
+.day-num{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--text2);flex-shrink:0;font-family:'DM Mono',monospace;transition:all .2s;}
+.day-meta{flex:1;min-width:0;}
+.day-title{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.day-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.day-badge{font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500;flex-shrink:0;}
+.badge-learn{background:var(--green-light);color:var(--green-dark);}
+.badge-practice{background:var(--blue-light);color:var(--blue-dark);}
+.badge-review{background:var(--amber-light);color:var(--amber);}
+.badge-exam{background:var(--coral-light);color:var(--coral-dark);}
+.chevron{font-size:11px;color:var(--text3);flex-shrink:0;transition:transform .2s;}
+.day-card.open .chevron{transform:rotate(180deg);}
+.day-body{display:none;padding:0 1.1rem 1.1rem;border-top:.5px solid var(--border);}
+.day-card.open .day-body{display:block;}
+.tip-box{background:var(--green-light);border-left:3px solid var(--green);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:.7rem .9rem;margin:1rem 0 .75rem;}
+.tip-box p{font-size:13px;color:var(--green-dark);line-height:1.6;}
+.tip-box strong{font-weight:600;}
+.task-list{margin-bottom:.75rem;}
+.task{display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:13px;color:var(--text2);border-bottom:.5px solid var(--border);line-height:1.5;}
+.task:last-child{border-bottom:none;}
+/* Task tick checkboxes */
+.task-tick{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px;background:none;padding:0;}
+.task-tick:hover{border-color:var(--green);}
+.task-tick.ticked{background:var(--green);border-color:var(--green);}
+.task-tick.ticked::after{content:"✓";font-size:10px;color:#fff;font-weight:700;line-height:1;}
+.task.task-done>span{text-decoration:line-through;color:var(--text3);}
+/* Per-day task progress bar */
+.task-progress{height:3px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
+.task-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;}
+.resources-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.res-pill{font-size:11px;padding:4px 11px;border-radius:99px;background:var(--surface2);border:.5px solid var(--border);color:var(--text2);}
+a.res-pill{text-decoration:none;cursor:pointer;}
+a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:var(--text);}
+.task-link{color:var(--blue-dark);font-size:11px;margin-left:6px;flex-shrink:0;opacity:0.7;line-height:1.5;}
+.task-link:hover{opacity:1;text-decoration:none;}
+/* Score, hours, complete */
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.score-row label{font-size:12px;color:var(--text2);}
+.score-row input{width:72px;font-size:13px;padding:5px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.score-badge{font-size:12px;font-weight:500;padding:3px 10px;border-radius:99px;}
+.hours-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text2);}
+.hours-row input{width:60px;font-size:13px;padding:4px 8px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.complete-btn{width:100%;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s;font-weight:400;}
+.complete-btn:hover{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+.complete-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);font-weight:500;}
+/* Action row — notebook buttons + notes link */
+.nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
+.nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
+.nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
+/* Topics */
+.topic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.topic-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;}
+.topic-card h4{font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px;line-height:1.4;}
+.t-bar-bg{background:var(--surface2);border-radius:99px;height:5px;margin-bottom:4px;overflow:hidden;}
+.t-bar-fill{height:100%;border-radius:99px;transition:width .7s cubic-bezier(.4,0,.2,1);}
+.t-pct{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
+/* Topic ↔ Day connections */
+.day-topic-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.day-topic-pill{font-size:10px;padding:2px 9px;border-radius:99px;border:.5px solid;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.day-topic-pill:hover{opacity:.7;}
+.topic-days{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.topic-day-btn{font-size:11px;padding:2px 8px;border-radius:99px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
+.topic-day-btn:hover{background:var(--surface3);color:var(--text);}
+.topic-day-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+/* Exam */
+.exam-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:1rem;}
+.exam-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;}
+.exam-card-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.exam-card-val{font-size:16px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;}
+.exam-card-sub{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.5;}
+.info-box{background:var(--surface2);border-radius:var(--radius-sm);padding:.9rem 1rem;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+.info-box strong{color:var(--text);font-weight:500;}
+/* AI tools */
+.ai-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;margin-bottom:10px;}
+.ai-card-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.ai-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ai-card-title{font-size:14px;font-weight:500;color:var(--text);}
+.ai-card-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.ai-card-body{font-size:13px;color:var(--text2);line-height:1.7;}
+.ai-prompt-box{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:10px;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;line-height:1.7;white-space:pre-wrap;}
+.ai-link-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-family:inherit;text-decoration:none;}
+.ai-link-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+/* Resources */
+.res-section{margin-bottom:1.25rem;}
+.res-section-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:8px;padding-bottom:6px;border-bottom:.5px solid var(--border);}
+.res-link-list{display:flex;flex-direction:column;gap:0;}
+.res-link-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:.5px solid var(--border);}
+.res-link-item:last-child{border-bottom:none;}
+.res-link-index{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);min-width:24px;padding-top:2px;}
+.res-link-body{flex:1;min-width:0;}
+.res-link-body a{font-size:13px;font-weight:500;color:var(--blue-dark);text-decoration:none;}
+.res-link-body a:hover{text-decoration:underline;}
+.res-link-desc{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.5;}
+/* Footer */
+.page-footer{font-size:11px;color:var(--text3);text-align:center;margin-top:2rem;padding-top:1rem;border-top:.5px solid var(--border);}
+.page-footer span{color:var(--green);}
+/* Reset btn */
+.reset-btn{font-size:11px;color:var(--text3);background:none;border:.5px solid var(--border2);border-radius:99px;padding:5px 12px;cursor:pointer;font-family:inherit;transition:all .2s;}
+.reset-btn:hover{color:var(--coral);border-color:var(--coral);}
+/* GitHub sync badge */
+.sync-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .2s;}
+.sync-badge:hover{background:var(--surface2);color:var(--text2);}
+.sync-badge.connected{color:var(--green-dark);border-color:var(--green);}
+.sync-badge.syncing{color:var(--blue-dark);border-color:var(--blue);}
+.sync-badge.error{color:var(--coral-dark);border-color:var(--coral);}
+/* GitHub sync modal */
+.gh-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;}
+.gh-modal.open{display:flex;}
+.gh-modal-box{background:var(--surface);border-radius:var(--radius);padding:1.5rem;max-width:440px;width:90%;box-shadow:var(--shadow-md);}
+.gh-modal-box h3{font-size:17px;font-weight:600;margin-bottom:6px;}
+.gh-modal-sub{font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.6;}
+.gh-field{margin-bottom:10px;}
+.gh-field label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.gh-field input{width:100%;font-size:13px;padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Mono',monospace;}
+.gh-field input:focus{outline:none;border-color:var(--green);}
+.gh-modal-actions{display:flex;gap:8px;align-items:center;margin-top:1rem;flex-wrap:wrap;}
+.gh-btn-save{font-size:13px;padding:8px 18px;border-radius:var(--radius-sm);background:var(--green);color:#fff;border:none;font-family:inherit;font-weight:500;cursor:pointer;}
+.gh-btn-save:hover{background:var(--green-dark);}
+.gh-btn-cancel{font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--text2);border:.5px solid var(--border2);font-family:inherit;cursor:pointer;}
+.gh-btn-cancel:hover{background:var(--surface2);}
+.gh-btn-disconnect{font-size:12px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--coral-dark);border:.5px solid var(--coral);font-family:inherit;cursor:pointer;}
+.gh-modal-msg{font-size:12px;color:var(--text2);}
+@media(max-width:640px){
+  .hero-meta{grid-template-columns:repeat(2,1fr);}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .topic-grid{grid-template-columns:1fr;}
+  .exam-grid{grid-template-columns:1fr;}
+  .course-hero-top{flex-direction:column;}
+  .tab{font-size:11px;padding:6px 8px;}
+}
+</style>
+<script>(function(){const t=localStorage.getItem('cj-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="../../index.html">
+      <div class="brand-mark">CJ</div>
+      certified-journeys
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" id="theme-btn" aria-label="Switch to dark mode" onclick="toggleTheme()"></button>
+      <a class="nav-gh" href="https://github.com/certified-journeys" target="_blank">⭐ GitHub</a>
+    </div>
+  </div>
+</nav>
+<div class="app">
+
+<div class="breadcrumb">
+  <a href="../../index.html">certified-journeys</a>
+  <span class="breadcrumb-sep">›</span>
+  <a href="../../index.html#courses">All journeys</a>
+  <span class="breadcrumb-sep">›</span>
+  <span>Soda Core for Data Quality</span>
+</div>
+
+<div class="course-hero">
+  <div class="course-hero-top">
+    <div class="course-icon-wrap">
+      <div class="course-icon" style="background:#CCFBF1;color:#0D9488;">SC</div>
+      <div class="course-title-block">
+        <h1>Soda Core for Data Quality</h1>
+        <p>Soda (Self-paced) · Intermediate · 10 days</p>
+        <div class="tag-row">
+          <span class="tag">Data Quality</span>
+          <span class="tag">Data Engineering</span>
+          <span class="tag">Testing</span>
+          <span class="tag">SQL</span>
+        </div>
+      </div>
+    </div>
+    <button class="reset-btn" onclick="resetAll()">Reset progress</button>
+  </div>
+  <div class="hero-meta">
+    <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val">Free</div></div>
+    <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">10 days</div></div>
+    <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:12px;font-family:'DM Sans',system-ui;">Soda (Self-paced)</div></div>
+    <div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-val" style="font-size:12px;font-family:'DM Sans',system-ui;">Intermediate</div></div>
+  </div>
+</div>
+
+<div class="prog-strip">
+  <div class="prog-strip-top">
+    <div class="prog-label">Overall completion</div>
+    <div class="prog-pct" id="pct-display">0%</div>
+  </div>
+  <div class="bar-bg"><div class="bar-fill" id="main-bar" style="width:0%"></div></div>
+  <div class="readiness early" id="readiness-row">Status: <span id="status-txt">Not started</span></div>
+</div>
+
+<div class="stats-grid">
+  <div class="stat"><div class="stat-label">Days done</div><div class="stat-val" id="days-done">0/10</div></div>
+  <div class="stat"><div class="stat-label">Avg score</div><div class="stat-val" id="avg-score">—</div></div>
+  <div class="stat"><div class="stat-label">Hours logged</div><div class="stat-val" id="hrs-logged">0 h</div></div>
+  <div class="stat"><div class="stat-label">Days left</div><div class="stat-val" id="days-left">10</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showPanel('schedule',this)">📅 Daily Plan</button>
+  <button class="tab" onclick="showPanel('topics',this)">📚 Topics</button>
+  <button class="tab" onclick="showPanel('ai',this)">🤖 AI Tools</button>
+  <button class="tab" onclick="showPanel('resources',this)">🔗 Resources</button>
+  <button class="tab" onclick="showPanel('exam',this)">🎓 Exam Prep</button>
+</div>
+
+<div id="panel-schedule" class="panel active"></div>
+<div id="panel-topics" class="panel"></div>
+<div id="panel-ai" class="panel"></div>
+<div id="panel-resources" class="panel"></div>
+<div id="panel-exam" class="panel"></div>
+
+<div class="page-footer">
+  <button class="sync-badge" id="sync-badge" onclick="openGHModal()">☁ Connect GitHub</button>
+  · <span id="sk-display">cj_sodacore-certified_v1</span> · <a href="../../index.html">← All journeys</a>
+</div>
+</div>
+
+<!-- GitHub sync modal -->
+<div class="gh-modal" id="gh-modal" onclick="if(event.target===this)closeGHModal()">
+  <div class="gh-modal-box">
+    <h3>☁ GitHub Sync</h3>
+    <p class="gh-modal-sub">Progress is committed to <code>courses/sodacore-certified/progress.json</code>
+    in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
+    <div class="gh-field"><label>Personal Access Token</label><input id="gh-pat" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+    <div class="gh-field"><label>Owner</label><input id="gh-owner" type="text" placeholder="your-username"></div>
+    <div class="gh-field"><label>Repository</label><input id="gh-repo" type="text" placeholder="certified-journeys.github.io"></div>
+    <div class="gh-field"><label>Branch</label><input id="gh-branch" type="text" placeholder="main"></div>
+    <div class="gh-modal-actions">
+      <button class="gh-btn-save" onclick="saveGHCreds()">Test &amp; Save</button>
+      <button class="gh-btn-cancel" onclick="closeGHModal()">Cancel</button>
+      <button class="gh-btn-disconnect" id="gh-disconnect-btn" style="display:none" onclick="disconnectGH()">Disconnect</button>
+      <span class="gh-modal-msg" id="gh-modal-msg"></span>
+    </div>
+  </div>
+</div>
+
+<script src="../../github-sync.js"></script>
+
+<script>
+// GHSync fallback — in case github-sync.js fails to load
+if(typeof GHSync==='undefined'){window.GHSync={isConnected:()=>false,saveCreds:()=>{},getCreds:()=>null,connect:async()=>({ok:false,msg:''}),fetchState:async()=>null,pushState:async()=>false,saveDebounced:()=>{},testConnection:async()=>({ok:false,msg:''}),exportConfig:()=>'',importConfig:()=>null,getLastSynced:()=>null};}
+
+const COURSE_ID='sodacore-certified';
+const STORAGE_KEY='cj_sodacore-certified_v1';
+const TOTAL_DAYS=10;
+
+const NOTEBOOKS=[
+  'day-01-soda-core-intro',
+  'day-02-connecting-data-sources',
+  'day-03-writing-checks-sodacl',
+  'day-04-threshold-freshness-checks',
+  'day-05-custom-sql-checks',
+  'day-06-pipeline-integration',
+  'day-07-soda-cloud-contracts',
+  'day-08-schema-evolution',
+  'day-09-test-driven-data-dev',
+  'day-10-capstone-quality-framework'
+];
+
+const days=[
+  {
+    title:"Soda Core Architecture — Checks, SodaCL, and Scan Execution",
+    badge:"learn",
+    sub:"Day 1 · Architecture & Sources",
+    tasks:[
+      {text:"Read the Soda Core overview and understand where it fits in the data quality landscape",url:"https://docs.soda.io/soda-core/overview-main.html"},
+      "Install Soda Core with DuckDB support: pip install -i https://pypi.cloud.soda.io soda-core-duckdb and verify the CLI with soda --version",
+      {text:"Read the SodaCL introduction to understand the checks YAML structure and scan lifecycle",url:"https://docs.soda.io/soda-cl/soda-cl-overview.html"},
+      "Create your first checks.yml file with a row_count check on a sample CSV table and run soda scan",
+      "Inspect the scan output: understand PASS, FAIL, WARN states and the structured results JSON",
+      {text:"Read how Soda Core resolves data sources, checks files, and configuration through its configuration.yml",url:"https://docs.soda.io/soda-core/configuration.html"}
+    ],
+    resources:[
+      {text:"Soda Core Overview",url:"https://docs.soda.io/soda-core/overview-main.html"},
+      {text:"SodaCL Language Overview",url:"https://docs.soda.io/soda-cl/soda-cl-overview.html"},
+      {text:"Soda Core — Get Started Locally",url:"https://docs.soda.io/soda-core/get-started-locally.html"}
+    ],
+    tip:"Soda Core separates concerns cleanly: configuration.yml holds connection details, checks YAML holds quality rules, and the scan CLI wires them together. Keep these files in version control from day one.",
+    hasScore:false
+  },
+  {
+    title:"Connecting to Data Sources — DuckDB, PostgreSQL, and Snowflake",
+    badge:"learn",
+    sub:"Day 2 · Architecture & Sources",
+    tasks:[
+      {text:"Read the Soda data source configuration reference for all supported connectors",url:"https://docs.soda.io/soda-core/configuration.html"},
+      "Configure a DuckDB data source in configuration.yml pointing to a local .duckdb file and run a successful scan",
+      {text:"Study the PostgreSQL connector documentation and write a configuration.yml for a local Postgres instance",url:"https://docs.soda.io/soda/connect-postgresql.html"},
+      "Use environment variable substitution (${VAR}) in configuration.yml for credentials — never hardcode passwords",
+      {text:"Read the Snowflake connector guide and understand how warehouse, role, and schema map to Soda config keys",url:"https://docs.soda.io/soda/connect-snowflake.html"},
+      "Run soda test-connection -d <datasource> -c configuration.yml to validate connectivity without executing checks"
+    ],
+    resources:[
+      {text:"Soda Data Source Configuration",url:"https://docs.soda.io/soda-core/configuration.html"},
+      {text:"Connect to PostgreSQL",url:"https://docs.soda.io/soda/connect-postgresql.html"},
+      {text:"Connect to Snowflake",url:"https://docs.soda.io/soda/connect-snowflake.html"}
+    ],
+    tip:"Always use ${ENV_VAR} placeholders for credentials in configuration.yml. Soda Core resolves them at runtime so you can commit the config file to git without leaking secrets.",
+    hasScore:false
+  },
+  {
+    title:"Writing Checks in SodaCL — Row Count, Missing Values, and Duplicates",
+    badge:"learn",
+    sub:"Day 3 · Core Checks",
+    tasks:[
+      {text:"Read the SodaCL checks reference — row count, missing, invalid, and duplicate checks",url:"https://docs.soda.io/soda-cl/metrics-and-checks.html"},
+      "Write a row_count check with a fail threshold (must be > 0) and a warn threshold (must be > 1000)",
+      {text:"Read the missing values check documentation and write checks for missing_count and missing_percent on nullable columns",url:"https://docs.soda.io/soda-cl/missing-metrics.html"},
+      "Write a duplicate_count check on a primary-key column and verify it catches an injected duplicate row",
+      {text:"Explore the invalid values check (valid_values, valid_regex, valid_min, valid_max) to enforce domain constraints",url:"https://docs.soda.io/soda-cl/validity-metrics.html"},
+      "Organise checks across three tables in a single checks file and confirm each section runs independently"
+    ],
+    resources:[
+      {text:"SodaCL Metrics and Checks Reference",url:"https://docs.soda.io/soda-cl/metrics-and-checks.html"},
+      {text:"Missing Values Checks",url:"https://docs.soda.io/soda-cl/missing-metrics.html"},
+      {text:"Validity Metrics",url:"https://docs.soda.io/soda-cl/validity-metrics.html"}
+    ],
+    tip:"Separate your fail and warn thresholds deliberately: warn on 1% missing, fail on 5%. This gives you an early-warning signal before data quality degrades past an acceptable threshold.",
+    hasScore:false
+  },
+  {
+    title:"Threshold Checks — Valid Ranges, Freshness, and Volume Anomaly Detection",
+    badge:"practice",
+    sub:"Day 4 · Core Checks",
+    tasks:[
+      {text:"Read the numeric metrics documentation for min, max, avg, sum, and percentile checks",url:"https://docs.soda.io/soda-cl/numeric-metrics.html"},
+      "Write range checks (min >= 0, max <= 1000) on a revenue column and verify they FAIL when out-of-range data is inserted",
+      {text:"Read the freshness check documentation and write a freshness check that fails when data is older than 24 hours",url:"https://docs.soda.io/soda-cl/freshness.html"},
+      "Configure a freshness check with both a warn (12h) and fail (24h) threshold and observe which state triggers under each condition",
+      {text:"Read about Soda's anomaly score check for automated volume anomaly detection without hard thresholds",url:"https://docs.soda.io/soda-cl/anomaly-score.html"},
+      "Write a volume_diff check that detects when today's row count deviates more than 20% from yesterday's baseline"
+    ],
+    resources:[
+      {text:"Numeric Metrics in SodaCL",url:"https://docs.soda.io/soda-cl/numeric-metrics.html"},
+      {text:"Freshness Checks",url:"https://docs.soda.io/soda-cl/freshness.html"},
+      {text:"Anomaly Score Check",url:"https://docs.soda.io/soda-cl/anomaly-score.html"}
+    ],
+    tip:"Freshness checks require a column that marks when each row was written (e.g. updated_at, loaded_at). If your source tables don't have one, add a pipeline-managed ingestion timestamp — it pays for itself in debuggability.",
+    hasScore:false
+  },
+  {
+    title:"Custom SQL Checks and Metric Expressions",
+    badge:"practice",
+    sub:"Day 5 · Custom SQL & Metrics",
+    tasks:[
+      {text:"Read the custom SQL checks documentation to understand the failed rows check and user-defined SQL metrics",url:"https://docs.soda.io/soda-cl/failed-rows-checks.html"},
+      "Write a failed rows check using an inline SQL query that identifies orders with a shipped_date before order_date",
+      {text:"Read how to define custom metrics using the metric expression syntax in SodaCL",url:"https://docs.soda.io/soda-cl/custom-metric-templates.html"},
+      "Create a custom metric that computes revenue_per_order = sum(revenue) / count(*) and assert it is between 50 and 500",
+      "Write a multi-table referential integrity check: verify that every order's customer_id exists in the customers table",
+      "Combine a failed rows check with a warn threshold so that up to 0.1% bad rows produce a WARN but more than 1% produces a FAIL"
+    ],
+    resources:[
+      {text:"Failed Rows Checks",url:"https://docs.soda.io/soda-cl/failed-rows-checks.html"},
+      {text:"Custom Metric Templates",url:"https://docs.soda.io/soda-cl/custom-metric-templates.html"},
+      {text:"SodaCL Check Reference — SQL Checks",url:"https://docs.soda.io/soda-cl/sql-checks.html"}
+    ],
+    tip:"The failed rows check is the escape hatch for anything SodaCL can't express natively. Return only the offending rows from your SQL — Soda counts them and applies your threshold, then optionally sends the samples to Soda Cloud.",
+    hasScore:false
+  },
+  {
+    title:"Integrating Soda Scans into Airflow, Prefect, and CI/CD",
+    badge:"practice",
+    sub:"Day 6 · Pipeline Integration",
+    tasks:[
+      {text:"Read the Soda Core programmatic scan API to understand how to trigger scans from Python",url:"https://docs.soda.io/soda-core/programmatic.html"},
+      "Write a Python function using soda.scan.Scan() that loads configuration, adds a checks file, and runs a scan — capture the exit code",
+      {text:"Read the Soda Airflow integration guide and implement a PythonOperator that runs a Soda scan and raises AirflowException on FAIL",url:"https://docs.soda.io/soda/orchestrate-scans.html"},
+      "Implement the same pattern in a Prefect flow using a @task that wraps the programmatic scan and returns scan results as a Prefect artifact",
+      {text:"Add a Soda scan step to a GitHub Actions CI workflow that runs against a DuckDB fixture database on every pull request",url:"https://docs.soda.io/soda-core/get-started-locally.html"},
+      "Design a scan-gating pattern: block downstream pipeline tasks from running if any data quality check returns FAIL"
+    ],
+    resources:[
+      {text:"Soda Core Programmatic Scan API",url:"https://docs.soda.io/soda-core/programmatic.html"},
+      {text:"Orchestrating Soda Scans",url:"https://docs.soda.io/soda/orchestrate-scans.html"},
+      {text:"Soda GitHub Actions Example",url:"https://docs.soda.io/soda-core/get-started-locally.html"}
+    ],
+    tip:"When embedding Soda in Airflow, use scan.get_scan_results() to inspect individual check outcomes and only raise exceptions for checks tagged as critical — this lets non-critical quality warnings surface without stopping the DAG.",
+    hasScore:false
+  },
+  {
+    title:"Soda Cloud — Publishing Scan Results, Alerting, and Data Contracts",
+    badge:"review",
+    sub:"Day 7 · Cloud & Contracts",
+    tasks:[
+      {text:"Read the Soda Cloud overview and understand how scan results are pushed from Soda Core",url:"https://docs.soda.io/soda-cloud/overview.html"},
+      "Create a free Soda Cloud account, generate an API key, and add the soda_cloud block to configuration.yml",
+      "Run a scan and verify results appear in the Soda Cloud dataset health dashboard with check statuses and trends",
+      {text:"Read the Soda Cloud alerting documentation and configure an email or Slack notification for FAIL checks",url:"https://docs.soda.io/soda-cloud/collaborate.html"},
+      {text:"Read the data contracts documentation and write a contract that enforces schema, row count, and freshness for a critical table",url:"https://docs.soda.io/soda-core/data-contracts.html"},
+      "Review the scan history graph in Soda Cloud to identify a trend where a metric is slowly degrading — document the root cause"
+    ],
+    resources:[
+      {text:"Soda Cloud Overview",url:"https://docs.soda.io/soda-cloud/overview.html"},
+      {text:"Soda Cloud Collaboration and Alerts",url:"https://docs.soda.io/soda-cloud/collaborate.html"},
+      {text:"Soda Data Contracts",url:"https://docs.soda.io/soda-core/data-contracts.html"}
+    ],
+    tip:"Data contracts are the bridge between data producers and consumers. Write contracts that express what the downstream team needs — not what the upstream pipeline happens to produce today. The distinction matters when schemas change.",
+    hasScore:false
+  },
+  {
+    title:"Schema Evolution — Detecting and Handling Upstream Schema Changes",
+    badge:"review",
+    sub:"Day 8 · Schema Evolution",
+    tasks:[
+      {text:"Read the SodaCL schema checks documentation to understand column existence, type, and order checks",url:"https://docs.soda.io/soda-cl/schema.html"},
+      "Write a schema check that asserts required columns are present, have the correct data type, and are in the expected order",
+      "Simulate a breaking schema change (drop a column) and verify the schema check transitions to FAIL immediately",
+      "Simulate a non-breaking schema change (add a nullable column) and configure the check to WARN instead of FAIL",
+      {text:"Read about using Soda's column_delta metric to detect unplanned column additions or removals in automated scans",url:"https://docs.soda.io/soda-cl/schema.html#schema-check-optional-config"},
+      "Build a schema change notification workflow: scan → detect WARN → auto-open a GitHub issue with the column diff as the body"
+    ],
+    resources:[
+      {text:"SodaCL Schema Checks",url:"https://docs.soda.io/soda-cl/schema.html"},
+      {text:"Soda Core Programmatic Scan API",url:"https://docs.soda.io/soda-core/programmatic.html"},
+      {text:"Soda Cloud Dataset Overview",url:"https://docs.soda.io/soda-cloud/overview.html"}
+    ],
+    tip:"Never treat schema checks as a one-time baseline. Re-run them after every upstream release. A column renamed silently from 'customer_id' to 'client_id' can break dozens of downstream queries before anyone notices.",
+    hasScore:false
+  },
+  {
+    title:"Test-Driven Data Development — Writing Checks Before Transformations",
+    badge:"review",
+    sub:"Day 9 · Test-Driven Data",
+    tasks:[
+      {text:"Read the Soda documentation on using checks as dbt test replacements or complements in a transformation workflow",url:"https://docs.soda.io/soda/integrate-dbt.html"},
+      "Apply the red-green workflow: write a failing check for a column that does not exist yet, then write the transformation that makes it pass",
+      "Write pre-transformation checks on raw source data (completeness, type, schema) that act as contracts for your dbt models",
+      "Write post-transformation checks on the output table (row count relative to source, no nulls in key columns, referential integrity)",
+      {text:"Read how to use Soda scan variables to parameterise checks for partition-aware testing (e.g. filter by date)",url:"https://docs.soda.io/soda-cl/filters.html"},
+      "Design a quality gate matrix: a table mapping each transformation to its pre/post checks and the FAIL action (halt vs warn vs log)"
+    ],
+    resources:[
+      {text:"Integrating Soda with dbt",url:"https://docs.soda.io/soda/integrate-dbt.html"},
+      {text:"SodaCL Filters and Variables",url:"https://docs.soda.io/soda-cl/filters.html"},
+      {text:"Soda Core Programmatic Scan API",url:"https://docs.soda.io/soda-core/programmatic.html"}
+    ],
+    tip:"Write your post-transformation checks before you write the transformation SQL. It forces you to define 'done' clearly — and the first green scan run is far more satisfying than any unit test passing.",
+    hasScore:false
+  },
+  {
+    title:"Capstone — Build a Full Data Quality Framework for a Multi-Table Pipeline",
+    badge:"exam",
+    sub:"Day 10 · Capstone Project",
+    tasks:[
+      "Design a multi-table data quality framework for an e-commerce pipeline (orders, customers, products, order_items) — document the check strategy for each table",
+      "Write a checks YAML file covering row count, freshness, missing values, duplicates, schema, and at least two custom SQL checks across all four tables",
+      "Implement a Python orchestration script using the programmatic scan API that runs all checks in dependency order and halts if any upstream table fails",
+      "Integrate the scan into a simulated CI pipeline (GitHub Actions or local shell script) that runs on every schema migration and reports a pass/fail badge",
+      "Connect to Soda Cloud and verify all scan results are published; configure a FAIL alert to a Slack webhook or email address",
+      {text:"Write a data contract for the orders table that formalises the schema, key column constraints, and freshness SLA",url:"https://docs.soda.io/soda-core/data-contracts.html"},
+      "Document your framework as a QUALITY.md: one section per table, listing each check, its threshold rationale, and the owner responsible for investigating failures"
+    ],
+    resources:[
+      {text:"Soda Core Documentation Hub",url:"https://docs.soda.io/soda-core/overview-main.html"},
+      {text:"SodaCL Full Checks Reference",url:"https://docs.soda.io/soda-cl/metrics-and-checks.html"},
+      {text:"Soda Data Contracts",url:"https://docs.soda.io/soda-core/data-contracts.html"}
+    ],
+    tip:"A great data quality framework is not a big checks.yml — it is a prioritised decision: which checks block the pipeline, which warn, and which just log. Start with two blocking checks per table and expand from there.",
+    hasScore:true
+  }
+];
+
+const topics=[
+  {name:"Architecture & Sources",color:"#378ADD",days:[0,1]},
+  {name:"Core Checks",color:"#7F77DD",days:[2,3]},
+  {name:"Custom SQL & Metrics",color:"#D85A30",days:[4]},
+  {name:"Pipeline Integration",color:"#E8890C",days:[5]},
+  {name:"Cloud & Contracts",color:"#BA7517",days:[6]},
+  {name:"Schema Evolution",color:"#378ADD",days:[7]},
+  {name:"Test-Driven Data",color:"#7F77DD",days:[8]},
+  {name:"Capstone Project",color:"#D85A30",days:[9]}
+];
+
+const exam={
+  questions:null,
+  minutes:null,
+  passScore:"N/A",
+  cost:"Free",
+  provider:"Soda (Self-paced)",
+  link:"https://docs.soda.io/soda-core/overview-main.html",
+  notes:"No formal exam. Complete all checks and the capstone pipeline quality framework."
+};
+
+let state={completed:[],scores:{},hours:{},completedAt:{},tasksDone:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
+
+async function loadState(){
+  try{const s=localStorage.getItem(STORAGE_KEY);if(s)state={...state,...JSON.parse(s)};}catch(e){}
+  if(GHSync.isConnected()){
+    updateSyncBadge('syncing');
+    const gh=await GHSync.fetchState(COURSE_ID);
+    if(gh){state={...state,...gh};try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}}
+    updateSyncBadge(gh?'connected':'error');
+  }else{updateSyncBadge('disconnected');}
+}
+
+function saveState(){
+  state.lastActivity=Date.now();
+  if(state.completed.length>0&&state.status==='not_started')state.status='in_progress';
+  if(state.completed.length>=TOTAL_DAYS)state.status='completed';
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
+  broadcastStatus();
+  if(GHSync.isConnected())GHSync.saveDebounced(COURSE_ID,state,2500,()=>updateSyncBadge('syncing'),ok=>updateSyncBadge(ok?'connected':'error'));
+}
+
+function broadcastStatus(){
+  const summary={id:COURSE_ID,status:state.status,completed:state.completed.length,total:TOTAL_DAYS,scores:Object.values(state.scores).filter(s=>s>0),totalHours:Object.values(state.hours).reduce((a,b)=>a+b,0),completedAt:state.completedAt,startDate:state.startDate,lastActivity:state.lastActivity};
+  try{localStorage.setItem('cj_summary_'+COURSE_ID,JSON.stringify(summary));}catch(e){}
+}
+
+function resetAll(){
+  if(!confirm('Reset all progress? This cannot be undone.'))return;
+  state={completed:[],scores:{},hours:{},completedAt:{},tasksDone:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
+  saveState();renderAll();
+}
+
+function isCompleted(i){return state.completed.includes(i);}
+
+function toggleComplete(i){
+  if(isCompleted(i)){state.completed=state.completed.filter(x=>x!==i);delete state.completedAt[i];}
+  else{state.completed.push(i);state.completedAt[i]=Date.now();if(!state.startDate)state.startDate=Date.now();}
+  saveState();updateStats();renderSchedule();
+  if(document.getElementById('panel-topics').classList.contains('active'))renderTopics();
+}
+
+function toggleDay(i){state.openDay=state.openDay===i?null:i;saveState();renderSchedule();}
+function logScore(i,val){const v=parseInt(val);if(!isNaN(v)&&v>=0&&v<=100){state.scores[i]=v;saveState();updateStats();}}
+function logHours(i,val){const v=parseFloat(val);if(!isNaN(v)&&v>=0){state.hours[i]=v;saveState();updateStats();}}
+function scoreClass(s){return s>=90?'ok':s>=80?'warn':'danger';}
+function badgeClass(b){return{learn:'badge-learn',practice:'badge-practice',review:'badge-review',exam:'badge-exam'}[b]||'badge-learn';}
+function badgeLabel(b){return{learn:'Learn',practice:'Practice',review:'Review',exam:'Exam'}[b]||b;}
+
+// Topic ↔ Day reverse index
+const dayTopics=(()=>{const m={};topics.forEach(t=>t.days.forEach(d=>{(m[d]=m[d]||[]).push(t);}));return m;})();
+
+function goToDay(i){
+  showPanel('schedule',document.querySelector('.tab'));
+  setTimeout(()=>{
+    state.openDay=i;saveState();renderSchedule();
+    const el=document.querySelector('.day-card:nth-child('+(i+1)+')');
+    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  },50);
+}
+
+function renderTask(t,di,ti){
+  const done=(state.tasksDone[di]||[]).includes(ti);
+  const text=typeof t==='string'?t:t.text;
+  const link=(typeof t==='object'&&t.url)?`<a class="task-link" href="${t.url}" target="_blank" rel="noopener">↗</a>`:'';
+  return`<div class="task${done?' task-done':''}"><button class="task-tick${done?' ticked':''}" onclick="event.stopPropagation();tickTask(${di},${ti})"></button><span>${text}</span>${link}</div>`;
+}
+
+function tickTask(di,ti){
+  const arr=state.tasksDone[di]||(state.tasksDone[di]=[]);
+  const idx=arr.indexOf(ti);
+  if(idx===-1)arr.push(ti);else arr.splice(idx,1);
+  const total=days[di].tasks.length;
+  const done=arr.length;
+  if(done===total&&!isCompleted(di)){toggleComplete(di);return;}
+  if(done<total&&isCompleted(di)){state.completed=state.completed.filter(x=>x!==di);delete state.completedAt[di];}
+  saveState();renderSchedule();
+}
+
+function renderRes(r){
+  if(typeof r==='string')return`<span class="res-pill">📎 ${r}</span>`;
+  return r.url?`<a class="res-pill" href="${r.url}" target="_blank" rel="noopener">📎 ${r.text}</a>`:`<span class="res-pill">📎 ${r.text}</span>`;
+}
+
+function updateStats(){
+  const done=state.completed.length,total=TOTAL_DAYS;
+  const pct=Math.round((done/total)*100);
+  document.getElementById('pct-display').textContent=pct+'%';
+  document.getElementById('main-bar').style.width=pct+'%';
+  document.getElementById('days-done').textContent=done+'/'+total;
+  document.getElementById('days-left').textContent=(total-done);
+  const sv=Object.values(state.scores).filter(s=>!isNaN(s)&&s>0);
+  const avgEl=document.getElementById('avg-score');
+  if(sv.length){const avg=Math.round(sv.reduce((a,b)=>a+b,0)/sv.length);avgEl.textContent=avg+'%';avgEl.className='stat-val '+scoreClass(avg);}
+  else{avgEl.textContent='—';avgEl.className='stat-val';}
+  const totalHrs=Object.values(state.hours).reduce((a,b)=>a+b,0);
+  document.getElementById('hrs-logged').textContent=totalHrs>0?totalHrs.toFixed(1)+' h':'0 h';
+  const rRow=document.getElementById('readiness-row'),sTxt=document.getElementById('status-txt');
+  if(done>=total){sTxt.textContent='Completed! 🎉';rRow.className='readiness ready';}
+  else if(done>=Math.floor(total*0.75)){sTxt.textContent='Almost there — final stretch';rRow.className='readiness close';}
+  else if(done>=Math.floor(total*0.4)){sTxt.textContent='On track — great progress';rRow.className='readiness close';}
+  else if(done>=1){sTxt.textContent='In progress — keep going';rRow.className='readiness early';}
+  else{sTxt.textContent='Not started yet';rRow.className='readiness early';}
+}
+
+function renderSchedule(){
+  document.getElementById('panel-schedule').innerHTML=days.map((d,i)=>{
+    const comp=isCompleted(i),open=state.openDay===i,score=state.scores[i],hrs=state.hours[i];
+    return`<div class="day-card ${comp?'completed':''} ${open?'open':''}">
+      <div class="day-header" onclick="toggleDay(${i})">
+        <div class="day-num">${comp?'✓':(i+1)}</div>
+        <div class="day-meta"><div class="day-title">Day ${i+1}: ${d.title}</div><div class="day-sub">${d.sub}</div></div>
+        <span class="day-badge ${badgeClass(d.badge)}">${badgeLabel(d.badge)}</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="day-body">
+        <div class="nb-row">
+          <a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a>
+          <a class="nb-btn nb-btn-colab" href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/sodacore-certified/notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">▶ Open in Colab</a>
+          <a class="nb-btn" href="https://github.com/certified-journeys/certified-journeys.github.io/edit/main/courses/${COURSE_ID}/notes/day-${String(i+1).padStart(2,'0')}.md" target="_blank">📝 notes/day-${String(i+1).padStart(2,'0')}.md</a>
+        </div>
+        <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
+        ${(dayTopics[i]||[]).length?`<div class="day-topic-pills">${(dayTopics[i]||[]).map(t=>`<span class="day-topic-pill" style="background:${t.color}18;color:${t.color};border-color:${t.color}40" onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])" title="View topic in Topics tab">${t.name}</span>`).join('')}</div>`:''}
+        ${(()=>{const tot=d.tasks.length;const done=(state.tasksDone[i]||[]).length;return tot?`<div class="task-progress"><div class="task-progress-fill" style="width:${Math.round(done/tot*100)}%"></div></div>`:''})()}
+        <div class="task-list">${d.tasks.map((t,j)=>renderTask(t,i,j)).join('')}</div>
+        <div class="resources-row">${d.resources.map(renderRes).join('')}</div>
+        ${d.hasScore?`<div class="score-row"><label>Practice score (%):</label><input type="number" min="0" max="100" placeholder="e.g. 84" value="${score||''}" onchange="logScore(${i},this.value)">${score?`<span class="score-badge ${scoreClass(score)==='ok'?'badge-learn':scoreClass(score)==='warn'?'badge-review':'badge-exam'}">${score}%</span>`:''}</div>`:''}
+        <div class="hours-row"><label>Hours spent today:</label><input type="number" min="0" max="24" step="0.5" placeholder="e.g. 2.5" value="${hrs||''}" onchange="logHours(${i},this.value)"><span style="font-size:11px;color:var(--text3);">hrs</span></div>
+        <button class="complete-btn ${comp?'done':''}" onclick="event.stopPropagation();toggleComplete(${i})">${comp?'✓ Completed':'Mark as complete'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTopics(){
+  document.getElementById('panel-topics').innerHTML=`<div class="topic-grid">${
+    topics.map(t=>{
+      const cov=t.days.filter(d=>state.completed.includes(d)).length;
+      const pct=Math.round((cov/t.days.length)*100);
+      const dayBtns=t.days.map(d=>`<button class="topic-day-btn${state.completed.includes(d)?' done':''}" onclick="goToDay(${d})">Day ${d+1}</button>`).join('');
+      return`<div class="topic-card"><h4>${t.name}</h4><div class="t-bar-bg"><div class="t-bar-fill" style="width:${pct}%;background:${t.color}"></div></div><div class="t-pct">${pct}% covered · ${cov}/${t.days.length} sessions</div><div class="topic-days">${dayBtns}</div></div>`;
+    }).join('')
+  }</div>`;
+}
+
+function renderAI(){
+  document.getElementById('panel-ai').innerHTML=`
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#E8F0FE;">🎙</div>
+        <div>
+          <div class="ai-card-title">NotebookLM — Audio Podcast Summary</div>
+          <div class="ai-card-sub">Generate a personalized audio briefing of your Soda Core learning</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Upload your day-card notes plus the official Soda Core docs as sources in NotebookLM, then generate a podcast covering SodaCL syntax, scan patterns, and real-world data quality frameworks.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Audio:
+"Create a 10-minute podcast episode for someone studying Soda Core for Data Quality. Cover: the most important SodaCL check types, common mistakes when writing threshold and freshness checks, and the 3 things they absolutely must understand before building a production data quality pipeline."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#FEF3E2;">🃏</div>
+        <div>
+          <div class="ai-card-title">NotebookLM — AI Flashcards</div>
+          <div class="ai-card-sub">Generate quiz cards from your Soda Core notes</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Upload your notes and the official SodaCL docs to NotebookLM and use the Study Guide feature to generate Q&A flashcards on check types, configuration syntax, and scan lifecycle.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Quiz:
+"Generate 20 flashcard-style Q&A pairs for someone studying Soda Core for Data Quality. Focus on: SodaCL check syntax distinctions (row_count vs duplicate_count vs failed rows), freshness check configuration, common misconceptions about PASS/FAIL/WARN states, and scenario-based questions about pipeline integration patterns."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#EEE9FF;">💬</div>
+        <div>
+          <div class="ai-card-title">Claude — Deep Dive Prompts</div>
+          <div class="ai-card-sub">Explore difficult Soda Core concepts with targeted prompts</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Use these prompts when a SodaCL concept isn't clicking or you want a deeper explanation of data quality patterns.</div>
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior data engineer:
+"I'm studying Soda Core for Data Quality. Explain [TOPIC] as if I'm already experienced with data pipelines. Skip the basics — focus on nuance, edge cases, and real-world decisions about threshold-setting and check organisation."
+
+Prompt 2 — SodaCL scenario questions:
+"Give me 5 scenario-based questions for Soda Core for Data Quality on the topic of [TOPIC]. For each question, explain why the correct SodaCL approach is right and what the common pitfalls are."
+
+Prompt 3 — Gap analysis study plan:
+"I've been studying Soda Core for Data Quality but I'm unsure about [TOPIC]. Give me a focused 30-minute study plan with concrete SodaCL exercises to fill that gap, using DuckDB as the data source."</div>
+    </div>`;
+}
+
+function renderResources(){
+  document.getElementById('panel-resources').innerHTML=`
+    <div class="res-section">
+      <div class="res-section-title">📖 Core Reading</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">01</span>
+          <div class="res-link-body"><a href="https://docs.soda.io/soda-core/overview-main.html" target="_blank">Soda Core Overview</a><div class="res-link-desc">The primary entry point — architecture, scan lifecycle, and how Soda Core fits in a modern data stack.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">02</span>
+          <div class="res-link-body"><a href="https://docs.soda.io/soda-cl/soda-cl-overview.html" target="_blank">SodaCL Language Overview</a><div class="res-link-desc">Complete guide to the checks YAML DSL — syntax, check types, thresholds, and filters.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">03</span>
+          <div class="res-link-body"><a href="https://docs.soda.io/soda-cl/metrics-and-checks.html" target="_blank">SodaCL Metrics and Checks Reference</a><div class="res-link-desc">Full reference for all built-in metrics: row_count, missing, duplicate, validity, and numeric.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">04</span>
+          <div class="res-link-body"><a href="https://docs.soda.io/soda-core/configuration.html" target="_blank">Soda Core Configuration Reference</a><div class="res-link-desc">How to structure configuration.yml for multi-source setups and environment variable substitution.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🛠 Hands-On Resources</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">05</span>
+          <div class="res-link-body"><a href="https://docs.soda.io/soda-core/get-started-locally.html" target="_blank">Soda Core — Get Started Locally</a><div class="res-link-desc">Step-by-step tutorial: install, configure DuckDB, write your first checks, run a scan.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">06</span>
+          <div class="res-link-body"><a href="https://docs.soda.io/soda-core/programmatic.html" target="_blank">Soda Core Programmatic Scan API</a><div class="res-link-desc">Python API for embedding scans in Airflow, Prefect, or any orchestrator — includes exit code handling.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">07</span>
+          <div class="res-link-body"><a href="https://docs.soda.io/soda-cl/failed-rows-checks.html" target="_blank">Failed Rows Checks</a><div class="res-link-desc">Write custom SQL to identify bad rows — the most flexible quality check in SodaCL.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">08</span>
+          <div class="res-link-body"><a href="https://docs.soda.io/soda/orchestrate-scans.html" target="_blank">Orchestrating Soda Scans</a><div class="res-link-desc">Integration patterns for Airflow, Prefect, dbt, and CI/CD pipelines.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🔧 Ecosystem &amp; Tooling</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">09</span>
+          <div class="res-link-body"><a href="https://docs.soda.io/soda-cloud/overview.html" target="_blank">Soda Cloud Overview</a><div class="res-link-desc">Scan result dashboards, trend graphs, alerting, and data contracts in the managed cloud UI.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">10</span>
+          <div class="res-link-body"><a href="https://docs.soda.io/soda-core/data-contracts.html" target="_blank">Soda Data Contracts</a><div class="res-link-desc">Formalise schema, column constraints, and freshness SLAs between data producers and consumers.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">11</span>
+          <div class="res-link-body"><a href="https://docs.soda.io/soda/integrate-dbt.html" target="_blank">Integrating Soda with dbt</a><div class="res-link-desc">Use Soda checks as pre/post-transformation quality gates alongside dbt tests.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">12</span>
+          <div class="res-link-body"><a href="https://docs.soda.io/soda-cl/schema.html" target="_blank">SodaCL Schema Checks</a><div class="res-link-desc">Detect column additions, removals, type changes, and order shifts in upstream tables.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">⬆ Upgrade Path</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">13</span>
+          <div class="res-link-body"><a href="https://docs.getdbt.com/docs/build/data-tests" target="_blank">dbt Data Tests</a><div class="res-link-desc">Complement Soda checks with dbt's built-in test framework for transformation-layer coverage.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">14</span>
+          <div class="res-link-body"><a href="https://greatexpectations.io/blog/soda-vs-great-expectations" target="_blank">Great Expectations — Comparison</a><div class="res-link-desc">Understand how Soda Core compares to GX for data quality tooling selection decisions.</div></div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">15</span>
+          <div class="res-link-body"><a href="https://docs.soda.io/soda-cl/anomaly-score.html" target="_blank">Anomaly Score Check</a><div class="res-link-desc">ML-based volume anomaly detection in Soda Cloud — go beyond hard thresholds.</div></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderExam(){
+  const e=exam;
+  document.getElementById('panel-exam').innerHTML=`
+    <div class="exam-grid">
+      <div class="exam-card"><div class="exam-card-label">Cost</div><div class="exam-card-val">${e.cost}</div><div class="exam-card-sub">Soda (Self-paced)</div></div>
+      <div class="exam-card"><div class="exam-card-label">Questions</div><div class="exam-card-val">N/A</div><div class="exam-card-sub">No formal exam</div></div>
+      <div class="exam-card"><div class="exam-card-label">Time Limit</div><div class="exam-card-val">N/A</div><div class="exam-card-sub">Self-paced completion</div></div>
+      <div class="exam-card"><div class="exam-card-label">Pass Mark</div><div class="exam-card-val" style="font-size:13px;">${e.passScore}</div><div class="exam-card-sub">Capstone framework required</div></div>
+    </div>
+    <div class="info-box"><strong>Notes:</strong> ${e.notes}</div>
+    <div class="info-box"><strong>Upgrade path:</strong> Pair with dbt Core certification for end-to-end data transformation quality coverage. Add Airflow or Prefect certification for full pipeline orchestration mastery.</div>
+    <div style="margin-top:12px;">
+      <a href="${e.link}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:10px 20px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-weight:500;text-decoration:none;">View Soda Core Docs →</a>
+    </div>
+    <div class="info-box" style="margin-top:12px;">
+      <strong>📋 Readiness checklist:</strong><br>
+      Before calling this course complete, make sure you:<br>
+      • Completed all ${TOTAL_DAYS} days of the study plan<br>
+      • Scored N/A or higher on practice exams (capstone is the assessment)<br>
+      • Can explain every topic in the Topics tab without notes<br>
+      • Have written a QUALITY.md data contract from memory and verified it<br>
+      • Consistently get all checks passing — not just once on a lucky run
+    </div>`;
+}
+
+function showPanel(name,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(name==='topics')renderTopics();
+  if(name==='ai')renderAI();
+  if(name==='exam')renderExam();
+  if(name==='resources')renderResources();
+}
+
+function renderAll(){
+  updateStats();
+  renderSchedule();
+  broadcastStatus();
+}
+
+function updateSyncBadge(st){
+  const b=document.getElementById('sync-badge');if(!b)return;
+  const map={connected:'✓ Synced',syncing:'↑ Syncing…',error:'⚠ Sync failed',disconnected:'☁ Connect GitHub'};
+  b.textContent=map[st]||'☁ Connect GitHub';
+  b.className='sync-badge'+(st==='connected'?' connected':st==='syncing'?' syncing':st==='error'?' error':'');
+}
+
+function openGHModal(){
+  const creds=GHSync.getCreds();
+  if(creds){
+    document.getElementById('gh-pat').value=creds.pat||'';
+    document.getElementById('gh-owner').value=creds.owner||'';
+    document.getElementById('gh-repo').value=creds.repo||'';
+    document.getElementById('gh-branch').value=creds.branch||'main';
+    document.getElementById('gh-disconnect-btn').style.display='inline-flex';
+  }else{
+    document.getElementById('gh-disconnect-btn').style.display='none';
+  }
+  document.getElementById('gh-modal').classList.add('open');
+}
+
+function closeGHModal(){document.getElementById('gh-modal').classList.remove('open');}
+
+async function saveGHCreds(){
+  const c={
+    pat:document.getElementById('gh-pat').value.trim(),
+    owner:document.getElementById('gh-owner').value.trim(),
+    repo:document.getElementById('gh-repo').value.trim(),
+    branch:document.getElementById('gh-branch').value.trim()||'main'
+  };
+  if(!c.pat||!c.owner||!c.repo){document.getElementById('gh-modal-msg').textContent='Fill in all fields.';return;}
+  document.getElementById('gh-modal-msg').textContent='Testing…';
+  GHSync.saveCreds(c);
+  const r=await GHSync.testConnection();
+  if(r.ok){
+    document.getElementById('gh-modal-msg').textContent='✓ Connected!';
+    updateSyncBadge('connected');
+    setTimeout(closeGHModal,900);
+  }else{
+    document.getElementById('gh-modal-msg').textContent='Error: '+r.msg;
+  }
+}
+
+function disconnectGH(){GHSync.saveCreds(null);updateSyncBadge('disconnected');closeGHModal();}
+
+loadState().then(renderAll);
+
+// ── Dark mode toggle ──────────────────────────────────────────
+const MOON='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function getEffectiveTheme(){const t=document.documentElement.getAttribute('data-theme');if(t)return t;return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+function applyThemeBtn(){const btn=document.getElementById('theme-btn');if(!btn)return;const dark=getEffectiveTheme()==='dark';btn.innerHTML=dark?SUN:MOON;btn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');}
+window.toggleTheme=function(){const next=getEffectiveTheme()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);localStorage.setItem('cj-theme',next);applyThemeBtn();};
+applyThemeBtn();
+</script>
+
+</body>
+</html>

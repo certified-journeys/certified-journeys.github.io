@@ -428,7 +428,8 @@ const COURSES = [
   {id:'fastapi-certified',   name:'FastAPI',    fullName:'FastAPI for Python Engineers',                 icon:'FA', color:'#009688', colorDim:'#E0F2F1', provider:'FastAPI (Self-paced)', cost:'Free', totalDays:14, tags:['Python','APIs','Web','Backend'], domains:['Data','Python'], examLink:'https://fastapi.tiangolo.com/'},
   {id:'kestra-certified',   name:'Kestra',     fullName:'Kestra for Data Engineers',                    icon:'KS', color:'#6366F1', colorDim:'#EEF2FF', provider:'Kestra (Self-paced)', cost:'Free', totalDays:10, tags:['Orchestration','Workflows','Python','Data Engineering'], domains:['Data','Python'], examLink:'https://kestra.io/docs/'},
   {id:'pydantic-certified', name:'Pydantic',   fullName:'Pydantic for Python Engineers',                 icon:'PD', color:'#E92063', colorDim:'#FDE8EF', provider:'Self-paced', cost:'Free', totalDays:10, tags:['Python','Data Validation','Type Safety','Pydantic'], domains:['Data','Python'], examLink:'https://docs.pydantic.dev/latest/'},
-  {id:'ray-certified',     name:'Ray',        fullName:'Ray for Distributed Python',                    icon:'RY', color:'#00A5E0', colorDim:'#E0F6FF', provider:'Anyscale (Self-paced)', cost:'Free', totalDays:10, tags:['Python','Distributed Computing','ML','Scalability'], domains:['Data','Python'], examLink:'https://docs.ray.io/en/latest/'}
+  {id:'ray-certified',     name:'Ray',        fullName:'Ray for Distributed Python',                    icon:'RY', color:'#00A5E0', colorDim:'#E0F6FF', provider:'Anyscale (Self-paced)', cost:'Free', totalDays:10, tags:['Python','Distributed Computing','ML','Scalability'], domains:['Data','Python'], examLink:'https://docs.ray.io/en/latest/'},
+  {id:'sodacore-certified',name:'Soda Core',  fullName:'Soda Core for Data Quality',                    icon:'SC', color:'#0D9488', colorDim:'#CCFBF1', provider:'Soda (Self-paced)', cost:'Free', totalDays:10, tags:['Data Quality','Data Engineering','Testing','SQL'], domains:['Data'], examLink:'https://docs.soda.io/soda-core/overview-main.html'}
 ];
 
 function getProgress(id) {
@@ -482,6 +483,7 @@ const NEXT_JOURNEY = {
   'kestra-certified':      'prefect-certified',
   'pydantic-certified':    'fastapi-certified',
   'ray-certified':         'kestra-certified',
+  'sodacore-certified':    'duckdb-certified',
 };
 
 let activeFilter = 'All';
