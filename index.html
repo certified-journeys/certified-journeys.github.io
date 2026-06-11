@@ -426,7 +426,8 @@ const COURSES = [
   {id:'prefect-certified',   name:'Prefect',    fullName:'Prefect for Data Engineers',                  icon:'PF', color:'#2563EB', colorDim:'#EFF6FF', provider:'Prefect (Self-paced)', cost:'Free', totalDays:14, tags:['MLOps','Python','Workflows','Data Engineering'], domains:['Data','Python'], examLink:'https://docs.prefect.io/latest/'},
   {id:'duckdb-certified',    name:'DuckDB',     fullName:'DuckDB for Analytical Engineers',              icon:'DB', color:'#EAB308', colorDim:'#FEFCE8', provider:'DuckDB Labs (Self-paced)', cost:'Free', totalDays:10, tags:['Analytics','SQL','Python','Data Engineering'], domains:['Data','Python'], examLink:'https://duckdb.org/docs/'},
   {id:'fastapi-certified',   name:'FastAPI',    fullName:'FastAPI for Python Engineers',                 icon:'FA', color:'#009688', colorDim:'#E0F2F1', provider:'FastAPI (Self-paced)', cost:'Free', totalDays:14, tags:['Python','APIs','Web','Backend'], domains:['Data','Python'], examLink:'https://fastapi.tiangolo.com/'},
-  {id:'kestra-certified',   name:'Kestra',     fullName:'Kestra for Data Engineers',                    icon:'KS', color:'#6366F1', colorDim:'#EEF2FF', provider:'Kestra (Self-paced)', cost:'Free', totalDays:10, tags:['Orchestration','Workflows','Python','Data Engineering'], domains:['Data','Python'], examLink:'https://kestra.io/docs/'}
+  {id:'kestra-certified',   name:'Kestra',     fullName:'Kestra for Data Engineers',                    icon:'KS', color:'#6366F1', colorDim:'#EEF2FF', provider:'Kestra (Self-paced)', cost:'Free', totalDays:10, tags:['Orchestration','Workflows','Python','Data Engineering'], domains:['Data','Python'], examLink:'https://kestra.io/docs/'},
+  {id:'pydantic-certified', name:'Pydantic',   fullName:'Pydantic for Python Engineers',                 icon:'PD', color:'#E92063', colorDim:'#FDE8EF', provider:'Self-paced', cost:'Free', totalDays:10, tags:['Python','Data Validation','Type Safety','Pydantic'], domains:['Data','Python'], examLink:'https://docs.pydantic.dev/latest/'}
 ];
 
 function getProgress(id) {
@@ -478,6 +479,7 @@ const NEXT_JOURNEY = {
   'duckdb-certified':      'prefect-certified',
   'fastapi-certified':     'duckdb-certified',
   'kestra-certified':      'prefect-certified',
+  'pydantic-certified':    'fastapi-certified',
 };
 
 let activeFilter = 'All';

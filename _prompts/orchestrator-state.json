@@ -7,9 +7,9 @@
     "auto_commit": true,
     "on_validation_failure": "stop"
   },
-  "current_course": "pydantic-certified",
+  "current_course": "ray-certified",
   "current_phase": "pending",
-  "last_updated": "2026-06-10T14:35:00.000000+00:00",
+  "last_updated": "2026-06-10T15:15:00.000000+00:00",
   "schedule_id": null,
   "courses": {
     "mlflow-certified": {
@@ -53,11 +53,11 @@
       "error": null
     },
     "pydantic-certified": {
-      "status": "pending",
-      "started_at": null,
-      "designed_at": null,
-      "generated_at": null,
-      "completed_at": null,
+      "status": "done",
+      "started_at": "2026-06-10T14:35:00.000000Z",
+      "designed_at": "2026-06-10T14:40:00.000000Z",
+      "generated_at": "2026-06-10T15:10:00.000000Z",
+      "completed_at": "2026-06-10T15:15:00.000000Z",
       "error": null
     },
     "ray-certified": {
