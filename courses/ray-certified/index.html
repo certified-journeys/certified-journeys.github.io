@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ray for Distributed Python · certified-journeys</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#00A5E0; --green-light:#E0F6FF; --green-dark:#0077AA;
+  --blue:#378ADD; --blue-light:#EAF3FD; --blue-dark:#185FA5;
+  --amber:#BA7517; --amber-light:#FDF3E3;
+  --coral:#D85A30; --coral-light:#FAEDE8; --coral-dark:#993C1D;
+  --purple:#7F77DD; --purple-light:#EEEDFE;
+  --orange:#E8890C; --orange-light:#FEF3E2;
+  --teal:#0891B2; --teal-light:#E0F5FA;
+  --bg:#F5F4F0; --surface:#FFFFFF; --surface2:#EEECE5; --surface3:#E8E6DF;
+  --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.16);
+  --text:#18181A; --text2:#52524E; --text3:#8C8B85;
+  --radius:14px; --radius-sm:9px; --radius-xs:5px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.06);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#00202E;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}}
+[data-theme="dark"]{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#00202E;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}
+/* Nav */
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);border-bottom:0.5px solid var(--border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav{background:rgba(26,26,26,0.85);}}
+[data-theme="dark"] nav{background:rgba(26,26,26,0.85);}
+.nav-inner{max-width:860px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-0.025em;color:var(--text);text-decoration:none;}
+.nav-brand:hover{text-decoration:none;opacity:0.85;}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-gh{font-size:12px;padding:6px 14px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;gap:5px;transition:all 0.15s;text-decoration:none;font-weight:500;}
+.nav-gh:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.theme-btn{width:34px;height:34px;border-radius:99px;flex-shrink:0;border:0.5px solid var(--border2);background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;}
+.theme-btn:hover{background:var(--surface2);color:var(--text);}
+@media(max-width:600px){.nav-gh{display:none;}}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1rem;}
+a{color:var(--green-dark);text-decoration:none;}
+a:hover{text-decoration:underline;}
+.app{max-width:780px;margin:0 auto;}
+.breadcrumb{font-size:13px;color:var(--text3);margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
+.breadcrumb a{color:var(--text3);}
+.breadcrumb a:hover{color:var(--text);}
+.breadcrumb-sep{opacity:.4;}
+.course-hero{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:0 0 1.25rem;box-shadow:var(--shadow);}
+.course-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.course-icon-wrap{width:52px;height:52px;border-radius:12px;background:var(--green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.course-icon{font-size:15px;font-weight:700;color:var(--green-dark);font-family:'DM Mono',monospace;letter-spacing:-.5px;}
+.course-title-block{flex:1;}
+.course-title-block h1{font-size:20px;font-weight:700;line-height:1.2;margin-bottom:6px;}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;}
+.tag{font-size:11px;padding:2px 9px;border-radius:99px;background:var(--green-light);color:var(--green-dark);font-weight:500;}
+.hero-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.meta-item{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;}
+.meta-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.meta-val{font-size:14px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;}
+.prog-strip{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1.25rem;box-shadow:var(--shadow);}
+.prog-strip-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prog-label{font-size:13px;font-weight:500;}
+.prog-pct{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;color:var(--green);}
+.bar-bg{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:10px;}
+.bar-fill{height:100%;background:var(--green);border-radius:99px;transition:width .4s;}
+.readiness{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;background:var(--surface2);color:var(--text3);margin-bottom:10px;}
+.readiness.early{background:var(--amber-light);color:var(--amber);}
+.readiness.close{background:var(--orange-light);color:var(--orange);}
+.readiness.ready{background:var(--green-light);color:var(--green-dark);}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.stat{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.stat-val{font-size:18px;font-weight:700;font-family:'DM Mono',monospace;}
+.stat-val.ok{color:var(--green-dark);}
+.stat-val.warn{color:var(--amber);}
+.stat-val.danger{color:var(--coral);}
+.tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;}
+.tab{font-size:13px;padding:7px 14px;border-radius:var(--radius-sm);border:.5px solid var(--border);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .15s;}
+.tab:hover{background:var(--surface2);}
+.tab.active{background:var(--surface);border-color:var(--border2);color:var(--text);font-weight:500;box-shadow:var(--shadow);}
+.panel{display:none;}
+.panel.active{display:block;}
+.day-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:8px;box-shadow:var(--shadow);overflow:hidden;transition:box-shadow .2s;}
+.day-card.completed{border-color:var(--green);}
+.day-card.open .day-body{display:block;}
+.day-header{display:flex;align-items:center;gap:12px;padding:1rem 1.1rem;cursor:pointer;user-select:none;}
+.day-num{font-size:11px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text3);min-width:32px;}
+.day-meta{flex:1;}
+.day-title{font-size:14px;font-weight:600;line-height:1.3;}
+.day-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.day-badge{font-size:10px;padding:2px 9px;border-radius:99px;font-weight:600;flex-shrink:0;}
+.badge-learn{background:var(--blue-light);color:var(--blue-dark);}
+.badge-practice{background:var(--green-light);color:var(--green-dark);}
+.badge-review{background:var(--amber-light);color:var(--amber);}
+.badge-exam{background:var(--coral-light);color:var(--coral-dark);}
+.chevron{font-size:11px;color:var(--text3);transition:transform .2s;flex-shrink:0;}
+.day-card.open .chevron{transform:rotate(180deg);}
+.day-body{display:none;padding:0 1.1rem 1.1rem;border-top:.5px solid var(--border);}
+.day-body{padding-top:.9rem;}
+.tip-box{background:var(--green-light);border-radius:var(--radius-sm);padding:.7rem .9rem;margin-bottom:10px;font-size:12px;color:var(--green-dark);line-height:1.6;}
+/* Action row */
+.nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
+.nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
+.nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
+/* Linked resources & tasks */
+a.res-pill{text-decoration:none;cursor:pointer;}
+a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:var(--text);}
+.task-link{color:var(--blue-dark);font-size:11px;margin-left:6px;flex-shrink:0;opacity:0.7;line-height:1.5;}
+.task-link:hover{opacity:1;text-decoration:none;}
+/* Task tick checkboxes */
+.task-tick{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px;background:none;padding:0;}
+.task-tick:hover{border-color:var(--green);}
+.task-tick.ticked{background:var(--green);border-color:var(--green);}
+.task-tick.ticked::after{content:"✓";font-size:10px;color:#fff;font-weight:700;line-height:1;}
+.task.task-done>span{text-decoration:line-through;color:var(--text3);}
+/* Per-day task progress bar */
+.task-progress{height:3px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
+.task-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;}
+.task-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.task{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);}
+.resources-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.res-pill{font-size:11px;padding:4px 10px;border-radius:99px;border:.5px solid var(--border);background:var(--surface2);color:var(--text2);display:inline-flex;align-items:center;gap:4px;}
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.score-row label{font-size:12px;color:var(--text2);}
+.score-row input{width:72px;font-size:13px;padding:5px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.score-badge{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600;}
+.hours-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text2);}
+.hours-row input{width:60px;font-size:13px;padding:4px 8px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.complete-btn{width:100%;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s;font-weight:400;}
+.complete-btn:hover{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+.complete-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);font-weight:500;}
+/* Topic pills */
+.day-topic-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.day-topic-pill{font-size:10px;padding:2px 9px;border-radius:99px;border:.5px solid;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.day-topic-pill:hover{opacity:.7;}
+.topic-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.topic-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;box-shadow:var(--shadow);}
+.topic-card h4{font-size:14px;font-weight:600;margin-bottom:8px;}
+.t-bar-bg{height:6px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:5px;}
+.t-bar-fill{height:100%;border-radius:99px;transition:width .4s;}
+.t-pct{font-size:11px;color:var(--text3);margin-bottom:8px;}
+.topic-days{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.topic-day-btn{font-size:11px;padding:2px 8px;border-radius:99px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
+.topic-day-btn:hover{background:var(--surface3);color:var(--text);}
+.topic-day-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+/* AI cards */
+.ai-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;margin-bottom:10px;box-shadow:var(--shadow);}
+.ai-card-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.ai-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ai-card-title{font-size:14px;font-weight:500;color:var(--text);}
+.ai-card-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.ai-card-body{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:6px;}
+.ai-prompt-box{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:10px;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;line-height:1.7;white-space:pre-wrap;}
+.ai-link-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-family:inherit;text-decoration:none;}
+.ai-link-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+/* Exam */
+.exam-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.exam-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.9rem 1rem;box-shadow:var(--shadow);}
+.exam-card-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.exam-card-val{font-size:18px;font-weight:700;font-family:'DM Mono',monospace;margin-bottom:3px;}
+.exam-card-sub{font-size:11px;color:var(--text3);}
+/* Resources */
+.res-section{margin-bottom:1.25rem;}
+.res-section-title{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.res-link-list{display:flex;flex-direction:column;gap:6px;}
+.res-link-item{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.7rem .9rem;box-shadow:var(--shadow);}
+.res-link-index{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);min-width:20px;padding-top:1px;}
+.res-link-body{flex:1;}
+.res-link-body a{font-size:13px;font-weight:500;}
+.res-link-desc{font-size:12px;color:var(--text3);margin-top:2px;line-height:1.5;}
+/* Shared */
+.info-box{background:var(--surface2);border-radius:var(--radius-sm);padding:.8rem 1rem;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+.page-footer{text-align:center;font-size:12px;color:var(--text3);margin-top:2rem;padding:1rem 0;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.sync-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .2s;}
+.sync-badge:hover{background:var(--surface2);color:var(--text2);}
+.sync-badge.connected{color:var(--green-dark);border-color:var(--green);}
+.sync-badge.syncing{color:var(--blue-dark);border-color:var(--blue);}
+.sync-badge.error{color:var(--coral-dark);border-color:var(--coral);}
+/* GitHub modal */
+.gh-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;}
+.gh-modal.open{display:flex;}
+.gh-modal-box{background:var(--surface);border-radius:var(--radius);padding:1.5rem;max-width:440px;width:90%;box-shadow:var(--shadow-md);}
+.gh-modal-box h3{font-size:17px;font-weight:600;margin-bottom:6px;}
+.gh-modal-sub{font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.6;}
+.gh-field{margin-bottom:10px;}
+.gh-field label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.gh-field input{width:100%;font-size:13px;padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Mono',monospace;}
+.gh-field input:focus{outline:none;border-color:var(--green);}
+.gh-modal-actions{display:flex;gap:8px;align-items:center;margin-top:1rem;flex-wrap:wrap;}
+.gh-btn-save{font-size:13px;padding:8px 18px;border-radius:var(--radius-sm);background:var(--green);color:#fff;border:none;font-family:inherit;font-weight:500;cursor:pointer;}
+.gh-btn-save:hover{background:var(--green-dark);}
+.gh-btn-cancel{font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--text2);border:.5px solid var(--border2);font-family:inherit;cursor:pointer;}
+.gh-btn-cancel:hover{background:var(--surface2);}
+.gh-btn-disconnect{font-size:12px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--coral-dark);border:.5px solid var(--coral);font-family:inherit;cursor:pointer;}
+.gh-modal-msg{font-size:12px;color:var(--text2);}
+@media(max-width:640px){
+  .topic-grid{grid-template-columns:1fr;}
+  .hero-meta{grid-template-columns:repeat(2,1fr);}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .exam-grid{grid-template-columns:repeat(2,1fr);}
+  .course-hero-top{flex-direction:column;}
+}
+</style>
+<script>(function(){const t=localStorage.getItem('cj-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="../../index.html">
+      <div class="brand-mark">CJ</div>
+      certified-journeys
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" id="theme-btn" aria-label="Switch to dark mode" onclick="toggleTheme()"></button>
+      <a class="nav-gh" href="https://github.com/certified-journeys" target="_blank">⭐ GitHub</a>
+    </div>
+  </div>
+</nav>
+<div class="app">
+
+  <div class="breadcrumb">
+    <a href="../../index.html">certified-journeys</a>
+    <span class="breadcrumb-sep">›</span>
+    <span>Ray for Distributed Python</span>
+  </div>
+
+  <div class="course-hero">
+    <div class="course-hero-top">
+      <div style="display:flex;align-items:flex-start;gap:14px;">
+        <div class="course-icon-wrap">
+          <div class="course-icon">RY</div>
+        </div>
+        <div class="course-title-block">
+          <h1>Ray for Distributed Python</h1>
+          <div class="tag-row">
+            <span class="tag">Distributed Computing</span>
+            <span class="tag">MLOps</span>
+            <span class="tag">Python</span>
+            <span class="tag">Scaling</span>
+            <span class="tag">Parallel Computing</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val">Free</div></div>
+      <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">10 days</div></div>
+      <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Anyscale (Self-paced)</div></div>
+      <div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Advanced</div></div>
+    </div>
+  </div>
+
+  <div class="prog-strip">
+    <div class="prog-strip-top">
+      <span class="prog-label">Overall progress</span>
+      <span class="prog-pct" id="prog-pct">0%</span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+    <div class="readiness early" id="readiness">🌱 Just getting started</div>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-label">Days done</div><div class="stat-val" id="stat-days">0/10</div></div>
+      <div class="stat"><div class="stat-label">Hours logged</div><div class="stat-val" id="stat-hours">0</div></div>
+      <div class="stat"><div class="stat-label">Avg score</div><div class="stat-val" id="stat-score">—</div></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showPanel('schedule',this)">📅 Daily Plan</button>
+    <button class="tab" onclick="showPanel('topics',this)">📚 Topics</button>
+    <button class="tab" onclick="showPanel('ai',this)">🤖 AI Tools</button>
+    <button class="tab" onclick="showPanel('resources',this)">🔗 Resources</button>
+    <button class="tab" onclick="showPanel('exam',this)">🎓 Exam Prep</button>
+  </div>
+
+  <div id="panel-schedule" class="panel active"></div>
+  <div id="panel-topics"   class="panel"></div>
+  <div id="panel-ai"       class="panel"></div>
+  <div id="panel-resources" class="panel"></div>
+  <div id="panel-exam"     class="panel"></div>
+
+  <div class="page-footer">
+    <button class="sync-badge" id="sync-badge" onclick="openGHModal()">☁ Connect GitHub</button>
+    · <span id="sk-display">cj_ray-certified_v1</span> · <a href="../../index.html">← All journeys</a>
+  </div>
+
+</div>
+
+<div class="gh-modal" id="gh-modal" onclick="if(event.target===this)closeGHModal()">
+  <div class="gh-modal-box">
+    <h3>☁ GitHub Sync</h3>
+    <p class="gh-modal-sub">Progress is committed to <code>courses/ray-certified/progress.json</code> in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
+    <div class="gh-field"><label>Personal Access Token</label><input id="gh-pat" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+    <div class="gh-field"><label>Owner</label><input id="gh-owner" type="text" placeholder="your-username"></div>
+    <div class="gh-field"><label>Repository</label><input id="gh-repo" type="text" placeholder="certified-journeys.github.io"></div>
+    <div class="gh-field"><label>Branch</label><input id="gh-branch" type="text" placeholder="main"></div>
+    <div class="gh-modal-actions">
+      <button class="gh-btn-save" onclick="saveGHCreds()">Test &amp; Save</button>
+      <button class="gh-btn-cancel" onclick="closeGHModal()">Cancel</button>
+      <button class="gh-btn-disconnect" id="gh-disconnect-btn" style="display:none" onclick="disconnectGH()">Disconnect</button>
+      <span class="gh-modal-msg" id="gh-modal-msg"></span>
+    </div>
+  </div>
+</div>
+
+<script src="../../github-sync.js"></script>
+<script>
+if(typeof GHSync==='undefined'){window.GHSync={isConnected:()=>false,saveCreds:()=>{},getCreds:()=>null,connect:async()=>({ok:false,msg:''}),fetchState:async()=>null,pushState:async()=>false,saveDebounced:()=>{},testConnection:async()=>({ok:false,msg:''}),exportConfig:()=>'',importConfig:()=>null,getLastSynced:()=>null};}
+
+const COURSE_ID   = 'ray-certified';
+const STORAGE_KEY = 'cj_ray-certified_v1';
+const TOTAL_DAYS  = 10;
+
+const NOTEBOOKS = [
+  'day-01-ray-core-tasks',
+  'day-02-actors-object-store',
+  'day-03-ray-cluster-setup',
+  'day-04-ray-data-transforms',
+  'day-05-ray-train-distributed',
+  'day-06-ray-tune-hpo',
+  'day-07-ray-serve-deployments',
+  'day-08-ray-workflows-jobs',
+  'day-09-debugging-observability',
+  'day-10-capstone-ml-pipeline'
+];
+
+const days = [
+  {
+    title: 'Ray Core — Remote Functions and the Task Model',
+    badge: 'learn',
+    sub: 'Day 1 · Ray Core',
+    tasks: [
+      {text: 'Read the Ray Core concepts overview', url: 'https://docs.ray.io/en/latest/ray-core/walkthrough.html'},
+      'Install Ray: pip install ray and verify with python -c "import ray; print(ray.__version__)"',
+      'Initialize a local Ray cluster with ray.init() and inspect the dashboard URL',
+      'Define a remote function with @ray.remote and call it with .remote()',
+      'Use ray.get() to retrieve results from a list of object references',
+      {text: 'Read the Ray task documentation to understand the task lifecycle', url: 'https://docs.ray.io/en/latest/ray-core/tasks.html'},
+      'Parallelize a CPU-bound loop using Ray tasks and compare wall time vs sequential execution',
+    ],
+    resources: [
+      {text: 'Ray Core Walkthrough', url: 'https://docs.ray.io/en/latest/ray-core/walkthrough.html'},
+      {text: 'Ray Tasks Documentation', url: 'https://docs.ray.io/en/latest/ray-core/tasks.html'},
+      {text: 'Ray API Reference', url: 'https://docs.ray.io/en/latest/ray-core/api/doc/ray.remote.html'},
+    ],
+    tip: 'ray.get() is blocking — call it only once on a list of futures rather than inside a loop. Collect all object refs first with refs = [fn.remote(x) for x in data], then results = ray.get(refs). This preserves parallelism.',
+    hasScore: false,
+  },
+  {
+    title: 'Actors and the Object Store — Stateful Distributed Computing',
+    badge: 'learn',
+    sub: 'Day 2 · Ray Core',
+    tasks: [
+      {text: 'Read the Ray Actors documentation', url: 'https://docs.ray.io/en/latest/ray-core/actors.html'},
+      'Define a stateful Actor class with @ray.remote and instantiate it with .remote()',
+      'Call actor methods and retrieve results with ray.get()',
+      'Create a pool of actors and distribute work across them round-robin',
+      {text: 'Read the Ray Object Store documentation', url: 'https://docs.ray.io/en/latest/ray-core/objects.html'},
+      'Use ray.put() to store a large object once and pass its reference to many tasks',
+      'Observe memory efficiency: measure RAM usage with and without ray.put() for a shared dataset',
+      'Kill an actor with ray.kill() and understand actor lifecycle and supervision',
+    ],
+    resources: [
+      {text: 'Ray Actors Documentation', url: 'https://docs.ray.io/en/latest/ray-core/actors.html'},
+      {text: 'Ray Object Store', url: 'https://docs.ray.io/en/latest/ray-core/objects.html'},
+      {text: 'Actor Patterns and Best Practices', url: 'https://docs.ray.io/en/latest/ray-core/patterns/index.html'},
+    ],
+    tip: 'Use ray.put() for any object larger than ~1 MB that will be accessed by multiple tasks — it avoids serializing and copying the object multiple times through the driver. The object lives in the shared plasma store.',
+    hasScore: false,
+  },
+  {
+    title: 'Ray Clusters — Local, Docker, and Kubernetes Setup',
+    badge: 'learn',
+    sub: 'Day 3 · Ray Core',
+    tasks: [
+      {text: 'Read the Ray Cluster overview', url: 'https://docs.ray.io/en/latest/cluster/getting-started.html'},
+      'Start a multi-node local cluster with ray start --head and ray start --address',
+      'Inspect the cluster with ray status and the Ray Dashboard at port 8265',
+      {text: 'Read the Ray on Kubernetes (KubeRay) guide', url: 'https://docs.ray.io/en/latest/cluster/kubernetes/index.html'},
+      'Launch a local Ray cluster using the ray up CLI with a YAML cluster config',
+      'Submit a Ray job to the cluster using ray job submit',
+      'Tear down the cluster with ray down and understand autoscaling config fields',
+    ],
+    resources: [
+      {text: 'Ray Cluster Getting Started', url: 'https://docs.ray.io/en/latest/cluster/getting-started.html'},
+      {text: 'KubeRay on Kubernetes', url: 'https://docs.ray.io/en/latest/cluster/kubernetes/index.html'},
+      {text: 'Ray Cluster Configuration', url: 'https://docs.ray.io/en/latest/cluster/vms/references/ray-cluster-configuration.html'},
+    ],
+    tip: 'For local development, ray.init() spins up a temporary single-node cluster automatically. Use ray.init(address="auto") to connect to an existing cluster, and ray.init(num_cpus=4) to limit resource usage in notebooks.',
+    hasScore: false,
+  },
+  {
+    title: 'Ray Data — Datasets, Transforms, and Reading Files',
+    badge: 'learn',
+    sub: 'Day 4 · Ray Data',
+    tasks: [
+      {text: 'Read the Ray Data overview and getting started guide', url: 'https://docs.ray.io/en/latest/data/data.html'},
+      'Create a Ray Dataset from a list, a Pandas DataFrame, and Parquet files',
+      'Apply map(), flat_map(), and filter() transforms to a dataset',
+      {text: 'Read the Ray Data IO documentation for supported formats', url: 'https://docs.ray.io/en/latest/data/loading-data.html'},
+      'Use map_batches() with batch_format="pandas" to apply vectorized transforms',
+      'Inspect dataset schema, count rows, and take() a sample of records',
+      'Write a processed dataset to Parquet with ds.write_parquet()',
+    ],
+    resources: [
+      {text: 'Ray Data Overview', url: 'https://docs.ray.io/en/latest/data/data.html'},
+      {text: 'Loading Data into Ray Datasets', url: 'https://docs.ray.io/en/latest/data/loading-data.html'},
+      {text: 'Ray Data Transformations', url: 'https://docs.ray.io/en/latest/data/transforming-data.html'},
+    ],
+    tip: 'Prefer map_batches() over map() for transforms that benefit from vectorization (NumPy/Pandas operations). Set batch_size to a multiple of your CPU count — this amortizes Ray task overhead across many rows.',
+    hasScore: false,
+  },
+  {
+    title: 'Ray Train — Distributed Model Training with PyTorch and scikit-learn',
+    badge: 'practice',
+    sub: 'Day 5 · Training & Tuning',
+    tasks: [
+      {text: 'Read the Ray Train overview', url: 'https://docs.ray.io/en/latest/train/train.html'},
+      'Install ray[train]: pip install "ray[train]" and verify imports',
+      'Define a training function that uses train.report() to log metrics each epoch',
+      'Wrap a PyTorch training loop with TorchTrainer and run on 2 workers',
+      {text: 'Read the Ray Train checkpointing guide', url: 'https://docs.ray.io/en/latest/train/user-guides/checkpoints.html'},
+      'Save and restore checkpoints using train.get_checkpoint() and train.report(checkpoint=…)',
+      'Run a scikit-learn training job with SklearnTrainer on a Ray Dataset',
+      'Inspect training results: result.metrics, result.checkpoint, result.path',
+    ],
+    resources: [
+      {text: 'Ray Train Overview', url: 'https://docs.ray.io/en/latest/train/train.html'},
+      {text: 'TorchTrainer API', url: 'https://docs.ray.io/en/latest/train/api/doc/ray.train.torch.TorchTrainer.html'},
+      {text: 'Ray Train Checkpointing', url: 'https://docs.ray.io/en/latest/train/user-guides/checkpoints.html'},
+    ],
+    tip: 'Use train.report() instead of print() inside your training function — metrics are streamed back to the driver in real time and stored in the Result object. This enables Ray Tune to monitor and prune underperforming trials.',
+    hasScore: false,
+  },
+  {
+    title: 'Ray Tune — Hyperparameter Search at Scale',
+    badge: 'practice',
+    sub: 'Day 6 · Training & Tuning',
+    tasks: [
+      {text: 'Read the Ray Tune overview and key concepts', url: 'https://docs.ray.io/en/latest/tune/index.html'},
+      'Define a trainable function that accepts a config dict and calls tune.report()',
+      'Run a basic grid search with tune.run() over learning rate and batch size',
+      {text: 'Read the search algorithm documentation: Optuna, HyperOpt', url: 'https://docs.ray.io/en/latest/tune/api/suggestion.html'},
+      'Use the ASHA scheduler (AsyncHyperBandScheduler) to prune bad trials early',
+      'Add Optuna as the search algorithm for Bayesian optimization',
+      'Retrieve the best config and best checkpoint with result_grid.get_best_result()',
+      'Visualize trial results with result_grid.get_dataframe() in a Pandas DataFrame',
+    ],
+    resources: [
+      {text: 'Ray Tune Overview', url: 'https://docs.ray.io/en/latest/tune/index.html'},
+      {text: 'Search Algorithms (Optuna, HyperOpt)', url: 'https://docs.ray.io/en/latest/tune/api/suggestion.html'},
+      {text: 'Trial Schedulers (ASHA, PBT)', url: 'https://docs.ray.io/en/latest/tune/api/schedulers.html'},
+    ],
+    tip: 'Combine Optuna (search algorithm) with ASHA (scheduler) for maximum efficiency: Optuna proposes configurations intelligently while ASHA kills unpromising trials early. Together they outperform random search by 10–100x on large search spaces.',
+    hasScore: false,
+  },
+  {
+    title: 'Ray Serve — Model Serving, Deployments, and HTTP Endpoints',
+    badge: 'practice',
+    sub: 'Day 7 · Serving & Workflows',
+    tasks: [
+      {text: 'Read the Ray Serve overview and getting started guide', url: 'https://docs.ray.io/en/latest/serve/index.html'},
+      'Start Ray Serve with serve.start() and define a deployment using @serve.deployment',
+      'Deploy a scikit-learn model as an HTTP endpoint and query it with requests.post()',
+      {text: 'Read the Ray Serve deployment graph documentation', url: 'https://docs.ray.io/en/latest/serve/model_composition.html'},
+      'Build a pipeline deployment graph: preprocess → model → postprocess as chained deployments',
+      'Scale a deployment to multiple replicas and configure num_replicas and ray_actor_options',
+      'Update a running deployment with serve.run() and verify zero-downtime rolling update',
+      'Inspect deployment health with serve.status() and the Serve dashboard',
+    ],
+    resources: [
+      {text: 'Ray Serve Overview', url: 'https://docs.ray.io/en/latest/serve/index.html'},
+      {text: 'Deployment Graphs (Model Composition)', url: 'https://docs.ray.io/en/latest/serve/model_composition.html'},
+      {text: 'Ray Serve Configuration', url: 'https://docs.ray.io/en/latest/serve/configure-serve-deployment.html'},
+    ],
+    tip: 'Use deployment graphs instead of monolithic deployments: each stage (feature extraction, inference, post-processing) scales independently. A CPU-heavy preprocessor can have 8 replicas while a GPU model has 1 — right-sizing each stage separately.',
+    hasScore: false,
+  },
+  {
+    title: 'Ray Workflows and Job Submission',
+    badge: 'review',
+    sub: 'Day 8 · Serving & Workflows',
+    tasks: [
+      {text: 'Read the Ray Jobs overview and CLI reference', url: 'https://docs.ray.io/en/latest/cluster/running-jobs/index.html'},
+      'Submit a Ray job via the Jobs CLI: ray job submit --entrypoint "python train.py"',
+      'Monitor job status with ray job status <job-id> and stream logs with ray job logs',
+      {text: 'Read the Ray Workflows documentation', url: 'https://docs.ray.io/en/latest/workflows/basics.html'},
+      'Define a workflow with @ray.remote steps and execute it with workflow.run()',
+      'Pass outputs between workflow steps and implement conditional branching',
+      'Recover a failed workflow from its last checkpoint using workflow.resume()',
+      'Cancel a running job with ray job stop and understand job lifecycle states',
+    ],
+    resources: [
+      {text: 'Ray Jobs Overview', url: 'https://docs.ray.io/en/latest/cluster/running-jobs/index.html'},
+      {text: 'Ray Workflows Basics', url: 'https://docs.ray.io/en/latest/workflows/basics.html'},
+      {text: 'Ray Job Submission API', url: 'https://docs.ray.io/en/latest/cluster/running-jobs/ray-jobs-rest-api.html'},
+    ],
+    tip: 'Ray Workflows automatically checkpoint every step result to durable storage. If a step fails, rerun the workflow and it skips already-completed steps. This makes long-running ML pipelines fault-tolerant without any manual state management.',
+    hasScore: false,
+  },
+  {
+    title: 'Debugging and Observability — Dashboard, Timeline, and Logs',
+    badge: 'review',
+    sub: 'Day 9 · Observability',
+    tasks: [
+      {text: 'Read the Ray Observability guide', url: 'https://docs.ray.io/en/latest/ray-observability/overview.html'},
+      'Open the Ray Dashboard at http://localhost:8265 and navigate: Jobs, Actors, Nodes, Logs',
+      'Use ray.timeline() to capture a Chrome trace and open it in chrome://tracing',
+      {text: 'Read the Ray logging and debugging documentation', url: 'https://docs.ray.io/en/latest/ray-observability/user-guides/debug-apps/ray-debugging.html'},
+      'Set up structured logging inside Ray tasks using Python logging module',
+      'Debug a hanging task using ray.cancel() and inspect with ray list tasks',
+      'Profile a Ray task with py-spy and identify CPU bottlenecks in distributed code',
+      'Use ray memory to inspect object store usage and identify memory leaks',
+    ],
+    resources: [
+      {text: 'Ray Observability Overview', url: 'https://docs.ray.io/en/latest/ray-observability/overview.html'},
+      {text: 'Ray Dashboard Guide', url: 'https://docs.ray.io/en/latest/ray-observability/getting-started.html'},
+      {text: 'Debugging Ray Applications', url: 'https://docs.ray.io/en/latest/ray-observability/user-guides/debug-apps/ray-debugging.html'},
+    ],
+    tip: 'The Ray timeline (chrome://tracing format) is your most powerful debugging tool for distributed performance issues. It shows task scheduling gaps, actor idle time, and data transfer overhead — all invisible in regular profilers.',
+    hasScore: false,
+  },
+  {
+    title: 'Capstone — End-to-End Distributed ML Pipeline (Data → Train → Tune → Serve)',
+    badge: 'exam',
+    sub: 'Day 10 · Capstone',
+    tasks: [
+      {text: 'Review the Ray end-to-end ML workflow documentation', url: 'https://docs.ray.io/en/latest/ray-air/getting-started.html'},
+      'Load a dataset with Ray Data and apply distributed preprocessing with map_batches()',
+      'Train a baseline model with Ray Train (TorchTrainer or SklearnTrainer)',
+      'Run hyperparameter search with Ray Tune (Optuna + ASHA) on the training function',
+      'Retrieve the best checkpoint from Tune results and load it for serving',
+      'Deploy the best model as a Ray Serve HTTP endpoint with preprocessing pipeline',
+      'Submit the full pipeline as a Ray Job and verify it runs end-to-end on a cluster',
+      'Add observability: log metrics at each stage, open Dashboard, capture a timeline trace',
+      'Write a performance report: throughput at each stage, bottlenecks found, scaling decisions made',
+      'Write a retrospective: where did Ray add the most leverage vs plain multiprocessing?',
+    ],
+    resources: [
+      {text: 'Ray AIR (AI Runtime) Overview', url: 'https://docs.ray.io/en/latest/ray-air/getting-started.html'},
+      {text: 'End-to-End ML with Ray Tutorial', url: 'https://docs.ray.io/en/latest/ray-air/examples/lightgbm_example.html'},
+      {text: 'Ray Documentation Home', url: 'https://docs.ray.io/en/latest/'},
+    ],
+    tip: 'The capstone integrates all Ray libraries — Data, Train, Tune, Serve, and Jobs. Build it incrementally: get Data → Train working first, then add Tune, then Serve. Submit as a Job last. Each layer should be independently testable.',
+    hasScore: true,
+  },
+];
+
+const topics = [
+  {name: 'Ray Core',          color: '#378ADD', days: [0, 1, 2]},
+  {name: 'Ray Data',          color: '#0891B2', days: [3]},
+  {name: 'Training & Tuning', color: '#7F77DD', days: [4, 5]},
+  {name: 'Serving & Workflows', color: '#BA7517', days: [6, 7]},
+  {name: 'Observability',     color: '#D85A30', days: [8]},
+  {name: 'Capstone',          color: '#E8890C', days: [9]},
+];
+
+const exam = {
+  questions: null,
+  minutes:   null,
+  passScore: 'N/A',
+  cost:      'Free',
+  provider:  'Anyscale (Self-paced)',
+  link:      'https://docs.ray.io/en/latest/',
+  notes:     'No formal exam. Complete all 10 days and the capstone end-to-end distributed ML pipeline to demonstrate proficiency.',
+};
+
+let state = {
+  completed: [], scores: {}, hours: {}, completedAt: {}, tasksDone: {},
+  openDay: null, startDate: null, lastActivity: null, status: 'not_started'
+};
+
+async function loadState() {
+  try { const s = localStorage.getItem(STORAGE_KEY); if(s) state = {...state, ...JSON.parse(s)}; } catch(e) {}
+  if(GHSync.isConnected()) {
+    updateSyncBadge('syncing');
+    const gh = await GHSync.fetchState(COURSE_ID);
+    if(gh) { state = {...state, ...gh}; try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
+    updateSyncBadge(gh ? 'connected' : 'error');
+  } else { updateSyncBadge('disconnected'); }
+}
+
+function saveState() {
+  if(state.completed.length > 0 && state.status === 'not_started') {
+    state.status = 'in_progress';
+    state.startDate = state.startDate || new Date().toISOString();
+  }
+  if(state.completed.length === TOTAL_DAYS) state.status = 'completed';
+  state.lastActivity = new Date().toISOString();
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  broadcastStatus();
+  if(GHSync.isConnected())
+    GHSync.saveDebounced(COURSE_ID, state, 2500,
+      () => updateSyncBadge('syncing'),
+      ok => updateSyncBadge(ok ? 'connected' : 'error'));
+}
+
+function broadcastStatus() {
+  const summary = {
+    id: COURSE_ID, status: state.status,
+    completed: state.completed.length, total: TOTAL_DAYS,
+    scores: Object.values(state.scores).filter(s => s > 0),
+    totalHours: Object.values(state.hours).reduce((a, b) => a + b, 0),
+    completedAt: state.completedAt, startDate: state.startDate,
+    lastActivity: state.lastActivity
+  };
+  try { localStorage.setItem('cj_summary_' + COURSE_ID, JSON.stringify(summary)); } catch(e) {}
+}
+
+function resetAll() {
+  if(!confirm('Reset all progress for this course?')) return;
+  state = {completed:[], scores:{}, hours:{}, completedAt:{}, tasksDone:{}, openDay:null, startDate:null, lastActivity:null, status:'not_started'};
+  saveState(); renderAll();
+}
+
+function isCompleted(i) { return state.completed.includes(i); }
+
+function toggleComplete(i) {
+  if(isCompleted(i)) {
+    state.completed = state.completed.filter(x => x !== i);
+    delete state.completedAt[i];
+  } else {
+    state.completed.push(i);
+    state.completedAt[i] = new Date().toISOString();
+  }
+  saveState(); updateStats(); renderSchedule();
+}
+
+function toggleDay(i) {
+  state.openDay = state.openDay === i ? null : i;
+  saveState(); renderSchedule();
+}
+
+function logScore(i, val) {
+  const v = parseInt(val);
+  if(!isNaN(v) && v >= 0 && v <= 100) { state.scores[i] = v; saveState(); updateStats(); }
+}
+
+function logHours(i, val) {
+  const v = parseFloat(val);
+  if(!isNaN(v) && v >= 0) { state.hours[i] = v; saveState(); updateStats(); }
+}
+
+function scoreClass(s) { return s >= 80 ? 'ok' : s >= 60 ? 'warn' : 'danger'; }
+function badgeClass(b) { return 'badge-' + b; }
+function badgeLabel(b) { return {learn:'Learn', practice:'Practice', review:'Review', exam:'Exam'}[b] || b; }
+
+const dayTopics = (() => {
+  const m = {};
+  topics.forEach(t => t.days.forEach(d => { (m[d] = m[d] || []).push(t); }));
+  return m;
+})();
+
+function goToDay(i) {
+  showPanel('schedule', document.querySelector('.tab'));
+  setTimeout(() => {
+    state.openDay = i; saveState(); renderSchedule();
+    const el = document.querySelector('.day-card:nth-child(' + (i + 1) + ')');
+    if(el) el.scrollIntoView({behavior: 'smooth', block: 'start'});
+  }, 50);
+}
+
+function renderTask(t, di, ti) {
+  const done = (state.tasksDone[di] || []).includes(ti);
+  const text = typeof t === 'string' ? t : t.text;
+  const link = (typeof t === 'object' && t.url)
+    ? `<a class="task-link" href="${t.url}" target="_blank" rel="noopener">↗</a>` : '';
+  return `<div class="task${done ? ' task-done' : ''}">
+    <button class="task-tick${done ? ' ticked' : ''}" onclick="event.stopPropagation();tickTask(${di},${ti})"></button>
+    <span>${text}</span>${link}
+  </div>`;
+}
+
+function tickTask(di, ti) {
+  const arr = state.tasksDone[di] || (state.tasksDone[di] = []);
+  const idx = arr.indexOf(ti);
+  if(idx === -1) arr.push(ti); else arr.splice(idx, 1);
+  const total = days[di].tasks.length;
+  const done  = arr.length;
+  if(done === total && !isCompleted(di)) { toggleComplete(di); return; }
+  if(done < total  &&  isCompleted(di)) {
+    state.completed = state.completed.filter(x => x !== di);
+    delete state.completedAt[di];
+  }
+  saveState(); renderSchedule();
+}
+
+function renderRes(r) {
+  if(typeof r === 'string') return `<span class="res-pill">📎 ${r}</span>`;
+  return r.url
+    ? `<a class="res-pill" href="${r.url}" target="_blank" rel="noopener">📎 ${r.text}</a>`
+    : `<span class="res-pill">📎 ${r.text}</span>`;
+}
+
+function updateStats() {
+  const pct = Math.round((state.completed.length / TOTAL_DAYS) * 100);
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('bar-fill').style.width = pct + '%';
+  document.getElementById('stat-days').textContent = state.completed.length + '/' + TOTAL_DAYS;
+  const hrs = Object.values(state.hours).reduce((a, b) => a + b, 0);
+  document.getElementById('stat-hours').textContent = hrs % 1 === 0 ? hrs : hrs.toFixed(1);
+  const scores = Object.values(state.scores).filter(s => s > 0);
+  const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null;
+  const sv = document.getElementById('stat-score');
+  if(avg) { sv.textContent = avg + '%'; sv.className = 'stat-val ' + scoreClass(avg); }
+  else { sv.textContent = '—'; sv.className = 'stat-val'; }
+  const r = document.getElementById('readiness');
+  if(pct === 0)      { r.className = 'readiness early'; r.textContent = '🌱 Just getting started'; }
+  else if(pct < 40)  { r.className = 'readiness early'; r.textContent = '📖 Building foundations'; }
+  else if(pct < 75)  { r.className = 'readiness early'; r.textContent = '⚙️ Making solid progress'; }
+  else if(pct < 100) { r.className = 'readiness close'; r.textContent = '🔥 Almost there'; }
+  else               { r.className = 'readiness ready'; r.textContent = '✅ Course complete!'; }
+}
+
+function renderSchedule() {
+  const el = document.getElementById('panel-schedule');
+  el.innerHTML = days.map((d, i) => {
+    const comp  = isCompleted(i);
+    const open  = state.openDay === i;
+    const score = state.scores[i];
+    const hrs   = state.hours[i];
+    const tot   = d.tasks.length;
+    const done  = (state.tasksDone[i] || []).length;
+    return `<div class="day-card${comp ? ' completed' : ''}${open ? ' open' : ''}" id="day-${i}">
+      <div class="day-header" onclick="toggleDay(${i})">
+        <span class="day-num">${comp ? '✓' : ('0' + (i + 1)).slice(-2)}</span>
+        <div class="day-meta">
+          <div class="day-title">${d.title}</div>
+          <div class="day-sub">${d.sub}</div>
+        </div>
+        <span class="day-badge ${badgeClass(d.badge)}">${badgeLabel(d.badge)}</span>
+        <span class="chevron">▾</span>
+      </div>
+      ${open ? `<div class="day-body">
+        <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
+        <div class="nb-row">
+          <a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a>
+          <a class="nb-btn nb-btn-colab" href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/${COURSE_ID}/notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">▶ Open in Colab</a>
+          <a class="nb-btn" href="https://github.com/certified-journeys/certified-journeys.github.io/edit/main/courses/${COURSE_ID}/notes/day-${String(i + 1).padStart(2, '0')}.md" target="_blank">📝 notes/day-${String(i + 1).padStart(2, '0')}.md</a>
+        </div>
+        ${(dayTopics[i] || []).length ? `<div class="day-topic-pills">${(dayTopics[i] || []).map(t => `<span class="day-topic-pill" style="background:${t.color}18;color:${t.color};border-color:${t.color}40" onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])" title="View topic in Topics tab">${t.name}</span>`).join('')}</div>` : ''}
+        ${tot ? `<div class="task-progress"><div class="task-progress-fill" style="width:${Math.round(done / tot * 100)}%"></div></div>` : ''}
+        <div class="task-list">${d.tasks.map((t, j) => renderTask(t, i, j)).join('')}</div>
+        <div class="resources-row">${d.resources.map(renderRes).join('')}</div>
+        ${d.hasScore ? `<div class="score-row"><label>Practice score (%):</label><input type="number" min="0" max="100" placeholder="e.g. 84" value="${score || ''}" onchange="logScore(${i},this.value)">${score ? `<span class="score-badge ${scoreClass(score) === 'ok' ? 'badge-learn' : scoreClass(score) === 'warn' ? 'badge-review' : 'badge-exam'}">${score}%</span>` : ''}</div>` : ''}
+        <div class="hours-row"><label>Hours spent today:</label><input type="number" min="0" max="24" step="0.5" placeholder="e.g. 2.5" value="${hrs || ''}" onchange="logHours(${i},this.value)"><span style="font-size:11px;color:var(--text3);">hrs</span></div>
+        <button class="complete-btn ${comp ? 'done' : ''}" onclick="event.stopPropagation();toggleComplete(${i})">${comp ? '✓ Completed' : 'Mark as complete'}</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderTopics() {
+  document.getElementById('panel-topics').innerHTML = `<div class="topic-grid">${
+    topics.map(t => {
+      const cov = t.days.filter(d => state.completed.includes(d)).length;
+      const pct = Math.round((cov / t.days.length) * 100);
+      const dayBtns = t.days.map(d =>
+        `<button class="topic-day-btn${state.completed.includes(d) ? ' done' : ''}" onclick="goToDay(${d})">Day ${d + 1}</button>`
+      ).join('');
+      return `<div class="topic-card">
+        <h4>${t.name}</h4>
+        <div class="t-bar-bg"><div class="t-bar-fill" style="width:${pct}%;background:${t.color}"></div></div>
+        <div class="t-pct">${pct}% covered · ${cov}/${t.days.length} sessions</div>
+        <div class="topic-days">${dayBtns}</div>
+      </div>`;
+    }).join('')
+  }</div>`;
+}
+
+function renderAI() {
+  document.getElementById('panel-ai').innerHTML = `
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#E8F0FE;">🎙</div>
+        <div><div class="ai-card-title">NotebookLM — Audio Podcast Summary</div><div class="ai-card-sub">Generate a personalized audio briefing of your Ray learning</div></div>
+      </div>
+      <div class="ai-card-body">Upload your day-card notes plus the Ray documentation as sources in NotebookLM, then generate a podcast covering the Ray execution model, distributed state with Actors, the Data/Train/Tune/Serve stack, and production cluster patterns.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Audio:
+"Create a 10-minute podcast for an experienced Python engineer studying Ray for Distributed Python. Cover: how the Ray task and actor model differs from multiprocessing and Dask, when to use ray.put() for shared objects, how Ray Train integrates with Ray Tune for distributed HPO, the role of Ray Serve in production ML serving, and the 3 architectural decisions that matter most when scaling a Python workload to a Ray cluster."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#FEF3E2;">🃏</div>
+        <div><div class="ai-card-title">NotebookLM — AI Flashcards</div><div class="ai-card-sub">Generate quiz cards from your Ray notes</div></div>
+      </div>
+      <div class="ai-card-body">Upload your notes and the Ray documentation to NotebookLM and use the Study Guide feature to generate Q&A flashcards covering tasks, actors, object store, Data, Train, Tune, and Serve.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Quiz:
+"Generate 20 flashcard-style Q&A pairs for someone studying Ray for Distributed Python. Focus on: the difference between ray.get() and ray.wait(), when Actors beat tasks for stateful workloads, how ray.put() reduces serialization overhead, the role of ASHA vs PBT schedulers in Ray Tune, how Ray Serve deployment graphs enable independent scaling of pipeline stages, and how Ray Workflows differ from plain Ray task graphs in terms of fault tolerance."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#EEE9FF;">💬</div>
+        <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore Ray distributed patterns with targeted prompts</div></div>
+      </div>
+      <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific Ray design decision.</div>
+      <div class="ai-prompt-box">Prompt 1 — Explain like a distributed systems engineer:
+"I'm studying Ray for Distributed Python. Explain [TOPIC, e.g. 'how the Ray object store (plasma) works and why passing object refs instead of values avoids data copying'] as if I'm already experienced with distributed systems. Skip the basics — focus on the memory model, scheduling implications, and production edge cases."
+
+Prompt 2 — Architecture review:
+"I'm designing a distributed ML pipeline with Ray for [describe workload, e.g. 'training 50 scikit-learn models in parallel then serving the best one']. Here's my current approach: [describe plan]. Review it as a Ray expert. Should I use Tasks or Actors? Where does ray.put() help? Should I use Ray Serve or a simpler HTTP server for this scale?"
+
+Prompt 3 — Gap analysis study plan:
+"I've studied Ray basics but I'm unsure about [TOPIC, e.g. 'connecting Ray Tune to Ray Train for end-to-end distributed HPO']. Give me a focused 30-minute study plan with concrete runnable code exercises to fill that gap."</div>
+    </div>`;
+}
+
+function renderResources() {
+  document.getElementById('panel-resources').innerHTML = `
+    <div class="res-section">
+      <div class="res-section-title">📖 Core Reading</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">01</span><div class="res-link-body"><a href="https://docs.ray.io/en/latest/" target="_blank">Ray Official Documentation</a><div class="res-link-desc">Complete reference for Ray Core, Data, Train, Tune, Serve, Workflows, and cluster deployment — the authoritative source.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">02</span><div class="res-link-body"><a href="https://docs.ray.io/en/latest/ray-core/walkthrough.html" target="_blank">Ray Core Walkthrough</a><div class="res-link-desc">Hands-on introduction to tasks, actors, the object store, and the Ray execution model — start here before any library.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">03</span><div class="res-link-body"><a href="https://docs.ray.io/en/latest/ray-core/patterns/index.html" target="_blank">Ray Design Patterns</a><div class="res-link-desc">Common patterns: fan-out/fan-in, actor pools, pipeline parallelism, tree-of-tasks, and anti-patterns to avoid.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">04</span><div class="res-link-body"><a href="https://docs.ray.io/en/latest/cluster/getting-started.html" target="_blank">Ray Cluster Getting Started</a><div class="res-link-desc">Deploy Ray on local machines, Docker, AWS, GCP, Azure, and Kubernetes — covers autoscaling configuration.</div></div></div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🛠 Hands-On Resources</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">05</span><div class="res-link-body"><a href="https://docs.ray.io/en/latest/data/data.html" target="_blank">Ray Data Overview</a><div class="res-link-desc">Distributed data loading, transformations, and I/O — covers map_batches(), Parquet, CSV, and integration with Ray Train.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">06</span><div class="res-link-body"><a href="https://docs.ray.io/en/latest/train/train.html" target="_blank">Ray Train Overview</a><div class="res-link-desc">Distributed training with PyTorch, TensorFlow, XGBoost, and scikit-learn — includes checkpointing and fault tolerance.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">07</span><div class="res-link-body"><a href="https://docs.ray.io/en/latest/tune/index.html" target="_blank">Ray Tune Overview</a><div class="res-link-desc">Scalable hyperparameter search with 20+ search algorithms (Optuna, HyperOpt, BayesOpt) and schedulers (ASHA, PBT).</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">08</span><div class="res-link-body"><a href="https://docs.ray.io/en/latest/serve/index.html" target="_blank">Ray Serve Overview</a><div class="res-link-desc">Production model serving with deployment graphs, autoscaling, zero-downtime updates, and HTTP/gRPC endpoints.</div></div></div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🔧 Ecosystem &amp; Tooling</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">09</span><div class="res-link-body"><a href="https://docs.ray.io/en/latest/ray-observability/overview.html" target="_blank">Ray Observability Guide</a><div class="res-link-desc">Dashboard, timeline traces (chrome://tracing), structured logging, memory profiling, and the ray CLI for cluster introspection.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">10</span><div class="res-link-body"><a href="https://docs.ray.io/en/latest/workflows/basics.html" target="_blank">Ray Workflows Documentation</a><div class="res-link-desc">Durable, fault-tolerant workflow DAGs with automatic step checkpointing — resume from failure without replaying completed steps.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">11</span><div class="res-link-body"><a href="https://docs.ray.io/en/latest/cluster/kubernetes/index.html" target="_blank">KubeRay — Ray on Kubernetes</a><div class="res-link-desc">Deploy and manage Ray clusters on Kubernetes with the KubeRay operator — covers RayCluster, RayJob, and RayService CRDs.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">12</span><div class="res-link-body"><a href="https://github.com/ray-project/ray" target="_blank">Ray GitHub Repository</a><div class="res-link-desc">Source code, open issues, release notes, and community examples — the examples/ directory has production-ready patterns.</div></div></div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">⬆ Upgrade Path</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">13</span><div class="res-link-body"><a href="https://docs.ray.io/en/latest/ray-air/getting-started.html" target="_blank">Ray AIR (AI Runtime)</a><div class="res-link-desc">The unified Ray ML API that integrates Data, Train, Tune, and Serve — learn the unified Trainer and Predictor interfaces.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">14</span><div class="res-link-body"><a href="https://www.anyscale.com/blog" target="_blank">Anyscale Engineering Blog</a><div class="res-link-desc">Deep dives from the Ray core team on performance tuning, production architecture, and new Ray features — go beyond the docs.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">15</span><div class="res-link-body"><a href="https://docs.ray.io/en/latest/ray-more-libs/index.html" target="_blank">Ray Extended Libraries</a><div class="res-link-desc">RLlib (reinforcement learning), Ray ReST API, Ray Client, and integrations with MLflow, W&amp;B, and Hugging Face.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">16</span><div class="res-link-body"><a href="https://docs.ray.io/en/latest/cluster/vms/references/ray-cluster-configuration.html" target="_blank">Ray Cluster Configuration Reference</a><div class="res-link-desc">Full YAML reference for autoscaling policies, node types, head node config, worker groups, and cloud provider settings.</div></div></div>
+      </div>
+    </div>`;
+}
+
+function renderExam() {
+  document.getElementById('panel-exam').innerHTML = `
+    <div class="exam-grid">
+      <div class="exam-card"><div class="exam-card-label">Cost</div><div class="exam-card-val">${exam.cost}</div><div class="exam-card-sub">Self-paced, free</div></div>
+      <div class="exam-card"><div class="exam-card-label">Questions</div><div class="exam-card-val">N/A</div><div class="exam-card-sub">No formal exam</div></div>
+      <div class="exam-card"><div class="exam-card-label">Time limit</div><div class="exam-card-val">N/A</div><div class="exam-card-sub">Project-based</div></div>
+      <div class="exam-card"><div class="exam-card-label">Pass mark</div><div class="exam-card-val" style="font-size:13px;">${exam.passScore}</div><div class="exam-card-sub">Capstone pipeline</div></div>
+    </div>
+    <div class="info-box"><strong>Completion format:</strong> ${exam.notes}</div>
+    <div class="info-box" style="margin-top:10px;">
+      <strong>📋 Readiness checklist — before marking yourself done:</strong><br><br>
+      • Completed all ${TOTAL_DAYS} days of the study plan<br>
+      • Built the capstone end-to-end distributed ML pipeline (Data → Train → Tune → Serve) and submitted it as a Ray Job<br>
+      • Can explain every Topics tab item without notes<br>
+      • Written a Ray cheat sheet (tasks, actors, object store, Data/Train/Tune/Serve APIs) from memory and verified it<br>
+      • Capstone pipeline runs on a multi-node cluster and the Ray Dashboard shows distributed execution<br>
+      • Consistent progress — each day's tasks genuinely completed, not rushed through
+    </div>
+    <div style="margin-top:12px;">
+      <a href="${exam.link}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:10px 20px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-weight:500;text-decoration:none;">View Ray Docs →</a>
+    </div>`;
+}
+
+function showPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(name === 'topics')    renderTopics();
+  if(name === 'ai')        renderAI();
+  if(name === 'resources') renderResources();
+  if(name === 'exam')      renderExam();
+}
+
+function renderAll() {
+  renderSchedule();
+  updateStats();
+}
+
+function updateSyncBadge(s) {
+  const el = document.getElementById('sync-badge'); if(!el) return;
+  const L = {disconnected: '☁ Connect GitHub', connected: '✓ Synced', syncing: '↑ Syncing…', error: '⚠ Sync failed'};
+  el.textContent = L[s] || L.disconnected;
+  el.className = 'sync-badge' + (s === 'connected' ? ' connected' : s === 'syncing' ? ' syncing' : s === 'error' ? ' error' : '');
+}
+
+function openGHModal() {
+  const creds = GHSync.getCreds();
+  if(creds) {
+    document.getElementById('gh-pat').value    = creds.pat    || '';
+    document.getElementById('gh-owner').value  = creds.owner  || '';
+    document.getElementById('gh-repo').value   = creds.repo   || '';
+    document.getElementById('gh-branch').value = creds.branch || 'main';
+    document.getElementById('gh-disconnect-btn').style.display = 'inline-flex';
+  } else {
+    document.getElementById('gh-disconnect-btn').style.display = 'none';
+  }
+  document.getElementById('gh-modal').classList.add('open');
+}
+function closeGHModal() { document.getElementById('gh-modal').classList.remove('open'); }
+async function saveGHCreds() {
+  const c = {
+    pat:    document.getElementById('gh-pat').value.trim(),
+    owner:  document.getElementById('gh-owner').value.trim(),
+    repo:   document.getElementById('gh-repo').value.trim(),
+    branch: document.getElementById('gh-branch').value.trim() || 'main'
+  };
+  if(!c.pat || !c.owner || !c.repo) { document.getElementById('gh-modal-msg').textContent = 'Fill in all fields.'; return; }
+  document.getElementById('gh-modal-msg').textContent = 'Testing…';
+  GHSync.saveCreds(c);
+  const r = await GHSync.testConnection();
+  if(r.ok) { document.getElementById('gh-modal-msg').textContent = '✓ Connected!'; updateSyncBadge('connected'); setTimeout(closeGHModal, 900); }
+  else { document.getElementById('gh-modal-msg').textContent = 'Error: ' + r.msg; }
+}
+function disconnectGH() { GHSync.saveCreds(null); updateSyncBadge('disconnected'); closeGHModal(); }
+
+loadState().then(renderAll);
+
+// ── Dark mode toggle ──────────────────────────────────────────
+const MOON = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function getEffectiveTheme(){const t=document.documentElement.getAttribute('data-theme');if(t)return t;return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+function applyThemeBtn(){const btn=document.getElementById('theme-btn');if(!btn)return;const dark=getEffectiveTheme()==='dark';btn.innerHTML=dark?SUN:MOON;btn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');}
+window.toggleTheme=function(){const next=getEffectiveTheme()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);localStorage.setItem('cj-theme',next);applyThemeBtn();};
+applyThemeBtn();
+</script>
+</body>
+</html>
