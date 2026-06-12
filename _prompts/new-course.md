@@ -34,6 +34,25 @@ EXAM_QUESTIONS:   integer or null
 EXAM_MINUTES:     integer or null
 EXAM_PASS_SCORE:  e.g. 70%, N/A if no formal exam
 EXAM_NOTES:       free text about the exam format
+CAPSTONE_PROJECT: one sentence — what the learner builds on the final (exam-badge) day.
+                  Must be specific to this course's domain and toolset. No two courses
+                  on this platform may share the same capstone artifact.
+                  Before choosing, check _prompts/capstones.md for all existing capstones
+                  and add your new one to that file after the course is built.
+
+EXAM_CHECKLIST:   3–5 course-specific readiness items for the Exam Prep tab checklist.
+                  Replace the generic defaults with signals that match this course's
+                  actual exam format. Examples:
+                    • "Passed 2 full PSM I practice tests at 85%+ on separate days"
+                    • "Can write a Cypher MATCH query from memory without docs"
+                    • "Deployed a model to a real endpoint and hit it with curl"
+                  If left empty, the 5 generic defaults are used as fallback.
+
+AI_DEEP_DIVE_TOPICS: exactly 3 specific concepts from this course that learners find
+                  hardest to internalise. These replace the generic [TOPIC] placeholder
+                  in renderAI() so the prompts are immediately useful, not fill-in-the-blank.
+                  Examples for a Ray course: "remote functions vs actors",
+                  "GCS fault tolerance and object spilling", "Ray Serve deployment graphs"
 
 DAYS:
   One entry per day —
@@ -42,6 +61,16 @@ DAYS:
   For tasks and resources, mark primary reading/reference links with [URL]:
     - Read the official docs [https://docs.example.com]
     - Plain text task (no link)
+
+  Day card minimums by badge:
+  | Badge    | Min tasks | Min {text,url} tasks | Min resources | hasScore |
+  |----------|-----------|----------------------|---------------|----------|
+  | learn    | 4         | 2                    | 2             | false    |
+  | practice | 5         | 3                    | 3             | true     |
+  | review   | 3         | 2                    | 2             | true     |
+  | exam     | 5         | 3                    | 3             | false    |
+
+  At least one resource per day must link to the official documentation for that tool.
 
 TOPICS:
   4–8 topic groups, each with:
@@ -61,6 +90,16 @@ You are generating a new certified-journeys course. I will give you course metad
 - **If `standard` type** — Output B: `courses/[COURSE_ID]/notes/day-NN.md` per day
 
 Follow every spec exactly. Do not add features not described. Produce the full files.
+
+**Output order and chunking** — output one file at a time in this sequence:
+1. `index.html` (always first)
+2. Notebooks in day order (`day-01-…`, `day-02-…`, …) — `notebook` type only
+3. Notes files in day order — both types
+
+After each file print `## NEXT FILE` and pause. If the total output for this course
+exceeds your context window, finish the current file cleanly, print
+`## PAUSED — reply "continue" for the next file` and stop. Never truncate a file
+mid-output; a partial file is worse than a missing one.
 
 ---
 
@@ -138,11 +177,10 @@ nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);border-bo
 .nav-brand:hover{text-decoration:none;opacity:0.85;}
 .brand-mark{width:30px;height:30px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
 .nav-right{display:flex;align-items:center;gap:8px;}
-.nav-gh{font-size:12px;padding:6px 14px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;gap:5px;transition:all 0.15s;text-decoration:none;font-weight:500;}
-.nav-gh:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.nav-gh-icon{width:34px;height:34px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;justify-content:center;transition:all 0.15s;text-decoration:none;flex-shrink:0;}
+.nav-gh-icon:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
 .theme-btn{width:34px;height:34px;border-radius:99px;flex-shrink:0;border:0.5px solid var(--border2);background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;}
 .theme-btn:hover{background:var(--surface2);color:var(--text);}
-@media(max-width:600px){.nav-gh{display:none;}}
 ```
 
 ### Action row CSS (required for both types)
@@ -252,7 +290,9 @@ Responsive: `@media(max-width:640px)` for `.topic-grid`, `.hero-meta`, `.stats-g
     </a>
     <div class="nav-right">
       <button class="theme-btn" id="theme-btn" aria-label="Switch to dark mode" onclick="toggleTheme()"></button>
-      <a class="nav-gh" href="https://github.com/certified-journeys" target="_blank">⭐ GitHub</a>
+      <a class="nav-gh-icon" href="https://github.com/certified-journeys" target="_blank" aria-label="GitHub">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      </a>
     </div>
   </div>
 </nav>
@@ -320,7 +360,7 @@ const days = [
   {
     title:     "string",
     badge:     "learn" | "practice" | "review" | "exam",
-    sub:       "Day N · Theme",
+    sub:       "Day N · Theme",   // display text only — N is 1-based (array index + 1)
     tasks: [
       {text: "Read the official docs", url: "https://docs.example.com"},  // ↗ link shown
       "Plain text task — no link needed",
@@ -562,7 +602,9 @@ function broadcastStatus() {
 
 #### `renderAI` — three cards (required content)
 
-All three cards use the same `.ai-card` structure. Tailor every prompt and subtitle to [COURSE_FULL_NAME].
+All three cards use the same `.ai-card` structure. Replace every `[AI_TOPIC_N]` placeholder
+with the three verbatim strings from `AI_DEEP_DIVE_TOPICS` in the course input — do not use
+generic `[TOPIC]` placeholders. The prompts must be immediately usable without editing.
 
 ```js
 function renderAI() {
@@ -577,7 +619,7 @@ function renderAI() {
       </div>
       <div class="ai-card-body">Upload your day-card notes plus the official docs as sources in NotebookLM, then generate a podcast covering key concepts and exam traps.</div>
       <div class="ai-prompt-box">Prompt for NotebookLM Audio:
-"Create a 10-minute podcast episode for someone studying [COURSE_FULL_NAME]. Cover: the most important concepts, common exam traps, and the 3 things they absolutely must understand before the exam."</div>
+"Create a 10-minute podcast episode for someone studying [COURSE_FULL_NAME]. Cover: [AI_TOPIC_1], [AI_TOPIC_2], and [AI_TOPIC_3] — include the most common misconceptions and the 3 things that will trip you up on the exam."</div>
       <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
     </div>
     <div class="ai-card">
@@ -590,7 +632,7 @@ function renderAI() {
       </div>
       <div class="ai-card-body">Upload your notes and the official docs to NotebookLM and use the Study Guide feature to generate Q&A flashcards.</div>
       <div class="ai-prompt-box">Prompt for NotebookLM Quiz:
-"Generate 20 flashcard-style Q&A pairs for someone studying [COURSE_FULL_NAME]. Focus on concept distinctions, common misconceptions, and scenario-based questions that appear on the exam."</div>
+"Generate 20 flashcard-style Q&A pairs for someone studying [COURSE_FULL_NAME]. Include at least 5 cards on [AI_TOPIC_1], 5 on [AI_TOPIC_2], and 5 on [AI_TOPIC_3]. Focus on concept distinctions, common misconceptions, and scenario-based questions."</div>
       <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
     </div>
     <div class="ai-card">
@@ -598,18 +640,18 @@ function renderAI() {
         <div class="ai-icon" style="background:#EEE9FF;">💬</div>
         <div>
           <div class="ai-card-title">Claude — Deep Dive Prompts</div>
-          <div class="ai-card-sub">Explore difficult concepts with targeted prompts</div>
+          <div class="ai-card-sub">Use when a concept isn't clicking</div>
         </div>
       </div>
-      <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want a deeper explanation.</div>
+      <div class="ai-card-body">Copy any of these prompts directly into Claude when you need a deeper explanation.</div>
       <div class="ai-prompt-box">Prompt 1 — Explain like a senior engineer:
-"I'm studying [COURSE_FULL_NAME]. Explain [TOPIC] as if I'm already experienced. Skip the basics — focus on nuance, edge cases, and real-world decisions."
+"I'm studying [COURSE_FULL_NAME]. Explain [AI_TOPIC_1] as if I'm already experienced. Skip the basics — focus on nuance, edge cases, and real-world decisions."
 
 Prompt 2 — Exam scenario questions:
-"Give me 5 scenario-based exam questions for [COURSE_FULL_NAME] on the topic of [TOPIC]. After each question, explain why the correct answer is right and why the distractors are wrong."
+"Give me 5 scenario-based exam questions for [COURSE_FULL_NAME] on [AI_TOPIC_2]. After each question, explain why the correct answer is right and why the distractors are wrong."
 
 Prompt 3 — Gap analysis study plan:
-"I've studied [COURSE_FULL_NAME] but I'm unsure about [TOPIC]. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+"I've studied [COURSE_FULL_NAME] but I'm unsure about [AI_TOPIC_3]. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 ```
@@ -657,11 +699,18 @@ function renderResources() {
 
 #### `renderExam` checklist (required items)
 
+Use the items from `EXAM_CHECKLIST` in the course input. If `EXAM_CHECKLIST` is empty,
+fall back to these five generic defaults:
+
 - Completed all [TOTAL_DAYS] days of the study plan
 - Scored [EXAM_PASS_SCORE] or higher on practice exams
 - Can explain every Topics tab item without notes
 - Written a cheat sheet from memory and verified it
 - Consistent scores — not one lucky attempt
+
+The course-specific items from `EXAM_CHECKLIST` should replace or extend these defaults.
+Never use generic placeholder text like "passed the exam" — each item must be a concrete,
+verifiable action the learner can check off.
 
 #### `loadState` and `saveState` — GitHub sync integration
 
@@ -881,6 +930,8 @@ Second-to-last — Challenge (code):
 # [scaffold — not the full answer]
 ```
 
+> **`exam` badge capstone rule:** the Challenge cell must implement `CAPSTONE_PROJECT` end-to-end — not a simplified or generic exercise. Every other badge type may use a focused single-concept challenge; the `exam` day is the one place where all skills from the course converge into a single real artifact. The scaffold should frame the full project (data, logic, and output), leaving the learner to wire the pieces together rather than fill in a blank.
+
 Last — Recap (markdown):
 ```markdown
 ---
@@ -955,8 +1006,10 @@ No Jupyter notebooks are generated for `standard` courses.
 - [ ] `dayTopics` reverse index is built and `goToDay(i)` function is present
 - [ ] Topic pills appear in each day card body (clickable → Topics tab)
 - [ ] Topics tab shows clickable day buttons (completed days highlighted green)
-- [ ] `renderAI()` has 3 cards using `.ai-card` / `.ai-card-head` / `.ai-prompt-box` / `.ai-link-btn` structure, prompts tailored to this course
+- [ ] `renderAI()` has 3 cards using `.ai-card` / `.ai-card-head` / `.ai-prompt-box` / `.ai-link-btn` structure; all three `[AI_TOPIC_N]` placeholders replaced with verbatim strings from `AI_DEEP_DIVE_TOPICS` — no generic `[TOPIC]` text remains
+- [ ] `renderExam()` checklist uses `EXAM_CHECKLIST` items (or the 5 generic defaults if empty) — no placeholder text
 - [ ] `renderResources()` has 4 sections (`.res-section` + `.res-section-title` + `.res-link-list`), links numbered sequentially, minimum 12 total
+- [ ] All URLs in `renderResources()` are from official documentation, official GitHub repos, or known stable domains — no blog posts, no Medium, no DEV.to; any URL that could not be verified is marked with `// VERIFY` in a JS comment on that line
 - [ ] Dark mode CSS variables are correct
 - [ ] `.breadcrumb-sep` rule has no trailing `"`
 - [ ] `notes/day-01.md` through `notes/day-NN.md` template files generated
@@ -973,6 +1026,7 @@ No Jupyter notebooks are generated for `standard` courses.
 - [ ] `.score-row`, `.hours-row`, `.complete-btn` CSS present
 
 ### `notebook` type only
+- [ ] Capstone (exam-badge day) Challenge cell implements `CAPSTONE_PROJECT` end-to-end — not a generic exercise, not a repeat of another course's capstone artifact
 - [ ] `const NOTEBOOKS` array present, one slug per day
 - [ ] Every day card's `.nb-row` has notebook + Colab + notes_by_day.md buttons (3 total)
 - [ ] Colab URL repo is `certified-journeys/certified-journeys.github.io`
@@ -1033,4 +1087,4 @@ Output each file with a header:
 
 ---
 
-*certified-journeys prompt v6 · two course types · notes/day-NN.md link in every day card · topic ↔ day navigation · per-task tick checkboxes + auto-complete progress bar · GitHub repo sync via PAT*
+*certified-journeys prompt v7 · two course types · notes/day-NN.md link in every day card · topic ↔ day navigation · per-task tick checkboxes + auto-complete progress bar · GitHub repo sync via PAT · chunked output · day-card depth table · AI_DEEP_DIVE_TOPICS · EXAM_CHECKLIST · URL verification · capstone registry*
