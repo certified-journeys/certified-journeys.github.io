@@ -808,13 +808,14 @@ function renderAI() {
       </div>
       <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific Kestra design decision.</div>
       <div class="ai-prompt-box">Prompt 1 — Explain like a senior data engineer:
-"I'm studying Kestra for Data Engineers. Explain [TOPIC, e.g. 'how Flow triggers create loosely-coupled pipeline dependencies'] as if I'm already experienced with Python and SQL pipelines. Skip the basics — focus on nuance, failure modes, and real-world orchestration decisions."
+"I'm studying Kestra for Data Engineers. Explain trigger types — Schedule vs Flow trigger vs Webhook and how execution context and namespace differ between them.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
 Prompt 2 — Pipeline design review:
-"I'm designing a Kestra pipeline for [describe use case, e.g. 'daily ingestion of API data, transformation with pandas, and loading to DuckDB']. Here's my flow structure: [describe flows]. Review it as a senior data engineer. What's missing? How should I handle retries, secrets, and namespace organisation?"
+"I'm designing a Kestra pipeline for daily API ingestion, transformation with pandas, and loading to DuckDB. Here's my flow structure: [describe flows]. Review it as a senior data engineer. What's missing? How should I handle retries, secrets, and namespace organisation?"
 
 Prompt 3 — Gap analysis study plan:
-"I've studied Kestra basics but I'm unsure about [TOPIC, e.g. 'passing large file outputs between flows using internal storage']. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+"I've studied Kestra for Data Engineers but I'm unsure about Pebble expression syntax for dynamic values — how outputs, inputs, and trigger variables are scoped within a flow. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

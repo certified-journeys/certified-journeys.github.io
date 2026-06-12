@@ -464,14 +464,15 @@ function renderAI(){
         <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Use Claude to explore difficult concepts and get explanations</div></div>
       </div>
       <div class="ai-card-body">Paste these prompts into Claude when you encounter a topic that isn't clicking. These are optimized for senior-level explanations.</div>
-      <div class="ai-prompt-box">Prompt 1 — Explain like I'm a senior engineer:
-"I'm studying Microsoft PL-300: Power BI Data Analyst. Explain [TOPIC] to me as if I'm a senior engineer with 5+ years of experience. Skip the basics, focus on nuance, edge cases, and why it matters in practice."
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior Power BI developer:
+"I'm studying Power BI Data Analyst (PL-300). Explain CALCULATE and filter context modification — why CALCULATE(SUM(Sales[Amount]), Region='East') doesn't behave like a WHERE clause.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
-Prompt 2 — Exam scenario:
-"Give me 3 realistic exam scenario questions about [TOPIC] for the Microsoft PL-300: Power BI Data Analyst exam, with detailed explanations of why each answer is correct or incorrect."
+Prompt 2 — DAX design review:
+"Give me 5 scenario-based PL-300 exam questions about DAX and data modeling. After each question, explain why the correct answer is right and why the distractors are wrong."
 
-Prompt 3 — Gap analysis:
-"I just scored [SCORE]% on a practice exam for Microsoft PL-300: Power BI Data Analyst. My weak areas are [AREAS]. Give me a focused 2-hour study plan targeting exactly those gaps."</div>
+Prompt 3 — Gap analysis study plan:
+"I've studied Power BI Data Analyst (PL-300) but I'm unsure about dynamic row-level security with USERNAME() — why static roles break in practice and how USERPRINCIPALNAME() differs. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

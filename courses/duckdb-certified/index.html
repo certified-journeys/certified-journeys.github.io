@@ -806,13 +806,14 @@ function renderAI() {
       </div>
       <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific DuckDB pattern.</div>
       <div class="ai-prompt-box">Prompt 1 — Explain like a senior data engineer:
-"I'm studying DuckDB for Analytical Engineers. Explain [TOPIC, e.g. 'how DuckDB's vectorized execution engine differs from row-based databases like PostgreSQL'] as if I'm already experienced with SQL and Python. Skip the basics — focus on nuance, edge cases, and real-world analytical engineering decisions."
+"I'm studying DuckDB for Analytical Engineers. Explain vectorized execution vs row-based processing — why DuckDB runs OLAP queries 10-100x faster than PostgreSQL on the same data.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
 Prompt 2 — Pipeline design review:
 "I'm designing a DuckDB-based lakehouse pipeline that ingests Parquet files from S3, transforms them with SQL, and exports summary tables. Here's my plan: [describe plan]. Review it as a senior analytical engineer. What patterns are missing? How should I handle schema evolution? When should I use persistent vs in-memory connections?"
 
 Prompt 3 — Gap analysis study plan:
-"I've studied DuckDB basics but I'm unsure about [TOPIC, e.g. 'query profiling with EXPLAIN ANALYZE and how to interpret operator statistics']. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+"I've studied DuckDB for Analytical Engineers but I'm unsure about EXPLAIN ANALYZE output — how to read operator statistics, identify cardinality estimation errors, and fix slow queries. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

@@ -484,14 +484,15 @@ function renderAI(){
         <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Use Claude to explore difficult concepts and get explanations</div></div>
       </div>
       <div class="ai-card-body">Paste these prompts into Claude when you encounter a topic that isn't clicking. These are optimized for senior-level explanations.</div>
-      <div class="ai-prompt-box">Prompt 1 — Explain like I'm a senior engineer:
-"I'm studying Polars DataFrame Mastery. Explain [TOPIC] to me as if I'm a senior engineer with 5+ years of experience. Skip the basics, focus on nuance, edge cases, and why it matters in practice."
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior data engineer:
+"I'm studying Polars DataFrame Mastery. Explain lazy vs eager evaluation — when the query optimizer rewrites your plan and what logical vs physical plan differences mean for performance.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
-Prompt 2 — Exam scenario:
-"Give me 3 realistic exam scenario questions about [TOPIC] for the Polars DataFrame Mastery exam, with detailed explanations of why each answer is correct or incorrect."
+Prompt 2 — Performance scenario:
+"Give me 3 realistic scenario questions about writing high-performance Polars pipelines. After each, explain why the correct approach is right and what common mistakes engineers make."
 
-Prompt 3 — Gap analysis:
-"I just scored [SCORE]% on a practice exam for Polars DataFrame Mastery. My weak areas are [AREAS]. Give me a focused 2-hour study plan targeting exactly those gaps."</div>
+Prompt 3 — Gap analysis study plan:
+"I've studied Polars DataFrame Mastery but I'm unsure about streaming mode for datasets that don't fit in memory — what sink_parquet enables that collect can't and its current limitations. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

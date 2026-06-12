@@ -839,13 +839,14 @@ function renderAI(){
       </div>
       <div class="ai-card-body">Use these prompts when a Prefect concept isn't clicking or you want a deeper explanation of orchestration patterns.</div>
       <div class="ai-prompt-box">Prompt 1 — Explain like a senior data engineer:
-"I'm studying Prefect for Data Engineers. Explain [TOPIC — e.g. work pools vs. workers, or result caching] as if I'm already an experienced Python developer. Skip the basics — focus on nuance, edge cases, and real-world production decisions."
+"I'm studying Prefect for Data Engineers. Explain work pools vs workers vs agents — the execution architecture change in Prefect 2/3 and why the old agent model was replaced.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
-Prompt 2 — Design scenario:
-"Give me 5 scenario-based questions about designing reliable data pipelines with Prefect. After each question, explain why the correct answer is right and why common alternatives are wrong. Topics: retries, caching, subflows, deployment strategies."
+Prompt 2 — Pipeline design review:
+"I'm designing a Prefect pipeline for a data engineering use case. Here's my flow structure: [describe flows, tasks, and deployment]. Review it as a senior data engineer. What's missing? How would you handle retries, caching, and work pool configuration?"
 
 Prompt 3 — Gap analysis study plan:
-"I've studied Prefect for Data Engineers but I'm unsure about [TOPIC — e.g. Docker work pools or automations]. Give me a focused 30-minute study plan with concrete hands-on exercises to fill that gap."</div>
+"I've studied Prefect for Data Engineers but I'm unsure about deployment triggers and automations — how event-driven flows differ from scheduled deployments and when to use each. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

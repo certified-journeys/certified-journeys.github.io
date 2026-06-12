@@ -464,14 +464,15 @@ function renderAI(){
         <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Use Claude to explore difficult concepts and get explanations</div></div>
       </div>
       <div class="ai-card-body">Paste these prompts into Claude when you encounter a topic that isn't clicking. These are optimized for senior-level explanations.</div>
-      <div class="ai-prompt-box">Prompt 1 — Explain like I'm a senior engineer:
-"I'm studying HashiCorp Terraform Associate (003). Explain [TOPIC] to me as if I'm a senior engineer with 5+ years of experience. Skip the basics, focus on nuance, edge cases, and why it matters in practice."
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior infrastructure engineer:
+"I'm studying Terraform Associate. Explain variable precedence — -var flag → TF_VAR_env → .tfvars → defaults and why this order causes bugs in CI pipelines that work locally.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
-Prompt 2 — Exam scenario:
-"Give me 3 realistic exam scenario questions about [TOPIC] for the HashiCorp Terraform Associate (003) exam, with detailed explanations of why each answer is correct or incorrect."
+Prompt 2 — Exam scenario questions:
+"Give me 5 scenario-based Terraform Associate exam questions. After each, explain why the correct answer is right and why the distractors are wrong. Focus on state management, modules, and Terraform Cloud."
 
-Prompt 3 — Gap analysis:
-"I just scored [SCORE]% on a practice exam for HashiCorp Terraform Associate (003). My weak areas are [AREAS]. Give me a focused 2-hour study plan targeting exactly those gaps."</div>
+Prompt 3 — Gap analysis study plan:
+"I've studied Terraform Associate but I'm unsure about terraform state mv, rm, and import — when to use each and why import doesn't modify real infrastructure even though it looks like it might. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

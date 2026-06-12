@@ -742,13 +742,14 @@ function renderAI() {
       </div>
       <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific Pandera design decision.</div>
       <div class="ai-prompt-box">Prompt 1 — Explain like a senior data engineer:
-"I'm studying Pandera for Data Validation. Explain [TOPIC, e.g. 'how Pandera's multi-backend support works and what limitations exist across Pandas, Polars, and Modin'] as if I'm already experienced. Skip the basics — focus on nuance, edge cases, and real-world schema design decisions."
+"I'm studying Pandera for Data Engineers. Explain DataFrameModel vs SchemaModel — when each is appropriate and why coercion, nullable, and dtype handling behaves differently.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
-Prompt 2 — Pipeline schema design review:
-"I'm designing Pandera schemas for a [describe pipeline, e.g. 'three-stage ETL: raw ingestion → cleaning → feature engineering']. Here's my current schema design: [describe schemas]. Review it as a senior data engineer. What checks am I missing? Should I use DataFrameSchema or DataFrameModel here? How should I handle lazy validation vs fail-fast?"
+Prompt 2 — Schema design scenario:
+"Give me 3 realistic scenario questions about production Pandera schema design. After each, explain why the correct approach is right and what common validation mistakes engineers make."
 
 Prompt 3 — Gap analysis study plan:
-"I've studied Pandera basics but I'm unsure about [TOPIC, e.g. 'property-based testing with Hypothesis and schema.strategy()']. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+"I've studied Pandera for Data Engineers but I'm unsure about check vs parser distinction — the execution order within Pandera's validation pipeline and when a parser silently changes your data. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

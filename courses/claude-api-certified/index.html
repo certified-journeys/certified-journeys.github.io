@@ -706,14 +706,15 @@ function renderAI(){
         <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Use Claude to explore difficult API concepts and patterns</div></div>
       </div>
       <div class="ai-card-body">Paste these prompts into Claude when an API concept isn't clicking. Optimized for developers who already know Python and REST APIs.</div>
-      <div class="ai-prompt-box">Prompt 1 — Explain like I'm a senior engineer:
-"I'm building with the Claude API. Explain [TOPIC — e.g. tool_use stop_reason loop / prompt caching / extended thinking] to me as if I'm a senior Python developer. Skip the basics, focus on edge cases, failure modes, and production gotchas."
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior Python developer:
+"I'm studying the Claude API. Explain the tool_use / tool_result stop_reason loop — why agents fail to terminate and how to handle end_turn vs tool_use correctly.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
 Prompt 2 — Scenario-based debugging:
-"I'm building a Claude agent that uses tools. Here's my code: [PASTE CODE]. The agent isn't terminating correctly. Walk me through what's wrong, why it happens, and the correct pattern."
+"I'm building a Claude agent that uses tools. Here's my code: [paste code]. The agent isn't terminating correctly. Walk me through what's wrong, why it happens, and the correct pattern."
 
 Prompt 3 — Gap analysis study plan:
-"I just finished Day [N] of the Claude API study plan. My weakest areas are [AREAS]. Give me a focused 2-hour drill targeting exactly those gaps, with specific API calls to write and test."</div>
+"I've studied the Claude API but I'm unsure about extended thinking token budgets — how thinking tokens interact with streaming, tool use, and the effective context limit. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

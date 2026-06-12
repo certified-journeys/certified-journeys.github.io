@@ -822,14 +822,15 @@ function renderAI() {
         <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore Hamilton patterns with targeted prompts</div></div>
       </div>
       <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific Hamilton pattern.</div>
-      <div class="ai-prompt-box">Prompt 1 — Explain like a senior engineer:
-"I'm studying the Hamilton Python library. Explain [TOPIC, e.g. 'lifecycle hooks and NodeExecutionHook'] as if I'm a senior Python engineer familiar with Airflow and pandas. Skip the basics — focus on nuance, edge cases, and real-world design decisions."
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior data engineer familiar with pandas and Airflow:
+"I'm studying the Hamilton Python library. Explain how Hamilton's function graph differs from Airflow DAGs — nodes are functions not tasks, and why that changes testability.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
-Prompt 2 — Design review:
+Prompt 2 — Pipeline design review:
 "I'm building a Hamilton feature pipeline for an ML project. Here's my module structure: [paste code or describe]. Review it as a senior data engineer. What would you refactor, and why?"
 
-Prompt 3 — Gap analysis:
-"I've completed the Hamilton basics but I'm unsure about [topic, e.g. 'async execution vs parallel executor']. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+Prompt 3 — Gap analysis study plan:
+"I've studied the Hamilton Python library but I'm unsure about lifecycle hooks and how NodeExecutionHook intercepts execution for logging, caching, and custom backends. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

@@ -813,14 +813,15 @@ function renderAI() {
         <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore Metaflow patterns with targeted prompts</div></div>
       </div>
       <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific Metaflow pattern.</div>
-      <div class="ai-prompt-box">Prompt 1 — Explain like a senior ML engineer:
-"I'm studying Metaflow for ML Engineers. Explain [TOPIC, e.g. 'the foreach + join pattern for hyperparameter search'] as if I'm already experienced with pandas and scikit-learn. Skip the basics — focus on nuance, edge cases, and real-world production decisions."
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior MLOps engineer:
+"I'm studying Metaflow for ML Engineers. Explain step-level data artifact persistence — how @step decorators store data and why plain Python instance variables are silently lost between steps.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
 Prompt 2 — Flow design review:
 "I'm designing a Metaflow pipeline for an ML training job. Here's my step structure: [describe steps]. Review it as a senior MLOps engineer. Which steps need @retry? Which need @resources? What would you refactor and why?"
 
 Prompt 3 — Gap analysis study plan:
-"I've studied Metaflow basics but I'm unsure about [TOPIC, e.g. 'deploying flows to Argo Workflows and managing @schedule triggers']. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+"I've studied Metaflow for ML Engineers but I'm unsure about local vs remote execution with @batch or @kubernetes — what changes in artifact storage, environment, and debugging when you leave localhost. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

@@ -813,14 +813,15 @@ function renderAI() {
         <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore Pydantic validation patterns with targeted prompts</div></div>
       </div>
       <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific Pydantic design decision.</div>
-      <div class="ai-prompt-box">Prompt 1 — Explain like a senior Python engineer:
-"I'm studying Pydantic for Python Engineers. Explain [TOPIC, e.g. 'how pydantic-core schemas work and why they make v2 so much faster than v1'] as if I'm already experienced. Skip the basics — focus on nuance, edge cases, and real-world schema design decisions."
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior Python developer:
+"I'm studying Pydantic for Python Engineers. Explain model_validator vs field_validator — the execution order during model initialization and why running validators in the wrong phase causes silent failures.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
 Prompt 2 — Schema design review:
-"I'm designing Pydantic models for [describe use case, e.g. 'an ML pipeline config with training, data, and evaluation sections']. Here's my current schema: [paste models]. Review it as a senior engineer. What validations am I missing? Should I use discriminated unions anywhere? How should I handle optional vs required fields?"
+"I'm designing a Pydantic v2 data model. Here's my schema: [paste code]. Review it as a senior Python engineer. What would you change about the validators, field types, and model hierarchy?"
 
 Prompt 3 — Gap analysis study plan:
-"I've studied Pydantic basics but I'm unsure about [TOPIC, e.g. 'creating custom types with __get_pydantic_core_schema__']. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+"I've studied Pydantic for Python Engineers but I'm unsure about custom annotated types with BeforeValidator and AfterValidator — the v2 replacement for __get_validators__ and how to compose them safely. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

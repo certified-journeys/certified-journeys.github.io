@@ -873,14 +873,15 @@ function renderAI() {
         <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore MLflow patterns with targeted prompts</div></div>
       </div>
       <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific MLflow pattern.</div>
-      <div class="ai-prompt-box">Prompt 1 — Explain like a senior ML engineer:
-"I'm studying MLflow for ML Engineers. Explain [TOPIC, e.g. 'the Model Registry lifecycle and how aliases replace hardcoded stage names'] as if I'm already experienced with sklearn and pandas. Skip the basics — focus on nuance, edge cases, and real-world MLOps decisions."
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior MLOps engineer:
+"I'm studying MLflow for ML Engineers. Explain run vs experiment vs registered model hierarchy — which level owns which metadata and how they relate to the Model Registry lifecycle.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
-Prompt 2 — MLOps design review:
-"I'm designing an MLflow-based experiment tracking setup for a team of 5 ML engineers. Here's my plan: [describe setup]. Review it as a senior MLOps engineer. What tracking patterns are missing? When should we use nested runs? How should we structure model versions?"
+Prompt 2 — MLOps design scenario:
+"Give me 3 scenario-based questions about production MLflow usage. After each, explain why the correct approach is right and what the common pitfalls are."
 
 Prompt 3 — Gap analysis study plan:
-"I've studied MLflow basics but I'm unsure about [TOPIC, e.g. 'configuring a remote tracking server with S3 artifact store and PostgreSQL backend']. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+"I've studied MLflow for ML Engineers but I'm unsure about MLflow Projects environment management — why conda.yaml frequently breaks in CI and how to use Docker-based projects instead. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

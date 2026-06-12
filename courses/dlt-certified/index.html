@@ -483,14 +483,15 @@ function renderAI(){
         <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Use Claude to explore difficult concepts and get explanations</div></div>
       </div>
       <div class="ai-card-body">Paste these prompts into Claude when you encounter a topic that isn't clicking. These are optimized for senior-level explanations.</div>
-      <div class="ai-prompt-box">Prompt 1 — Explain like I'm a senior engineer:
-"I'm studying dlt (data load tool) Practitioner. Explain [TOPIC] to me as if I'm a senior engineer with 5+ years of experience. Skip the basics, focus on nuance, edge cases, and why it matters in practice."
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior data engineer:
+"I'm studying dlt (data load tool). Explain incremental loading with hints vs full replace — how dlt tracks state per resource and what happens on first run vs subsequent runs.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
-Prompt 2 — Exam scenario:
-"Give me 3 realistic exam scenario questions about [TOPIC] for the dlt (data load tool) Practitioner exam, with detailed explanations of why each answer is correct or incorrect."
+Prompt 2 — Pipeline design scenario:
+"Give me 3 realistic design questions about building production dlt pipelines. After each question, explain why the correct approach is right and what common mistakes engineers make."
 
-Prompt 3 — Gap analysis:
-"I just scored [SCORE]% on a practice exam for dlt (data load tool) Practitioner. My weak areas are [AREAS]. Give me a focused 2-hour study plan targeting exactly those gaps."</div>
+Prompt 3 — Gap analysis study plan:
+"I've studied dlt (data load tool) but I'm unsure about pipeline vs resource vs source hierarchy — how they map to destination datasets, tables, and load packages. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

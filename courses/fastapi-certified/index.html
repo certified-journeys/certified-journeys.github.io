@@ -887,14 +887,15 @@ function renderAI() {
         <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore FastAPI patterns with targeted prompts</div></div>
       </div>
       <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific FastAPI pattern.</div>
-      <div class="ai-prompt-box">Prompt 1 — Explain like a senior Python engineer:
-"I'm studying FastAPI for Python Engineers. Explain [TOPIC, e.g. 'how the dependency injection graph resolves nested Depends() calls and manages resource cleanup with yield'] as if I'm already experienced with Python async. Skip the basics — focus on nuance, edge cases, and real-world API design decisions."
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior Python developer:
+"I'm studying FastAPI for Python Engineers. Explain dependency injection and how to override dependencies in tests without mocking the internals of your application.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
 Prompt 2 — API design review:
-"I'm designing a FastAPI service for [use case]. Here's my router structure and Pydantic models: [paste code]. Review it as a senior backend engineer. What validation is missing? Are the response_models correct? How should I structure the dependency graph for testability?"
+"I'm designing a FastAPI REST API. Here's my route structure: [paste code]. Review it as a senior Python engineer. What would you change about the dependency graph, error handling, and response models?"
 
 Prompt 3 — Gap analysis study plan:
-"I've studied FastAPI basics but I'm unsure about [TOPIC, e.g. 'structuring a larger app with APIRouter, sub-applications, and shared dependencies across modules']. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+"I've studied FastAPI for Python Engineers but I'm unsure about Pydantic response_model filtering and how FastAPI strips fields not defined in the response schema. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

@@ -780,13 +780,14 @@ function renderAI(){
       </div>
       <div class="ai-card-body">Use these prompts when a SodaCL concept isn't clicking or you want a deeper explanation of data quality patterns.</div>
       <div class="ai-prompt-box">Prompt 1 — Explain like a senior data engineer:
-"I'm studying Soda Core for Data Quality. Explain [TOPIC] as if I'm already experienced with data pipelines. Skip the basics — focus on nuance, edge cases, and real-world decisions about threshold-setting and check organisation."
+"I'm studying Soda Core for Data Quality. Explain check types — schema vs missing vs validity vs freshness and which class of failure each catches vs misses.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
-Prompt 2 — SodaCL scenario questions:
-"Give me 5 scenario-based questions for Soda Core for Data Quality on the topic of [TOPIC]. For each question, explain why the correct SodaCL approach is right and what the common pitfalls are."
+Prompt 2 — SodaCL design scenario:
+"Give me 5 scenario-based questions about designing a production data quality framework with Soda Core. After each, explain why the correct SodaCL approach is right and what common mistakes engineers make."
 
 Prompt 3 — Gap analysis study plan:
-"I've been studying Soda Core for Data Quality but I'm unsure about [TOPIC]. Give me a focused 30-minute study plan with concrete SodaCL exercises to fill that gap, using DuckDB as the data source."</div>
+"I've studied Soda Core for Data Quality but I'm unsure about failed row sampling — how to retrieve the actual rows that failed a check and why this is disabled by default in production scans. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

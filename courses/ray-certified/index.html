@@ -821,14 +821,15 @@ function renderAI() {
         <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore Ray distributed patterns with targeted prompts</div></div>
       </div>
       <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific Ray design decision.</div>
-      <div class="ai-prompt-box">Prompt 1 — Explain like a distributed systems engineer:
-"I'm studying Ray for Distributed Python. Explain [TOPIC, e.g. 'how the Ray object store (plasma) works and why passing object refs instead of values avoids data copying'] as if I'm already experienced with distributed systems. Skip the basics — focus on the memory model, scheduling implications, and production edge cases."
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior distributed systems engineer:
+"I'm studying Ray for Distributed Python. Explain remote functions vs actors — stateless vs stateful distributed execution and the failure modes that catch engineers by surprise in production.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
-Prompt 2 — Architecture review:
-"I'm designing a distributed ML pipeline with Ray for [describe workload, e.g. 'training 50 scikit-learn models in parallel then serving the best one']. Here's my current approach: [describe plan]. Review it as a Ray expert. Should I use Tasks or Actors? Where does ray.put() help? Should I use Ray Serve or a simpler HTTP server for this scale?"
+Prompt 2 — Architecture design scenario:
+"Give me 3 scenario questions about designing production Ray distributed systems. After each, explain why the correct architecture is right and what the common failure modes are."
 
 Prompt 3 — Gap analysis study plan:
-"I've studied Ray basics but I'm unsure about [TOPIC, e.g. 'connecting Ray Tune to Ray Train for end-to-end distributed HPO']. Give me a focused 30-minute study plan with concrete runnable code exercises to fill that gap."</div>
+"I've studied Ray for Distributed Python but I'm unsure about Ray Serve deployment graphs — how handle routing works, why the ingress deployment is the entry point, and how to chain deployments. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 

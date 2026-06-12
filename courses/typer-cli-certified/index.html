@@ -587,14 +587,15 @@ function renderAI(){
         <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore Typer patterns with targeted prompts</div></div>
       </div>
       <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific Typer pattern.</div>
-      <div class="ai-prompt-box">Prompt 1 — Explain like a senior engineer:
-"I'm studying Typer CLI Mastery. Explain [TOPIC, e.g. 'callback functions and is_eager'] to me as if I'm a senior Python engineer. Skip the basics — focus on nuance, edge cases, and real-world design decisions."
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior Python developer:
+"I'm studying Typer CLI Mastery. Explain callback functions with is_eager — why --version and --help short-circuit all other parameter processing and how eager callbacks terminate the CLI.
+Assume I'm already experienced — skip basics, focus on nuance, edge cases, and real-world decisions."
 
-Prompt 2 — Design review:
-"I'm building a CLI tool with Typer. Here's my current code: [paste code]. Review it as a senior Python engineer. What would you change, and why?"
+Prompt 2 — CLI design review:
+"I'm building a CLI tool with Typer. Here's my current code: [paste code]. Review it as a senior Python engineer. What would you change about the command structure, parameter design, and error handling?"
 
-Prompt 3 — Gap analysis:
-"I've finished Typer basics but I'm unsure about [topic]. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+Prompt 3 — Gap analysis study plan:
+"I've studied Typer CLI Mastery but I'm unsure about testing Typer apps with CliRunner — how to capture output, assert exit codes, and handle exceptions without letting them propagate. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 
