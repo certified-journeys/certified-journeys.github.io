@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hamilton — Python Dataflows & Feature Pipelines · certified-journeys</title>
+<title>Pandera for Data Validation · certified-journeys</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --green:#3B82F6; --green-light:#EFF6FF; --green-dark:#1D4ED8;
+  --green:#7C3AED; --green-light:#EDE9FE; --green-dark:#5B21B6;
   --blue:#378ADD; --blue-light:#EAF3FD; --blue-dark:#185FA5;
   --amber:#BA7517; --amber-light:#FDF3E3;
   --coral:#D85A30; --coral-light:#FAEDE8; --coral-dark:#993C1D;
@@ -25,7 +25,7 @@
   --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
   --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
   --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
-  --green-light:#0A1A3E;
+  --green-light:#150D3A;
   --blue-light:#061E38; --amber-light:#221900;
   --coral-light:#2A0E05; --purple-light:#161440;
   --orange-light:#1F1200; --teal-light:#021E26;
@@ -34,7 +34,7 @@
   --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
   --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
   --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
-  --green-light:#0A1A3E;
+  --green-light:#150D3A;
   --blue-light:#061E38; --amber-light:#221900;
   --coral-light:#2A0E05; --purple-light:#161440;
   --orange-light:#1F1200; --teal-light:#021E26;
@@ -116,20 +116,24 @@ a:hover{text-decoration:underline;}
 .day-body{display:none;padding:0 1.1rem 1.1rem;border-top:.5px solid var(--border);}
 .day-body{padding-top:.9rem;}
 .tip-box{background:var(--green-light);border-radius:var(--radius-sm);padding:.7rem .9rem;margin-bottom:10px;font-size:12px;color:var(--green-dark);line-height:1.6;}
+/* Action row */
 .nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
 .nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
 .nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
 .nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
 .nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
+/* Linked resources & tasks */
 a.res-pill{text-decoration:none;cursor:pointer;}
 a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:var(--text);}
 .task-link{color:var(--blue-dark);font-size:11px;margin-left:6px;flex-shrink:0;opacity:0.7;line-height:1.5;}
 .task-link:hover{opacity:1;text-decoration:none;}
+/* Task tick checkboxes */
 .task-tick{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px;background:none;padding:0;}
 .task-tick:hover{border-color:var(--green);}
 .task-tick.ticked{background:var(--green);border-color:var(--green);}
 .task-tick.ticked::after{content:"✓";font-size:10px;color:#fff;font-weight:700;line-height:1;}
 .task.task-done>span{text-decoration:line-through;color:var(--text3);}
+/* Per-day task progress bar */
 .task-progress{height:5px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
 .task-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;}
 .task-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
@@ -145,6 +149,7 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 .complete-btn{width:100%;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s;font-weight:400;}
 .complete-btn:hover{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
 .complete-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);font-weight:500;}
+/* Topic pills */
 .day-topic-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
 .day-topic-pill{font-size:10px;padding:2px 9px;border-radius:99px;border:.5px solid;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
 .day-topic-pill:hover{opacity:.7;}
@@ -158,6 +163,7 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 .topic-day-btn{font-size:11px;padding:2px 8px;border-radius:99px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
 .topic-day-btn:hover{background:var(--surface3);color:var(--text);}
 .topic-day-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+/* AI cards */
 .ai-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;margin-bottom:10px;box-shadow:var(--shadow);}
 .ai-card-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .ai-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
@@ -167,11 +173,13 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 .ai-prompt-box{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:10px;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;line-height:1.7;white-space:pre-wrap;}
 .ai-link-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-family:inherit;text-decoration:none;}
 .ai-link-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+/* Exam */
 .exam-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
 .exam-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.9rem 1rem;box-shadow:var(--shadow);}
 .exam-card-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
 .exam-card-val{font-size:18px;font-weight:700;font-family:'DM Mono',monospace;margin-bottom:3px;}
 .exam-card-sub{font-size:11px;color:var(--text3);}
+/* Resources */
 .res-section{margin-bottom:1.25rem;}
 .res-section-title{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
 .res-link-list{display:flex;flex-direction:column;gap:6px;}
@@ -180,6 +188,7 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 .res-link-body{flex:1;}
 .res-link-body a{font-size:13px;font-weight:500;}
 .res-link-desc{font-size:12px;color:var(--text3);margin-top:2px;line-height:1.5;}
+/* Shared */
 .info-box{background:var(--surface2);border-radius:var(--radius-sm);padding:.8rem 1rem;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
 .page-footer{text-align:center;font-size:12px;color:var(--text3);margin-top:2rem;padding:1rem 0;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
 .sync-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .2s;}
@@ -187,6 +196,7 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 .sync-badge.connected{color:var(--green-dark);border-color:var(--green);}
 .sync-badge.syncing{color:var(--blue-dark);border-color:var(--blue);}
 .sync-badge.error{color:var(--coral-dark);border-color:var(--coral);}
+/* GitHub modal */
 .gh-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;}
 .gh-modal.open{display:flex;}
 .gh-modal-box{background:var(--surface);border-radius:var(--radius);padding:1.5rem;max-width:440px;width:90%;box-shadow:var(--shadow-md);}
@@ -237,32 +247,30 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
   <div class="breadcrumb">
     <a href="../../index.html">certified-journeys</a>
     <span class="breadcrumb-sep">›</span>
-    <span>Hamilton — Python Dataflows & Feature Pipelines</span>
+    <span>Pandera for Data Validation</span>
   </div>
 
   <div class="course-hero">
     <div class="course-hero-top">
       <div style="display:flex;align-items:flex-start;gap:14px;">
         <div class="course-icon-wrap">
-          <div class="course-icon">HM</div>
+          <div class="course-icon">PA</div>
         </div>
         <div class="course-title-block">
-          <h1>Hamilton — Python Dataflows & Feature Pipelines</h1>
+          <h1>Pandera for Data Validation</h1>
           <div class="tag-row">
+            <span class="tag">Data Validation</span>
             <span class="tag">Python</span>
-            <span class="tag">DAGs</span>
-            <span class="tag">Feature Engineering</span>
-            <span class="tag">MLOps</span>
-            <span class="tag">Data Engineering</span>
+            <span class="tag">DataFrames</span>
+            <span class="tag">Testing</span>
           </div>
         </div>
       </div>
     </div>
-    <!-- 4 meta items: Cost, Duration, Provider, Difficulty -->
     <div class="hero-meta">
       <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val meta-val-free">Free</div></div>
-      <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">14 days</div></div>
-      <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">DAGWorks</div></div>
+      <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">7 days</div></div>
+      <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Self-paced</div></div>
       <div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Intermediate</div></div>
     </div>
   </div>
@@ -275,7 +283,7 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
     <div class="bar-bg"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
     <div class="readiness early" id="readiness">🌱 Just getting started</div>
     <div class="stats-grid">
-      <div class="stat"><div class="stat-label">Days done</div><div class="stat-val" id="stat-days">0/14</div></div>
+      <div class="stat"><div class="stat-label">Days done</div><div class="stat-val" id="stat-days">0/7</div></div>
       <div class="stat"><div class="stat-label">Hours logged</div><div class="stat-val" id="stat-hours">0</div></div>
       <div class="stat"><div class="stat-label">Avg score</div><div class="stat-val" id="stat-score">—</div></div>
     </div>
@@ -297,7 +305,7 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 
   <div class="page-footer">
     <button class="sync-badge" id="sync-badge" onclick="openGHModal()">☁ Connect GitHub</button>
-    · <span id="sk-display">cj_hamilton-certified_v1</span> · <a href="../../index.html">← All journeys</a>
+    · <span id="sk-display">cj_pandera-certified_v1</span> · <a href="../../index.html">← All journeys</a>
   </div>
 
 </div>
@@ -305,7 +313,7 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 <div class="gh-modal" id="gh-modal" onclick="if(event.target===this)closeGHModal()">
   <div class="gh-modal-box">
     <h3>☁ GitHub Sync</h3>
-    <p class="gh-modal-sub">Progress is committed to <code>courses/hamilton-certified/progress.json</code> in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
+    <p class="gh-modal-sub">Progress is committed to <code>courses/pandera-certified/progress.json</code> in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
     <div class="gh-field"><label>Personal Access Token</label><input id="gh-pat" type="password" placeholder="github_pat_…" autocomplete="off"></div>
     <div class="gh-field"><label>Owner</label><input id="gh-owner" type="text" placeholder="your-username"></div>
     <div class="gh-field"><label>Repository</label><input id="gh-repo" type="text" placeholder="certified-journeys.github.io"></div>
@@ -323,277 +331,188 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 <script>
 if(typeof GHSync==='undefined'){window.GHSync={isConnected:()=>false,saveCreds:()=>{},getCreds:()=>null,connect:async()=>({ok:false,msg:''}),fetchState:async()=>null,pushState:async()=>false,saveDebounced:()=>{},testConnection:async()=>({ok:false,msg:''}),exportConfig:()=>'',importConfig:()=>null,getLastSynced:()=>null};}
 
-const COURSE_ID   = 'hamilton-certified';
-const STORAGE_KEY = 'cj_hamilton-certified_v1';
-const TOTAL_DAYS  = 14;
+const COURSE_ID   = 'pandera-certified';
+const STORAGE_KEY = 'cj_pandera-certified_v1';
+const TOTAL_DAYS  = 7;
 
 const NOTEBOOKS = [
-  'day-01-intro-dag-thinking',
-  'day-02-drivers-execution',
-  'day-03-config-tag-decorators',
-  'day-04-feature-pipeline-part1',
-  'day-05-modules-namespacing',
-  'day-06-etl-transformation',
-  'day-07-testing-pipelines',
-  'day-08-pipe-mutate-resolve',
-  'day-09-async-parallel',
-  'day-10-polars-backends',
-  'day-11-lifecycle-hooks',
-  'day-12-materializers',
-  'day-13-review-architecture',
-  'day-14-capstone'
+  'day-01-dataframe-schema-basics',
+  'day-02-check-builtins-custom',
+  'day-03-schema-model-class-api',
+  'day-04-multi-backend-validation',
+  'day-05-function-decorators',
+  'day-06-hypothesis-schema-inference',
+  'day-07-capstone-pipeline-validation'
 ];
 
 const days = [
   {
-    title:'What is Hamilton & DAG Thinking', badge:'learn', sub:'Day 1 · Foundations',
-    tasks:[
-      {text:'Read the Hamilton docs introduction', url:'https://hamilton.dagworks.io/en/latest/'},
-      {text:'Install Hamilton and run the Hello World example', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/hello_world'},
-      'Understand how Python functions become DAG nodes',
-      'Draw your first dataflow by hand (inputs → transforms → outputs)',
+    title: 'DataFrameSchema Basics — Columns, Types, and Coercion',
+    badge: 'learn',
+    sub: 'Day 1 · Schema Fundamentals',
+    tasks: [
+      {text: 'Install pandera and read the DataFrameSchema quickstart', url: 'https://pandera.readthedocs.io/en/stable/dataframe_schemas.html'},
+      'Create a DataFrameSchema with three columns: name (str), age (int), salary (float) and validate a Pandas DataFrame against it',
+      {text: 'Use nullable=True on a column and observe what happens with NaN values', url: 'https://pandera.readthedocs.io/en/stable/dataframe_schemas.html#null-values-in-columns'},
+      'Set coerce=True on the schema and pass a DataFrame where age is stored as strings — verify Pandera coerces it to int',
+      'Trigger a SchemaError intentionally and inspect the failure_cases attribute on the exception',
+      {text: 'Read about schema-level coerce vs column-level coerce', url: 'https://pandera.readthedocs.io/en/stable/dataframe_schemas.html#coercing-types-on-columns'},
     ],
-    resources:[
-      {text:'Hamilton Official Docs', url:'https://hamilton.dagworks.io/en/latest/'},
-      {text:'Hamilton GitHub', url:'https://github.com/DAGWorks-Inc/hamilton'},
-      {text:'Hello World example', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/hello_world'},
+    resources: [
+      {text: 'Pandera DataFrameSchema Reference', url: 'https://pandera.readthedocs.io/en/stable/dataframe_schemas.html'},
+      {text: 'Pandera Column — nullable, coerce, required', url: 'https://pandera.readthedocs.io/en/stable/reference/generated/pandera.api.pandas.components.Column.html'},
+      {text: 'Pandera SchemaError — failure_cases', url: 'https://pandera.readthedocs.io/en/stable/reference/generated/pandera.errors.SchemaError.html'},
     ],
-    tip:"Hamilton's core insight: function name = node name, function parameters = edges. Think in nouns (what is being computed), not verbs (how to compute it).",
-    hasScore:false,
+    tip: 'Set coerce=True at the schema level to apply type coercion uniformly to every column.',
+    hasScore: false,
   },
   {
-    title:'Drivers & Graph Execution', badge:'learn', sub:'Day 2 · Core Mechanics',
-    tasks:[
-      {text:'Read the Driver API docs', url:'https://hamilton.dagworks.io/en/latest/reference/drivers/'},
-      'Execute your first dataflow with hamilton.driver.Builder',
-      'Use dr.display_all_functions() to visualize the DAG',
-      'Compare execute() vs. raw_execute() outputs',
+    title: 'Built-in Checks and Custom Lambda Checks',
+    badge: 'learn',
+    sub: 'Day 2 · Schema Fundamentals',
+    tasks: [
+      {text: 'Read the Check reference — element-wise vs vectorized checks', url: 'https://pandera.readthedocs.io/en/stable/checks.html'},
+      'Apply Check.greater_than(0) to a price column and Check.less_than_or_equal_to(120) to an age column',
+      {text: 'Use Check.isin([\'active\',\'inactive\',\'pending\']) to validate a status column', url: 'https://pandera.readthedocs.io/en/stable/reference/generated/pandera.api.checks.Check.isin.html'},
+      'Apply Check.str_matches(r\'^\\w+@\\w+\\.\\w+$\') to an email column',
+      'Write a custom element-wise check using Check(lambda x: x % 2 == 0, element_wise=True)',
+      'Write a vectorized custom check using Check(lambda s: s.str.len() <= 50) on a description column',
+      {text: 'Combine multiple checks on a single column', url: 'https://pandera.readthedocs.io/en/stable/checks.html#vectorized-vs-element-wise-custom-checks'},
     ],
-    resources:[
-      {text:'Driver API Reference', url:'https://hamilton.dagworks.io/en/latest/reference/drivers/'},
-      {text:'Hamilton concepts overview', url:'https://hamilton.dagworks.io/en/latest/concepts/'},
-      {text:'DAGWorks blog', url:'https://blog.dagworks.io'},
+    resources: [
+      {text: 'Pandera Built-in Checks Reference', url: 'https://pandera.readthedocs.io/en/stable/reference/generated/pandera.api.checks.Check.html'},
+      {text: 'Pandera Checks Overview', url: 'https://pandera.readthedocs.io/en/stable/checks.html'},
+      {text: 'Pandera Check.str_matches', url: 'https://pandera.readthedocs.io/en/stable/reference/generated/pandera.api.checks.Check.str_matches.html'},
     ],
-    tip:'The Driver is the engine — it discovers functions, builds the graph, and executes only what\'s needed for your requested outputs. Always visualize before you execute.',
-    hasScore:false,
+    tip: 'Element-wise checks receive a scalar and must return bool. Vectorized checks receive the full Series and must return a boolean Series. Prefer vectorized checks for performance.',
+    hasScore: false,
   },
   {
-    title:'Decorators Part 1: @config, @tag, @extract_columns', badge:'learn', sub:'Day 3 · Decorators',
-    tasks:[
-      {text:'Read the decorator reference', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/'},
-      'Use @config.when to switch between dev and prod data sources',
-      'Tag functions by domain with @tag(owner="team", feature_type="numerical")',
-      'Use @extract_columns to split a DataFrame into named Series',
+    title: 'SchemaModel — Class-Based Schemas with pa.DataFrameModel',
+    badge: 'learn',
+    sub: 'Day 3 · Class-Based API',
+    tasks: [
+      {text: 'Read the SchemaModel overview and compare it to the DataFrameSchema dict API', url: 'https://pandera.readthedocs.io/en/stable/dataframe_models.html'},
+      'Define a TransactionModel(pa.DataFrameModel) with type annotations for amount: float, currency: str, transaction_id: int',
+      {text: 'Use pa.Field() to attach checks: Field(ge=0) for amount, Field(isin=[\'USD\',\'EUR\',\'GBP\']) for currency', url: 'https://pandera.readthedocs.io/en/stable/reference/generated/pandera.api.pandas.model_components.Field.html'},
+      'Add a @pa.check(\'amount\') classmethod that raises SchemaError when the column mean exceeds a threshold',
+      'Use TransactionModel.to_schema() to convert the class to a DataFrameSchema',
+      'Add class-level Config with coerce=True and strict=True — observe how strict mode rejects extra columns',
     ],
-    resources:[
-      {text:'Decorator Reference', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/'},
-      {text:'Config docs', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#config'},
-      {text:'Hamilton examples — feature engineering', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/feature_engineering'},
+    resources: [
+      {text: 'Pandera SchemaModel (DataFrameModel)', url: 'https://pandera.readthedocs.io/en/stable/dataframe_models.html'},
+      {text: 'Pandera pa.Field Reference', url: 'https://pandera.readthedocs.io/en/stable/reference/generated/pandera.api.pandas.model_components.Field.html'},
+      {text: 'Pandera @pa.check decorator', url: 'https://pandera.readthedocs.io/en/stable/dataframe_models.html#adding-custom-checks'},
     ],
-    tip:'@config.when is how Hamilton handles environment branching without if/else clutter. Name your configs like feature flags — e.g. config.when(data_source="bigquery").',
-    hasScore:false,
+    tip: 'SchemaModel shines when you want IDE autocompletion on your schema definitions. It produces the same runtime validator as DataFrameSchema — it\'s a developer-experience layer, not a different engine.',
+    hasScore: false,
   },
   {
-    title:'Feature Engineering Pipeline — Part 1', badge:'practice', sub:'Day 4 · Feature Engineering',
-    tasks:[
-      'Build a feature pipeline for a tabular ML dataset (e.g. Titanic or house prices)',
-      'Define at least 8 raw → derived → model-ready features as Hamilton functions',
-      'Tag each feature with @tag(feature_type="numerical") or @tag(feature_type="categorical")',
-      'Execute with a pandas Driver and collect all features into a single DataFrame',
+    title: 'Validating Pandas, Polars, and Modin with the Same Schema',
+    badge: 'practice',
+    sub: 'Day 4 · Function Validation',
+    tasks: [
+      {text: 'Read the Pandera multi-backend overview', url: 'https://pandera.readthedocs.io/en/stable/supported_libraries.html'},
+      'Define a DataFrameSchema with three columns and validate a Pandas DataFrame',
+      {text: 'Install polars and use the same schema to validate a Polars DataFrame', url: 'https://pandera.readthedocs.io/en/stable/polars.html'},
+      'Write a function that accepts a DataFrame and schema and validates it regardless of backend',
+      'Use pandera.typing.pandas.DataFrame[MyModel] and pandera.typing.polars.DataFrame[MyModel] type annotations',
+      'Observe how SchemaError.failure_cases looks different between Pandas and Polars backends',
     ],
-    resources:[
-      {text:'Feature engineering examples', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/feature_engineering'},
-      {text:'Titanic dataset (Kaggle)', url:'https://www.kaggle.com/c/titanic/data'},
-      {text:'Hamilton function best practices', url:'https://hamilton.dagworks.io/en/latest/how-tos/write-hamilton-functions/'},
+    resources: [
+      {text: 'Pandera Supported Libraries', url: 'https://pandera.readthedocs.io/en/stable/supported_libraries.html'},
+      {text: 'Pandera Polars Integration', url: 'https://pandera.readthedocs.io/en/stable/polars.html'},
+      {text: 'Pandera Typing Module', url: 'https://pandera.readthedocs.io/en/stable/reference/generated/pandera.typing.html'},
     ],
-    tip:'Keep each function to one transformation. If you find yourself writing two steps in one function, split it — your tests will thank you.',
-    hasScore:true,
+    tip: 'Pandera\'s multi-backend design means you can write one schema and switch your DataFrame library without rewriting validation logic.',
+    hasScore: false,
   },
   {
-    title:'Modularity — Multiple Modules & Namespacing', badge:'learn', sub:'Day 5 · Modularity',
-    tasks:[
-      {text:'Read the multi-module guide', url:'https://hamilton.dagworks.io/en/latest/concepts/modules/'},
-      'Split a pipeline into raw_features.py, derived_features.py, model_inputs.py',
-      'Compose modules in the Driver: driver.Builder().with_modules(m1, m2, m3)',
-      'Use @tag to mark which module/team owns each node',
+    title: 'Function Decorators — @pa.check_input and @pa.check_output',
+    badge: 'practice',
+    sub: 'Day 5 · Testing & Inference',
+    tasks: [
+      {text: 'Read the check_input and check_output decorator documentation', url: 'https://pandera.readthedocs.io/en/stable/decorators.html'},
+      'Apply @pa.check_input(InputSchema) to a data cleaning function and trigger it with an invalid DataFrame',
+      'Apply @pa.check_output(OutputSchema) and introduce a bug that produces invalid output — verify post-call validation catches it',
+      'Stack @pa.check_input and @pa.check_output on the same function',
+      {text: 'Use the obj_getter argument to validate a specific positional argument', url: 'https://pandera.readthedocs.io/en/stable/decorators.html#validating-a-specific-argument'},
+      {text: 'Use @pa.check_io to validate both inputs and outputs in a single decorator', url: 'https://pandera.readthedocs.io/en/stable/decorators.html#check_io'},
+      'Write a pytest test that asserts SchemaError is raised on invalid input',
     ],
-    resources:[
-      {text:'Modules concept docs', url:'https://hamilton.dagworks.io/en/latest/concepts/modules/'},
-      {text:'Hamilton modular example', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/modular_example'},
-      {text:'Namespace docs', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#subdag'},
+    resources: [
+      {text: 'Pandera Decorators Documentation', url: 'https://pandera.readthedocs.io/en/stable/decorators.html'},
+      {text: 'Pandera @pa.check_io', url: 'https://pandera.readthedocs.io/en/stable/decorators.html#check_io'},
+      {text: 'Pandera Integration with pytest', url: 'https://pandera.readthedocs.io/en/stable/hypothesis.html#using-pytest'},
     ],
-    tip:'Hamilton modules are just Python files. Treat each file like a microservice for your data — one responsibility, clear inputs, clear outputs.',
-    hasScore:false,
+    tip: '@pa.check_output is your safety net for data transformation functions — it verifies that your logic actually produces what the schema promises.',
+    hasScore: false,
   },
   {
-    title:'Data Transformation Patterns & @does', badge:'practice', sub:'Day 6 · ETL Patterns',
-    tasks:[
-      'Implement an ETL pipeline: ingest → clean → transform → export',
-      {text:'Use @does to delegate to a reusable base function', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#does'},
-      'Run the same pipeline against a local CSV and a DuckDB source',
-      'Add @check_output to enforce non-null and range constraints on outputs',
+    title: 'Hypothesis Integration and Schema Inference',
+    badge: 'review',
+    sub: 'Day 6 · Testing & Inference',
+    tasks: [
+      {text: 'Read the Pandera hypothesis integration overview', url: 'https://pandera.readthedocs.io/en/stable/hypothesis.html'},
+      'Install hypothesis and call schema.strategy() on a DataFrameSchema to get a Hypothesis strategy; draw a sample and inspect it',
+      {text: 'Write a @given(schema.strategy()) Hypothesis test that verifies a transformation function always produces valid output', url: 'https://pandera.readthedocs.io/en/stable/hypothesis.html#using-hypothesis'},
+      'Add a custom strategy using Check.greater_than(0).strategy(st.integers(min_value=1))',
+      {text: 'Use pa.infer_schema() on an existing DataFrame to bootstrap a schema', url: 'https://pandera.readthedocs.io/en/stable/schema_inference.html'},
+      'Call inferred_schema.to_script() to print a Python code snippet — copy and tighten the inferred checks',
+      {text: 'Read about lazy validation — schema.validate(df, lazy=True) collects all failures before raising', url: 'https://pandera.readthedocs.io/en/stable/dataframe_schemas.html#lazy-validation'},
     ],
-    resources:[
-      {text:'@does decorator docs', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#does'},
-      {text:'@check_output docs', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#check-output'},
-      {text:'DuckDB Python docs', url:'https://duckdb.org/docs/api/python/overview'},
+    resources: [
+      {text: 'Pandera Hypothesis Integration', url: 'https://pandera.readthedocs.io/en/stable/hypothesis.html'},
+      {text: 'Pandera Schema Inference', url: 'https://pandera.readthedocs.io/en/stable/schema_inference.html'},
+      {text: 'Pandera Lazy Validation', url: 'https://pandera.readthedocs.io/en/stable/dataframe_schemas.html#lazy-validation'},
     ],
-    tip:'@does is Hamilton\'s DRY tool. Use it when multiple nodes share identical logic but different names — e.g. normalize_age and normalize_income both call the same scaler.',
-    hasScore:true,
+    tip: 'pa.infer_schema() is the fastest way to bootstrap a schema from production data — run it on a representative sample, then harden the inferred bounds. Never ship the inferred schema as-is.',
+    hasScore: false,
   },
   {
-    title:'Testing Hamilton Pipelines', badge:'practice', sub:'Day 7 · Testing',
-    tasks:[
-      {text:'Read the Hamilton testing guide', url:'https://hamilton.dagworks.io/en/latest/how-tos/run-data-quality-checks/'},
-      'Write pytest unit tests for 5 individual Hamilton functions using plain Python inputs',
-      'Test @config.when branches by injecting different config dicts into the Driver',
-      'Use hamilton.graph_utils.assert_equivalent_dataframes for integration tests',
+    title: 'Capstone — Production Pipeline Validation with Full Test Coverage',
+    badge: 'exam',
+    sub: 'Day 7 · Capstone',
+    tasks: [
+      'Design a three-stage data pipeline: raw ingestion → cleaning → feature engineering, each as a separate Python function',
+      'Define pa.DataFrameModel schemas for each stage: RawSchema, CleanSchema, FeatureSchema — use pa.Field with appropriate checks',
+      'Decorate each pipeline function with @pa.check_input and @pa.check_output using the corresponding schemas',
+      'Add at least two custom @pa.check classmethods to FeatureSchema: one for a ratio column in (0,1) and one for no duplicate IDs',
+      {text: 'Run the full pipeline with lazy=True and collect all SchemaErrors into a validation report', url: 'https://pandera.readthedocs.io/en/stable/dataframe_schemas.html#lazy-validation'},
+      'Write pytest tests for each stage: one happy-path test and one that injects bad data and asserts SchemaError',
+      'Write a Hypothesis property-based test using RawSchema.strategy() that exercises the full pipeline',
     ],
-    resources:[
-      {text:'Testing guide', url:'https://hamilton.dagworks.io/en/latest/how-tos/run-data-quality-checks/'},
-      {text:'pytest docs', url:'https://docs.pytest.org/en/stable/'},
-      {text:'Hamilton graph_utils', url:'https://hamilton.dagworks.io/en/latest/reference/graph-utils/'},
+    resources: [
+      {text: 'Pandera Documentation Home', url: 'https://pandera.readthedocs.io/en/stable/'},
+      {text: 'Pandera SchemaModel Full Reference', url: 'https://pandera.readthedocs.io/en/stable/dataframe_models.html'},
+      {text: 'Hypothesis for Property-Based Testing', url: 'https://hypothesis.readthedocs.io/en/latest/'},
     ],
-    tip:'Each Hamilton function is a pure Python function — test it exactly like any other. No mocking, no fixtures needed for unit tests. Just call it with inputs and assert on the output.',
-    hasScore:true,
-  },
-  {
-    title:'Decorators Part 2: @pipe, @mutate, @resolve', badge:'learn', sub:'Day 8 · Advanced Decorators',
-    tasks:[
-      {text:'Read the @pipe and @mutate docs', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#pipe'},
-      'Use @pipe to chain a sequence of transformations on a single column',
-      'Use @mutate to apply post-processing to an existing node\'s output',
-      'Use @resolve to dynamically include/exclude nodes based on a config flag',
-    ],
-    resources:[
-      {text:'@pipe decorator', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#pipe'},
-      {text:'@resolve decorator', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#resolve'},
-      {text:'Advanced decorator patterns', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/decorators'},
-    ],
-    tip:'@pipe is a power tool — it makes long transformation chains readable. Use it only when the steps are truly sequential on the same object; otherwise separate functions are clearer.',
-    hasScore:false,
-  },
-  {
-    title:'Async & Parallel Execution', badge:'learn', sub:'Day 9 · Performance',
-    tasks:[
-      {text:'Read the async Hamilton docs', url:'https://hamilton.dagworks.io/en/latest/concepts/async/'},
-      'Rewrite a synchronous pipeline using async_driver.AsyncDriver',
-      'Use the parallel_executor to fan out across a list of inputs',
-      'Benchmark sequential vs. parallel execution and log the speedup',
-    ],
-    resources:[
-      {text:'Async Hamilton docs', url:'https://hamilton.dagworks.io/en/latest/concepts/async/'},
-      {text:'Parallel execution', url:'https://hamilton.dagworks.io/en/latest/concepts/parallel-task/'},
-      {text:'Hamilton performance examples', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/async'},
-    ],
-    tip:'Async Hamilton is ideal when nodes call external APIs or I/O-bound services. For CPU-bound tasks, use the multiprocessing-backed parallel executor instead.',
-    hasScore:false,
-  },
-  {
-    title:'Polars & Multiple DataFrame Backends', badge:'practice', sub:'Day 10 · Backends',
-    tasks:[
-      {text:'Install hamilton[polars] and swap the pandas Driver for Polars', url:'https://hamilton.dagworks.io/en/latest/integrations/polars/'},
-      'Port Day 4\'s feature pipeline to use Polars DataFrames with minimal code changes',
-      'Use @check_output to validate Polars schema after each transform',
-      'Benchmark pandas vs. Polars on the same pipeline and document the difference',
-    ],
-    resources:[
-      {text:'Hamilton Polars integration', url:'https://hamilton.dagworks.io/en/latest/integrations/polars/'},
-      {text:'Polars docs', url:'https://pola.rs/'},
-      {text:'Polars vs pandas benchmark', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/polars'},
-    ],
-    tip:'Hamilton\'s abstraction means most of your function logic doesn\'t change when switching backends — only the type annotations and driver config. That\'s the point of the framework.',
-    hasScore:true,
-  },
-  {
-    title:'Lifecycle Hooks & Custom Drivers', badge:'learn', sub:'Day 11 · Observability',
-    tasks:[
-      {text:'Read the lifecycle hooks docs', url:'https://hamilton.dagworks.io/en/latest/concepts/graph-executor/'},
-      'Implement a NodeExecutionHook that logs node name, runtime, and output shape',
-      'Build a custom GraphExecutor that caches node outputs to disk',
-      'Add a GraphConstructionHook that validates no node has a missing type annotation',
-    ],
-    resources:[
-      {text:'Lifecycle hooks docs', url:'https://hamilton.dagworks.io/en/latest/concepts/graph-executor/'},
-      {text:'Custom executor examples', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples/custom_executor'},
-      {text:'Hamilton observability', url:'https://hamilton.dagworks.io/en/latest/how-tos/use-hamilton-for-lineage/'},
-    ],
-    tip:'Lifecycle hooks are how you add observability without touching your business logic. Think of them as middleware for your DAG — logging, caching, and validation as cross-cutting concerns.',
-    hasScore:false,
-  },
-  {
-    title:'Materializers & Data Persistence', badge:'practice', sub:'Day 12 · Materialization',
-    tasks:[
-      {text:'Read the materializer docs', url:'https://hamilton.dagworks.io/en/latest/concepts/materialization/'},
-      'Use @datasaver to persist pipeline outputs to Parquet and JSON',
-      'Use @dataloader to load inputs from files declaratively (no pd.read_csv inside functions)',
-      'Build a pipeline that can be re-run incrementally using cached materializer outputs',
-    ],
-    resources:[
-      {text:'Materializer docs', url:'https://hamilton.dagworks.io/en/latest/concepts/materialization/'},
-      {text:'@datasaver reference', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#datasaver'},
-      {text:'@dataloader reference', url:'https://hamilton.dagworks.io/en/latest/reference/decorators/#dataloader'},
-    ],
-    tip:'Materializers decouple your logic from I/O. Never hardcode pd.read_csv() inside a Hamilton function — use @dataloader so the source is configurable and testable.',
-    hasScore:true,
-  },
-  {
-    title:'Review — Architecture & Best Practices', badge:'review', sub:'Day 13 · Integration',
-    tasks:[
-      'Refactor Days 4–6 pipelines to apply all decorator patterns learned this week',
-      'Visualize the full DAG using dr.display_all_functions() and annotate each module boundary',
-      'Write a one-page architecture doc: module boundaries, data contracts, and config strategy',
-      'Run the complete test suite from Days 7 and 10 — all tests green',
-    ],
-    resources:[
-      {text:'Hamilton best practices guide', url:'https://hamilton.dagworks.io/en/latest/how-tos/'},
-      {text:'Lineage & DAG visualization', url:'https://hamilton.dagworks.io/en/latest/how-tos/use-hamilton-for-lineage/'},
-      {text:'Hamilton Slack community', url:'https://join.slack.com/t/hamilton-opensource/shared_invite/zt-2niepkra8-DGKGf_tTYhXuJWBTXtIs4g'},
-    ],
-    tip:'If your DAG visualization is too wide to read, your modules are too coupled. Add subdag() to introduce hierarchy — it\'s the clearest signal that something needs to be refactored.',
-    hasScore:true,
-  },
-  {
-    title:'Capstone — End-to-End ML Feature Pipeline', badge:'exam', sub:'Day 14 · Capstone',
-    tasks:[
-      'Build a Hamilton pipeline: data ingestion → cleaning → feature engineering (10+ features) → model input assembly → materialization',
-      'Support both pandas and Polars backends via @config.when(backend="pandas") and @config.when(backend="polars")',
-      'Write a full pytest suite: unit tests for every function, integration test for the full graph',
-      'Implement a NodeExecutionHook for timing and logging — every node logged on execution',
-      'Push to GitHub with a README explaining the design and a DAG visualization image',
-    ],
-    resources:[
-      {text:'Hamilton capstone examples', url:'https://github.com/DAGWorks-Inc/hamilton/tree/main/examples'},
-      {text:'Hamilton GitHub Actions CI', url:'https://hamilton.dagworks.io/en/latest/how-tos/run-in-ci/'},
-      {text:'DAGWorks Hub (optional)', url:'https://www.dagworks.io/hamilton'},
-    ],
-    tip:'The capstone should be a portfolio piece. Use a real-world dataset and document your design decisions in the README — why you split modules the way you did, what the config strategy is, and what you\'d add next.',
-    hasScore:true,
+    tip: 'A Pandera schema at every pipeline boundary is executable documentation. Combine lazy=True with structured error logging to make production failures actionable without crashing the pipeline.',
+    hasScore: true,
   },
 ];
 
 const topics = [
-  {name:'Core Concepts',         color:'#3B82F6', days:[0,1]},
-  {name:'Decorators & Patterns', color:'#8B5CF6', days:[2,4,7]},
-  {name:'Feature Engineering',   color:'#10B981', days:[3,4,9]},
-  {name:'Testing & Quality',     color:'#F59E0B', days:[6,9,12]},
-  {name:'Execution & Performance',color:'#EC4899', days:[8,9]},
-  {name:'Production & MLOps',    color:'#0891B2', days:[10,11,12,13]},
+  {name: 'Schema Fundamentals', color: '#378ADD', days: [0, 1]},
+  {name: 'Class-Based API',     color: '#0891B2', days: [2, 3]},
+  {name: 'Function Validation', color: '#D85A30', days: [4]},
+  {name: 'Testing & Inference', color: '#BA7517', days: [5]},
+  {name: 'Capstone',            color: '#E8890C', days: [6]},
 ];
 
 const exam = {
   questions: null,
   minutes:   null,
-  passScore: 'Project',
+  passScore: 'N/A',
   cost:      'Free',
-  provider:  'DAGWorks / Self-paced',
-  link:      'https://hamilton.dagworks.io',
-  notes:     'No formal certification exam. Completion is project-based: build and publish a working Hamilton pipeline on GitHub covering feature engineering, multi-backend support, a full test suite, and lifecycle hooks.',
+  provider:  'Self-paced',
+  link:      'https://pandera.readthedocs.io/en/stable/',
+  notes:     'No formal exam. Seven focused days covering Pandera from schema basics to production pipeline validation.',
 };
 
 let state = {
-  completed:[], scores:{}, hours:{}, completedAt:{}, tasksDone:{},
-  openDay:null, startDate:null, lastActivity:null, status:'not_started'
+  completed: [], scores: {}, hours: {}, completedAt: {}, tasksDone: {},
+  openDay: null, startDate: null, lastActivity: null, status: 'not_started'
 };
 
 async function loadState() {
@@ -626,7 +545,7 @@ function broadcastStatus() {
     id: COURSE_ID, status: state.status,
     completed: state.completed.length, total: TOTAL_DAYS,
     scores: Object.values(state.scores).filter(s => s > 0),
-    totalHours: Object.values(state.hours).reduce((a,b) => a+b, 0),
+    totalHours: Object.values(state.hours).reduce((a, b) => a + b, 0),
     completedAt: state.completedAt, startDate: state.startDate,
     lastActivity: state.lastActivity
   };
@@ -669,7 +588,7 @@ function logHours(i, val) {
 
 function scoreClass(s) { return s >= 80 ? 'ok' : s >= 60 ? 'warn' : 'danger'; }
 function badgeClass(b) { return 'badge-' + b; }
-function badgeLabel(b) { return {learn:'Learn',practice:'Practice',review:'Review',exam:'Exam'}[b] || b; }
+function badgeLabel(b) { return {learn:'Learn', practice:'Practice', review:'Review', exam:'Exam'}[b] || b; }
 
 const dayTopics = (() => {
   const m = {};
@@ -681,8 +600,8 @@ function goToDay(i) {
   showPanel('schedule', document.querySelector('.tab'));
   setTimeout(() => {
     state.openDay = i; saveState(); renderSchedule();
-    const el = document.querySelector('.day-card:nth-child(' + (i+1) + ')');
-    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    const el = document.querySelector('.day-card:nth-child(' + (i + 1) + ')');
+    if(el) el.scrollIntoView({behavior: 'smooth', block: 'start'});
   }, 50);
 }
 
@@ -723,19 +642,19 @@ function updateStats() {
   document.getElementById('prog-pct').textContent = pct + '%';
   document.getElementById('bar-fill').style.width = pct + '%';
   document.getElementById('stat-days').textContent = state.completed.length + '/' + TOTAL_DAYS;
-  const hrs = Object.values(state.hours).reduce((a,b) => a+b, 0);
+  const hrs = Object.values(state.hours).reduce((a, b) => a + b, 0);
   document.getElementById('stat-hours').textContent = hrs % 1 === 0 ? hrs : hrs.toFixed(1);
   const scores = Object.values(state.scores).filter(s => s > 0);
-  const avg = scores.length ? Math.round(scores.reduce((a,b) => a+b, 0) / scores.length) : null;
+  const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null;
   const sv = document.getElementById('stat-score');
   if(avg) { sv.textContent = avg + '%'; sv.className = 'stat-val ' + scoreClass(avg); }
   else { sv.textContent = '—'; sv.className = 'stat-val'; }
   const r = document.getElementById('readiness');
-  if(pct === 0)       { r.className='readiness early'; r.textContent='🌱 Just getting started'; }
-  else if(pct < 40)   { r.className='readiness early'; r.textContent='📖 Building foundations'; }
-  else if(pct < 75)   { r.className='readiness early'; r.textContent='⚙️ Making solid progress'; }
-  else if(pct < 100)  { r.className='readiness close'; r.textContent='🔥 Almost there'; }
-  else                { r.className='readiness ready'; r.textContent='✅ Course complete!'; }
+  if(pct === 0)      { r.className = 'readiness early'; r.textContent = '🌱 Just getting started'; }
+  else if(pct < 40)  { r.className = 'readiness early'; r.textContent = '📖 Building foundations'; }
+  else if(pct < 75)  { r.className = 'readiness early'; r.textContent = '⚙️ Making solid progress'; }
+  else if(pct < 100) { r.className = 'readiness close'; r.textContent = '🔥 Almost there'; }
+  else               { r.className = 'readiness ready'; r.textContent = '✅ Course complete!'; }
 }
 
 function renderSchedule() {
@@ -747,9 +666,9 @@ function renderSchedule() {
     const hrs   = state.hours[i];
     const tot   = d.tasks.length;
     const done  = (state.tasksDone[i] || []).length;
-    return `<div class="day-card${comp?' completed':''}${open?' open':''}" id="day-${i}">
+    return `<div class="day-card${comp ? ' completed' : ''}${open ? ' open' : ''}" id="day-${i}">
       <div class="day-header" onclick="toggleDay(${i})">
-        <span class="day-num">${comp ? '✓' : ('0'+(i+1)).slice(-2)}</span>
+        <span class="day-num">${comp ? '✓' : ('0' + (i + 1)).slice(-2)}</span>
         <div class="day-meta">
           <div class="day-title">${d.title}</div>
           <div class="day-sub">${d.sub}</div>
@@ -762,15 +681,15 @@ function renderSchedule() {
         <div class="nb-row">
           <a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a>
           <a class="nb-btn nb-btn-colab" href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/${COURSE_ID}/notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">▶ Open in Colab</a>
-          <a class="nb-btn" href="https://github.com/certified-journeys/certified-journeys.github.io/edit/main/courses/${COURSE_ID}/notes/day-${String(i+1).padStart(2,'0')}.md" target="_blank">📝 notes/day-${String(i+1).padStart(2,'0')}.md</a>
+          <a class="nb-btn" href="https://github.com/certified-journeys/certified-journeys.github.io/edit/main/courses/${COURSE_ID}/notes/day-${String(i + 1).padStart(2, '0')}.md" target="_blank">📝 notes/day-${String(i + 1).padStart(2, '0')}.md</a>
         </div>
-        ${(dayTopics[i]||[]).length ? `<div class="day-topic-pills">${(dayTopics[i]||[]).map(t=>`<span class="day-topic-pill" style="background:${t.color}18;color:${t.color};border-color:${t.color}40" onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])" title="View topic in Topics tab">${t.name}</span>`).join('')}</div>` : ''}
-        ${tot ? `<div class="task-progress"><div class="task-progress-fill" style="width:${Math.round(done/tot*100)}%"></div></div>` : ''}
-        <div class="task-list">${d.tasks.map((t,j) => renderTask(t,i,j)).join('')}</div>
+        ${(dayTopics[i] || []).length ? `<div class="day-topic-pills">${(dayTopics[i] || []).map(t => `<span class="day-topic-pill" style="background:${t.color}18;color:${t.color};border-color:${t.color}40" onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])" title="View topic in Topics tab">${t.name}</span>`).join('')}</div>` : ''}
+        ${tot ? `<div class="task-progress"><div class="task-progress-fill" style="width:${Math.round(done / tot * 100)}%"></div></div>` : ''}
+        <div class="task-list">${d.tasks.map((t, j) => renderTask(t, i, j)).join('')}</div>
         <div class="resources-row">${d.resources.map(renderRes).join('')}</div>
-        ${d.hasScore ? `<div class="score-row"><label>Practice score (%):</label><input type="number" min="0" max="100" placeholder="e.g. 84" value="${score||''}" onchange="logScore(${i},this.value)">${score ? `<span class="score-badge ${scoreClass(score)==='ok'?'badge-learn':scoreClass(score)==='warn'?'badge-review':'badge-exam'}">${score}%</span>` : ''}</div>` : ''}
-        <div class="hours-row"><label>Hours spent today:</label><input type="number" min="0" max="24" step="0.5" placeholder="e.g. 2.5" value="${hrs||''}" onchange="logHours(${i},this.value)"><span style="font-size:11px;color:var(--text3);">hrs</span></div>
-        <button class="complete-btn ${comp?'done':''}" onclick="event.stopPropagation();toggleComplete(${i})">${comp?'✓ Completed':'Mark as complete'}</button>
+        ${d.hasScore ? `<div class="score-row"><label>Practice score (%):</label><input type="number" min="0" max="100" placeholder="e.g. 84" value="${score || ''}" onchange="logScore(${i},this.value)">${score ? `<span class="score-badge ${scoreClass(score) === 'ok' ? 'badge-learn' : scoreClass(score) === 'warn' ? 'badge-review' : 'badge-exam'}">${score}%</span>` : ''}</div>` : ''}
+        <div class="hours-row"><label>Hours spent today:</label><input type="number" min="0" max="24" step="0.5" placeholder="e.g. 2.5" value="${hrs || ''}" onchange="logHours(${i},this.value)"><span style="font-size:11px;color:var(--text3);">hrs</span></div>
+        <button class="complete-btn ${comp ? 'done' : ''}" onclick="event.stopPropagation();toggleComplete(${i})">${comp ? '✓ Completed' : 'Mark as complete'}</button>
       </div>` : ''}
     </div>`;
   }).join('');
@@ -782,7 +701,7 @@ function renderTopics() {
       const cov = t.days.filter(d => state.completed.includes(d)).length;
       const pct = Math.round((cov / t.days.length) * 100);
       const dayBtns = t.days.map(d =>
-        `<button class="topic-day-btn${state.completed.includes(d)?' done':''}" onclick="goToDay(${d})">Day ${d+1}</button>`
+        `<button class="topic-day-btn${state.completed.includes(d) ? ' done' : ''}" onclick="goToDay(${d})">Day ${d + 1}</button>`
       ).join('');
       return `<div class="topic-card">
         <h4>${t.name}</h4>
@@ -799,37 +718,37 @@ function renderAI() {
     <div class="ai-card">
       <div class="ai-card-head">
         <div class="ai-icon" style="background:#E8F0FE;">🎙</div>
-        <div><div class="ai-card-title">NotebookLM — Audio Podcast Summary</div><div class="ai-card-sub">Generate a personalized audio briefing of your Hamilton learning</div></div>
+        <div><div class="ai-card-title">NotebookLM — Audio Podcast Summary</div><div class="ai-card-sub">Generate a personalized audio briefing of your Pandera learning</div></div>
       </div>
-      <div class="ai-card-body">Upload your day-card notes plus the Hamilton official docs as sources in NotebookLM, then generate a podcast covering key patterns, DAG design principles, and production gotchas.</div>
+      <div class="ai-card-body">Upload your day-card notes plus the official Pandera docs as sources in NotebookLM, then generate a podcast covering schema design, the class-based API, decorator-driven pipeline validation, and Hypothesis integration.</div>
       <div class="ai-prompt-box">Prompt for NotebookLM Audio:
-"Create a 10-minute podcast for an intermediate Python engineer studying the Hamilton dataflow library. Cover: the core DAG model (functions as nodes), the most important decorators (@config, @tag, @pipe, @does), how to test Hamilton pipelines, and the 3 things they must understand before building a production feature pipeline."</div>
+"Create a 10-minute podcast for an intermediate Python data engineer studying Pandera for Data Validation. Cover: the difference between DataFrameSchema and DataFrameModel, when to use element-wise vs vectorized checks, how @pa.check_input and @pa.check_output work as pipeline guardrails, how pa.infer_schema() bootstraps a schema from production data, and the 3 things they must understand before using Pandera in a production data pipeline."</div>
       <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
     </div>
     <div class="ai-card">
       <div class="ai-card-head">
         <div class="ai-icon" style="background:#FEF3E2;">🃏</div>
-        <div><div class="ai-card-title">NotebookLM — AI Flashcards</div><div class="ai-card-sub">Generate quiz cards from your Hamilton notes</div></div>
+        <div><div class="ai-card-title">NotebookLM — AI Flashcards</div><div class="ai-card-sub">Generate quiz cards from your Pandera notes</div></div>
       </div>
-      <div class="ai-card-body">Upload your notes and the Hamilton decorator reference to NotebookLM and use the Study Guide feature to generate Q&A flashcards on API details and design patterns.</div>
+      <div class="ai-card-body">Upload your notes and the Pandera documentation to NotebookLM and use the Study Guide feature to generate Q&A flashcards on schemas, checks, decorators, and testing patterns.</div>
       <div class="ai-prompt-box">Prompt for NotebookLM Quiz:
-"Generate 20 flashcard-style Q&A pairs for someone studying the Hamilton Python library. Focus on: the difference between @config.when and @tag, when to use @does vs @pipe vs @mutate, how @extract_columns works, the role of the Driver vs the modules, and common mistakes in testing Hamilton pipelines."</div>
+"Generate 20 flashcard-style Q&A pairs for someone studying Pandera for Data Validation. Focus on: the difference between element-wise and vectorized Check functions, when to use coerce=True at schema vs column level, how SchemaModel strict mode differs from the default, the difference between @pa.check_input and @pa.check_io, how lazy=True changes validation behavior, and how pa.infer_schema() differs from hand-crafting a schema."</div>
       <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
     </div>
     <div class="ai-card">
       <div class="ai-card-head">
         <div class="ai-icon" style="background:#EEE9FF;">💬</div>
-        <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore Hamilton patterns with targeted prompts</div></div>
+        <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore Pandera validation patterns with targeted prompts</div></div>
       </div>
-      <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific Hamilton pattern.</div>
-      <div class="ai-prompt-box">Prompt 1 — Explain like a senior engineer:
-"I'm studying the Hamilton Python library. Explain [TOPIC, e.g. 'lifecycle hooks and NodeExecutionHook'] as if I'm a senior Python engineer familiar with Airflow and pandas. Skip the basics — focus on nuance, edge cases, and real-world design decisions."
+      <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific Pandera design decision.</div>
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior data engineer:
+"I'm studying Pandera for Data Validation. Explain [TOPIC, e.g. 'how Pandera's multi-backend support works and what limitations exist across Pandas, Polars, and Modin'] as if I'm already experienced. Skip the basics — focus on nuance, edge cases, and real-world schema design decisions."
 
-Prompt 2 — Design review:
-"I'm building a Hamilton feature pipeline for an ML project. Here's my module structure: [paste code or describe]. Review it as a senior data engineer. What would you refactor, and why?"
+Prompt 2 — Pipeline schema design review:
+"I'm designing Pandera schemas for a [describe pipeline, e.g. 'three-stage ETL: raw ingestion → cleaning → feature engineering']. Here's my current schema design: [describe schemas]. Review it as a senior data engineer. What checks am I missing? Should I use DataFrameSchema or DataFrameModel here? How should I handle lazy validation vs fail-fast?"
 
-Prompt 3 — Gap analysis:
-"I've completed the Hamilton basics but I'm unsure about [topic, e.g. 'async execution vs parallel executor']. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+Prompt 3 — Gap analysis study plan:
+"I've studied Pandera basics but I'm unsure about [TOPIC, e.g. 'property-based testing with Hypothesis and schema.strategy()']. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
     </div>`;
 }
 
@@ -838,34 +757,37 @@ function renderResources() {
     <div class="res-section">
       <div class="res-section-title">📖 Core Reading</div>
       <div class="res-link-list">
-        <div class="res-link-item"><span class="res-link-index">01</span><div class="res-link-body"><a href="https://hamilton.dagworks.io/en/latest/" target="_blank">Hamilton Official Docs</a><div class="res-link-desc">Complete documentation: concepts, how-tos, decorator reference, and driver API.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">02</span><div class="res-link-body"><a href="https://hamilton.dagworks.io/en/latest/concepts/" target="_blank">Hamilton Concepts Guide</a><div class="res-link-desc">Deep dives into the DAG model, modules, materialization, and async execution.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">03</span><div class="res-link-body"><a href="https://hamilton.dagworks.io/en/latest/reference/decorators/" target="_blank">Decorator Reference</a><div class="res-link-desc">Full API reference for every Hamilton decorator: @config, @tag, @pipe, @does, @check_output, and more.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">04</span><div class="res-link-body"><a href="https://github.com/DAGWorks-Inc/hamilton" target="_blank">Hamilton GitHub Repository</a><div class="res-link-desc">Source code, changelog, open issues, and community discussions.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">01</span><div class="res-link-body"><a href="https://pandera.readthedocs.io/en/stable/" target="_blank">Pandera Official Documentation</a><div class="res-link-desc">Complete reference: DataFrameSchema, SchemaModel, checks, decorators, hypothesis integration, schema inference, and multi-backend support.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">02</span><div class="res-link-body"><a href="https://pandera.readthedocs.io/en/stable/dataframe_schemas.html" target="_blank">DataFrameSchema — Core API</a><div class="res-link-desc">Columns, types, nullable, coerce, required, schema-level vs column-level coercion, and lazy validation modes.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">03</span><div class="res-link-body"><a href="https://pandera.readthedocs.io/en/stable/checks.html" target="_blank">Checks — Built-in and Custom</a><div class="res-link-desc">Element-wise vs vectorized checks, all built-in Check methods, and patterns for combining multiple checks on a single column.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">04</span><div class="res-link-body"><a href="https://pandera.readthedocs.io/en/stable/dataframe_models.html" target="_blank">SchemaModel — Class-Based API</a><div class="res-link-desc">DataFrameModel with pa.Field annotations, @pa.check classmethods, Config options (coerce, strict), and to_schema() conversion.</div></div></div>
       </div>
     </div>
     <div class="res-section">
       <div class="res-section-title">🛠 Hands-On Resources</div>
       <div class="res-link-list">
-        <div class="res-link-item"><span class="res-link-index">05</span><div class="res-link-body"><a href="https://github.com/DAGWorks-Inc/hamilton/tree/main/examples" target="_blank">Hamilton Examples (GitHub)</a><div class="res-link-desc">Official example pipelines: feature engineering, async, modular ETL, and more.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">06</span><div class="res-link-body"><a href="https://blog.dagworks.io" target="_blank">DAGWorks Blog</a><div class="res-link-desc">Deep dives on Hamilton patterns, case studies, and MLOps best practices from the team.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">07</span><div class="res-link-body"><a href="https://hamilton.dagworks.io/en/latest/how-tos/" target="_blank">Hamilton How-To Guides</a><div class="res-link-desc">Step-by-step guides: writing functions, testing, CI, lineage, and data quality checks.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">05</span><div class="res-link-body"><a href="https://pandera.readthedocs.io/en/stable/decorators.html" target="_blank">Decorators — @pa.check_input, @pa.check_output, @pa.check_io</a><div class="res-link-desc">Decorator-driven pipeline validation: wrapping functions, obj_getter for argument targeting, and stacking input/output validators.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">06</span><div class="res-link-body"><a href="https://pandera.readthedocs.io/en/stable/hypothesis.html" target="_blank">Hypothesis Integration</a><div class="res-link-desc">Generating DataFrames via schema.strategy(), writing @given property-based tests, and composing custom strategies with Check.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">07</span><div class="res-link-body"><a href="https://pandera.readthedocs.io/en/stable/schema_inference.html" target="_blank">Schema Inference — pa.infer_schema()</a><div class="res-link-desc">Bootstrapping schemas from existing DataFrames, calling to_script() to export code, and hardening inferred bounds for production use.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">08</span><div class="res-link-body"><a href="https://github.com/unionai-oss/pandera" target="_blank">Pandera GitHub Repository</a><div class="res-link-desc">Source code, open issues, release notes, and community examples — a good place to see real-world schema patterns from contributors.</div></div></div>
       </div>
     </div>
     <div class="res-section">
       <div class="res-section-title">🔧 Ecosystem &amp; Tooling</div>
       <div class="res-link-list">
-        <div class="res-link-item"><span class="res-link-index">08</span><div class="res-link-body"><a href="https://pola.rs/" target="_blank">Polars Docs</a><div class="res-link-desc">High-performance DataFrame library — Day 10 backend. Much faster than pandas for large datasets.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">09</span><div class="res-link-body"><a href="https://duckdb.org/docs/api/python/overview" target="_blank">DuckDB Python API</a><div class="res-link-desc">Embedded analytical database used as a free alternative to BigQuery in Day 6 ETL patterns.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">10</span><div class="res-link-body"><a href="https://docs.pytest.org/en/stable/" target="_blank">pytest docs</a><div class="res-link-desc">Test runner used for all Hamilton unit and integration tests in this course.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">09</span><div class="res-link-body"><a href="https://pandera.readthedocs.io/en/stable/polars.html" target="_blank">Pandera Polars Integration</a><div class="res-link-desc">Using the same DataFrameSchema or SchemaModel to validate Polars DataFrames, and how failure_cases differ between backends.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">10</span><div class="res-link-body"><a href="https://pandera.readthedocs.io/en/stable/supported_libraries.html" target="_blank">Pandera Supported Libraries</a><div class="res-link-desc">Full list of supported backends: Pandas, Polars, Modin, GeoPandas, Dask, Spark, and Ibis — with feature coverage matrix.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">11</span><div class="res-link-body"><a href="https://pandera.readthedocs.io/en/stable/reference/generated/pandera.typing.html" target="_blank">Pandera Typing Module</a><div class="res-link-desc">pandera.typing.pandas.DataFrame[Model] and polars equivalents for type-annotated function signatures that also validate at runtime.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">12</span><div class="res-link-body"><a href="https://hypothesis.readthedocs.io/en/latest/" target="_blank">Hypothesis Documentation</a><div class="res-link-desc">The property-based testing library that powers pandera's schema.strategy() — essential reading for writing robust data pipeline tests.</div></div></div>
       </div>
     </div>
     <div class="res-section">
       <div class="res-section-title">⬆ Upgrade Path</div>
       <div class="res-link-list">
-        <div class="res-link-item"><span class="res-link-index">11</span><div class="res-link-body"><a href="https://github.com/DAGWorks-Inc/burr" target="_blank">Burr — State Machine Library (DAGWorks)</a><div class="res-link-desc">From the same team — build stateful applications and agents using the same philosophy as Hamilton.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">12</span><div class="res-link-body"><a href="https://mlflow.org/docs/latest/" target="_blank">MLflow Docs</a><div class="res-link-desc">Pair Hamilton pipelines with MLflow for experiment tracking and model registry.</div></div></div>
-        <div class="res-link-item"><span class="res-link-index">13</span><div class="res-link-body"><a href="https://docs.feast.dev/" target="_blank">Feast Feature Store</a><div class="res-link-desc">Production feature store — the natural next step after mastering Hamilton feature engineering.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">13</span><div class="res-link-body"><a href="https://pandera.readthedocs.io/en/stable/dataframe_schemas.html#lazy-validation" target="_blank">Lazy Validation — Collect All Failures</a><div class="res-link-desc">Using schema.validate(df, lazy=True) to gather every SchemaError before raising — essential for building actionable validation reports.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">14</span><div class="res-link-body"><a href="https://pandera.readthedocs.io/en/stable/extensions.html" target="_blank">Pandera Extensions API</a><div class="res-link-desc">Register custom Check methods globally using @pandera.extensions.register_check_method — share validation logic across a team's schema library.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">15</span><div class="res-link-body"><a href="https://pandera.readthedocs.io/en/stable/frictionless.html" target="_blank">Frictionless Data Integration</a><div class="res-link-desc">Convert Pandera schemas to and from Frictionless Data descriptors — useful for interoperability with open data standards and catalog tools.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">16</span><div class="res-link-body"><a href="https://docs.greatexpectations.io/docs/" target="_blank">Great Expectations — Next Level Data Quality</a><div class="res-link-desc">When Pandera's column-level checks aren't enough: GE adds data docs, suites, and checkpoint pipelines for enterprise data quality workflows.</div></div></div>
       </div>
     </div>`;
 }
@@ -876,20 +798,20 @@ function renderExam() {
       <div class="exam-card"><div class="exam-card-label">Cost</div><div class="exam-card-val">${exam.cost}</div><div class="exam-card-sub">Self-paced, free</div></div>
       <div class="exam-card"><div class="exam-card-label">Questions</div><div class="exam-card-val">N/A</div><div class="exam-card-sub">No formal exam</div></div>
       <div class="exam-card"><div class="exam-card-label">Time limit</div><div class="exam-card-val">N/A</div><div class="exam-card-sub">Project-based</div></div>
-      <div class="exam-card"><div class="exam-card-label">Pass mark</div><div class="exam-card-val" style="font-size:13px;">${exam.passScore}</div><div class="exam-card-sub">Capstone on GitHub</div></div>
+      <div class="exam-card"><div class="exam-card-label">Pass mark</div><div class="exam-card-val" style="font-size:13px;">${exam.passScore}</div><div class="exam-card-sub">Capstone pipeline</div></div>
     </div>
     <div class="info-box"><strong>Completion format:</strong> ${exam.notes}</div>
     <div class="info-box" style="margin-top:10px;">
       <strong>📋 Readiness checklist — before marking yourself done:</strong><br><br>
       • Completed all ${TOTAL_DAYS} days of the study plan<br>
-      • Built and published the capstone pipeline on GitHub<br>
-      • Full pytest suite passes — unit tests for every function, integration test for the full graph<br>
-      • Pipeline supports both pandas and Polars backends via @config.when<br>
-      • Can explain every Topics tab item without looking at notes<br>
-      • NodeExecutionHook logs timing and shape for every node
+      • Built the capstone three-stage pipeline with Pandera schemas at every boundary<br>
+      • Can explain every Topics tab item without notes<br>
+      • Written a Pandera cheat sheet (DataFrameSchema, SchemaModel, Checks, decorators, lazy validation) from memory and verified it<br>
+      • Capstone pipeline uses lazy=True and produces an actionable validation report on failure<br>
+      • Consistent progress — each day's tasks genuinely completed, not rushed through
     </div>
     <div style="margin-top:12px;">
-      <a href="${exam.link}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:10px 20px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-weight:500;text-decoration:none;">View Hamilton Docs →</a>
+      <a href="${exam.link}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:10px 20px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-weight:500;text-decoration:none;">View Pandera Docs →</a>
     </div>`;
 }
 
@@ -911,9 +833,9 @@ function renderAll() {
 
 function updateSyncBadge(s) {
   const el = document.getElementById('sync-badge'); if(!el) return;
-  const L = {disconnected:'☁ Connect GitHub', connected:'✓ Synced', syncing:'↑ Syncing…', error:'⚠ Sync failed'};
+  const L = {disconnected: '☁ Connect GitHub', connected: '✓ Synced', syncing: '↑ Syncing…', error: '⚠ Sync failed'};
   el.textContent = L[s] || L.disconnected;
-  el.className = 'sync-badge' + (s==='connected' ? ' connected' : s==='syncing' ? ' syncing' : s==='error' ? ' error' : '');
+  el.className = 'sync-badge' + (s === 'connected' ? ' connected' : s === 'syncing' ? ' syncing' : s === 'error' ? ' error' : '');
 }
 
 function openGHModal() {
@@ -947,6 +869,7 @@ async function saveGHCreds() {
 function disconnectGH() { GHSync.saveCreds(null); updateSyncBadge('disconnected'); closeGHModal(); }
 
 loadState().then(renderAll);
+
 // ── Dark mode toggle ──────────────────────────────────────────
 const MOON = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
 const SUN  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';

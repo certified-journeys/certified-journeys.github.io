@@ -106,7 +106,7 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 .task-tick.ticked{background:var(--green);border-color:var(--green);}
 .task-tick.ticked::after{content:"✓";font-size:10px;color:#fff;font-weight:700;line-height:1;}
 .task.task-done>span{text-decoration:line-through;color:var(--text3);}
-.task-progress{height:3px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
+.task-progress{height:5px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
 .task-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;}
 .task-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
 .task{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);}
@@ -186,6 +186,10 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
   .exam-grid{grid-template-columns:repeat(2,1fr);}
   .course-hero-top{flex-direction:column;}
 }
+.nav-gh-icon { width: 34px; height: 34px; border-radius: 99px; flex-shrink: 0; border: 0.5px solid var(--border2); background: none; color: var(--text2); display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.15s; }
+.nav-gh-icon:hover { background: var(--surface2); color: var(--text); text-decoration: none; }
+.meta-val-free { color: var(--green) !important; }
+.meta-val-paid { color: var(--amber) !important; }
 </style>
 </head>
 <body>
@@ -216,7 +220,7 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
       </div>
     </div>
     <div class="hero-meta">
-      <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val">Free</div></div>
+      <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val meta-val-free">Free</div></div>
       <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">14 days</div></div>
       <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Outerbounds</div></div>
       <div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Intermediate</div></div>
