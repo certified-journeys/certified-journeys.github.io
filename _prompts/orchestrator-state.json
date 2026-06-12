@@ -7,9 +7,9 @@
     "auto_commit": true,
     "on_validation_failure": "stop"
   },
-  "current_course": "pandera-certified",
-  "current_phase": "generating",
-  "last_updated": "2026-06-11T02:10:00.000000+00:00",
+  "current_course": "altair-certified",
+  "current_phase": "pending",
+  "last_updated": "2026-06-12T00:00:00.000000+00:00",
   "schedule_id": null,
   "courses": {
     "mlflow-certified": {"status": "done", "started_at": "2026-06-07T02:30:58.339125Z", "designed_at": "2026-06-07T02:33:25.323586+00:00", "generated_at": "2026-06-07T03:40:00.000000+00:00", "completed_at": "2026-06-07T03:45:00.000000+00:00", "error": null},
@@ -20,14 +20,7 @@
     "pydantic-certified": {"status": "done", "started_at": "2026-06-10T14:35:00.000000Z", "designed_at": "2026-06-10T14:40:00.000000Z", "generated_at": "2026-06-10T15:10:00.000000Z", "completed_at": "2026-06-10T15:15:00.000000Z", "error": null},
     "ray-certified": {"status": "done", "started_at": "2026-06-10T15:15:00.000000Z", "designed_at": "2026-06-10T15:20:00.000000Z", "generated_at": "2026-06-10T23:50:00.000000Z", "completed_at": "2026-06-11T00:00:00.000000Z", "error": null},
     "sodacore-certified": {"status": "done", "started_at": "2026-06-11T00:05:00.000000Z", "designed_at": "2026-06-11T00:08:00.000000Z", "generated_at": "2026-06-11T01:55:00.000000Z", "completed_at": "2026-06-11T02:00:00.000000Z", "error": null},
-    "pandera-certified": {
-      "status": "generating",
-      "started_at": "2026-06-11T02:05:00.000000Z",
-      "designed_at": "2026-06-11T02:08:00.000000Z",
-      "generated_at": null,
-      "completed_at": null,
-      "error": null
-    },
+    "pandera-certified": {"status": "done", "started_at": "2026-06-11T02:05:00.000000Z", "designed_at": "2026-06-11T02:08:00.000000Z", "generated_at": "2026-06-11T03:30:00.000000Z", "completed_at": "2026-06-11T03:35:00.000000Z", "error": null},
     "altair-certified": {
       "status": "pending",
       "started_at": null,

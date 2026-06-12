@@ -1087,4 +1087,222 @@ Output each file with a header:
 
 ---
 
-*certified-journeys prompt v7 · two course types · notes/day-NN.md link in every day card · topic ↔ day navigation · per-task tick checkboxes + auto-complete progress bar · GitHub repo sync via PAT · chunked output · day-card depth table · AI_DEEP_DIVE_TOPICS · EXAM_CHECKLIST · URL verification · capstone registry*
+## Multi-Agent Generation (optional — faster for large notebook courses)
+
+Use this approach instead of the single-prompt chunked output when generating a notebook course with 10+ days. Parallel agents eliminate context exhaustion and cut total generation time ~5×.
+
+### When to use
+
+A 14-day notebook course generates ~5,000–7,000 lines. One model, one context window → near-certain overflow before the last notebook. Multi-agent splits by output file, so each agent has a full context budget.
+
+### Extra input field: `NOTEBOOKS`
+
+Add this field to `[COURSE INPUT]` before spawning. Pre-defining all slugs enables true parallelism — every agent knows filenames without waiting for `index.html`.
+
+```
+NOTEBOOKS:
+  day-01-slug        Slug = 2–4 word kebab-case summary of day title.
+  day-02-slug        Pre-define ALL slugs. File = notebooks/[slug].ipynb
+  ...
+  day-NN-slug
+```
+
+Slug rules: 2–4 words, kebab-case, unique across the course, derived from the day title.
+
+### Agent routing table
+
+| # | Agent | Files written | Spawn |
+|---|-------|---------------|-------|
+| 1 | HTML Agent | `courses/[ID]/index.html` | parallel |
+| 2 | Notebook Agent A | `notebooks/day-01…day-03.ipynb` | parallel |
+| 3 | Notebook Agent B | `notebooks/day-04…day-06.ipynb` | parallel |
+| 4 | Notebook Agent C | `notebooks/day-07…day-09.ipynb` | parallel |
+| 5 | Notebook Agent D | `notebooks/day-10…day-12.ipynb` | parallel |
+| 6 | Notebook Agent E | `notebooks/day-13…day-14.ipynb` | parallel |
+| 7 | Notes Agent | `notes/day-01.md…day-NN.md` | parallel |
+| 8 | Manager Agent | Validation report (no files) | **after 1–7 complete** |
+
+For courses shorter than 14 days, merge notebook batches (e.g. 10-day: A=1–3, B=4–6, C=7–10).  
+For `standard` type: skip all Notebook Agents; Notes Agent generates all notes.
+
+### Execution steps
+
+1. Fill `[COURSE INPUT]` including all `NOTEBOOKS` slugs
+2. Spawn agents 1–7 **in a single message** (all background, all parallel)
+3. Wait for all 7 completion notifications
+4. Spawn Manager Agent — it reads all output files and reports issues
+5. Fix any Manager-reported issues
+6. Open `index.html` in a browser and run the verification checklist
+
+### HTML Agent — Prompt Template
+
+```
+You are generating the index.html progress tracker for a certified-journeys course.
+
+Working directory: /home/ht/Documents/HT_GitHub/certified-journeys.github.io
+Write the complete file to: courses/[COURSE_ID]/index.html (use the Write tool)
+
+Step 1: Read /home/ht/Documents/HT_GitHub/certified-journeys.github.io/_prompts/new-course.md
+Step 2: Follow the OUTPUT A SPEC exactly to generate index.html
+Step 3: Write the complete file — do not truncate
+
+## COURSE INPUT
+
+[paste filled COURSE INPUT here, including NOTEBOOKS slugs]
+
+## Critical requirements (notebook type)
+
+- NOTEBOOKS JS constant must use the pre-defined slugs above, in order
+- STORAGE_KEY = 'cj_[COURSE_ID]_v1'
+- broadcastStatus writes to 'cj_summary_[COURSE_ID]'
+- loadState must be async with GitHub sync integration
+- Init = loadState().then(renderAll)
+- GitHub modal (id="gh-modal"), sync badge (id="sync-badge") in HTML
+- <script src="../../github-sync.js"></script> before inline script
+- GHSync fallback object defined after that script tag
+- 3-button action row per day: notebook + Colab + notes
+- Colab URLs: repo = certified-journeys/certified-journeys.github.io
+- renderAI: 3 cards with AI_DEEP_DIVE_TOPICS from COURSE INPUT
+- renderResources: 4 sections, minimum 12 numbered links total
+- dayTopics reverse index + goToDay function present
+- renderTask, tickTask, renderRes helpers present and used
+- state.tasksDone: {} initialized; resetAll() resets it
+- ALL [TOTAL_DAYS] days in the days[] array
+- Run the both-types quality checklist from new-course.md before writing
+```
+
+### Notebook Agent — Prompt Template
+
+Use for each batch; customize the "Days to generate" section.
+
+```
+You are generating Jupyter notebooks (Days [X]–[Y]) for a certified-journeys course.
+
+Working directory: /home/ht/Documents/HT_GitHub/certified-journeys.github.io
+Write these files using the Write tool:
+  courses/[COURSE_ID]/notebooks/[slug-X].ipynb
+  ...
+  courses/[COURSE_ID]/notebooks/[slug-Y].ipynb
+
+Step 1: Read /home/ht/Documents/HT_GitHub/certified-journeys.github.io/_prompts/new-course.md
+Step 2: Follow the OUTPUT B SPEC (Jupyter notebooks section) exactly
+Step 3: Write all [N] notebooks — complete, not truncated
+
+## Course context
+
+COURSE_ID:        [COURSE_ID]
+COURSE_FULL_NAME: [COURSE_FULL_NAME]
+
+## Days to generate
+
+[paste Day X through Day Y from filled COURSE INPUT]
+
+## Critical requirements
+
+- nbformat: 4, nbformat_minor: 5
+- metadata.language_info.name = "python"
+- Every cell: unique 8-char hex "id"
+- Every code cell: "outputs": [], "execution_count": null
+- Cell order: Header (Colab badge) → Install → concept/code/recap triples → Challenge → Recap
+- Colab badge URL: certified-journeys/certified-journeys.github.io repo,
+  path: /blob/main/courses/[COURSE_ID]/notebooks/[filename].ipynb#scrollTo=[first_cell_id]
+- All code runs without errors in fresh Colab after install cell
+- No pseudocode outside the Challenge cell
+- Depth per badge: learn = 5+ code, 8+ markdown, 150+ lines;
+  practice = 8+ code, 5+ markdown, 200+ lines;
+  review = 4+ code, 10+ markdown, 150+ lines;
+  exam = 10+ code, 8+ markdown, 250+ lines
+```
+
+### Notes Agent — Prompt Template
+
+```
+You are generating notes template files for a certified-journeys course.
+
+Working directory: /home/ht/Documents/HT_GitHub/certified-journeys.github.io
+Write [TOTAL_DAYS] files using the Write tool — one per day:
+  courses/[COURSE_ID]/notes/day-01.md through day-[NN].md (zero-padded)
+
+Day titles:
+  Day 1:  [title]
+  ...
+  Day N:  [title]
+
+Each file must use the 3-section template from the OUTPUT B SPEC in new-course.md.
+```
+
+### Manager Agent — Prompt Template
+
+Run this **after all other agents complete**.
+
+```
+You are validating a certified-journeys course for cross-file consistency.
+
+Working directory: /home/ht/Documents/HT_GitHub/certified-journeys.github.io
+Course directory: courses/[COURSE_ID]/
+
+Read all relevant files and check every item below. For each failure, report:
+  [filename] — [issue] — expected: [correct value]
+
+If all checks pass, output: "✓ All consistency checks passed."
+
+### Consistency contract
+
+NOTEBOOKS array (read index.html, extract the JS constant):
+- [ ] Exactly [TOTAL_DAYS] slugs
+- [ ] Each slug matches an actual .ipynb filename in notebooks/
+
+File existence:
+- [ ] courses/[COURSE_ID]/index.html
+- [ ] notebooks/day-01-[slug].ipynb through day-[NN]-[slug].ipynb ([TOTAL_DAYS] files)
+- [ ] notes/day-01.md through day-[NN].md ([TOTAL_DAYS] files)
+
+index.html — JS constants:
+- [ ] COURSE_ID = '[COURSE_ID]'
+- [ ] STORAGE_KEY = 'cj_[COURSE_ID]_v1'
+- [ ] TOTAL_DAYS = [TOTAL_DAYS]
+- [ ] broadcastStatus writes to 'cj_summary_[COURSE_ID]'
+
+index.html — GitHub sync:
+- [ ] <script src="../../github-sync.js"></script> present
+- [ ] GHSync fallback object defined immediately after
+- [ ] loadState().then(renderAll) at bottom of inline script
+- [ ] id="gh-modal" and id="sync-badge" in HTML
+
+index.html — structure:
+- [ ] id="panel-schedule", "panel-topics", "panel-ai", "panel-resources", "panel-exam" all present
+- [ ] Hero has exactly 4 meta items (Cost, Duration, Provider, Difficulty)
+- [ ] dayTopics reverse index present
+- [ ] goToDay function present
+- [ ] renderTask, tickTask, renderRes functions present
+- [ ] state includes tasksDone: {} and resetAll() resets it
+
+Notebooks (spot-check day-01, a middle day, day-[NN]):
+- [ ] nbformat: 4, nbformat_minor: 5
+- [ ] metadata.language_info.name = "python"
+- [ ] All cell ids are 8-char hex and unique within the file
+- [ ] All code cells have "outputs": [] and "execution_count": null
+- [ ] Colab badge URL contains 'certified-journeys/certified-journeys.github.io'
+- [ ] Colab badge URL path contains 'courses/[COURSE_ID]/notebooks/'
+
+Notes:
+- [ ] Each notes file has the 3-section template (Notes, Key takeaways, Questions)
+```
+
+### Post-manager verification checklist
+
+Open `courses/[COURSE_ID]/index.html` in a browser:
+
+- [ ] DevTools console — zero JS errors on load
+- [ ] Tick all tasks on Day 1 → day auto-completes
+- [ ] Reset all → tasksDone clears
+- [ ] Click a topic pill on a day card → jumps to Topics tab
+- [ ] Click a Day button in Topics tab → jumps to Daily Plan, scrolls to that day
+- [ ] Click "☁ Connect GitHub" → modal opens with correct COURSE_ID in the `<p>` tag
+- [ ] Dark mode (OS-level) → no broken colors
+- [ ] Open a notebook in VS Code/JupyterLab → loads without "error loading this notebook"
+- [ ] Click the Colab badge in a notebook → URL is correct
+
+---
+
+*certified-journeys prompt v7 · two course types · notes/day-NN.md link in every day card · topic ↔ day navigation · per-task tick checkboxes + auto-complete progress bar · GitHub repo sync via PAT · chunked output · day-card depth table · AI_DEEP_DIVE_TOPICS · EXAM_CHECKLIST · URL verification · capstone registry · multi-agent generation*
