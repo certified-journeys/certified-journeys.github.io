@@ -8,78 +8,22 @@
     "on_validation_failure": "stop"
   },
   "current_course": "pandera-certified",
-  "current_phase": "pending",
-  "last_updated": "2026-06-11T02:00:00.000000+00:00",
+  "current_phase": "generating",
+  "last_updated": "2026-06-11T02:10:00.000000+00:00",
   "schedule_id": null,
   "courses": {
-    "mlflow-certified": {
-      "status": "done",
-      "started_at": "2026-06-07T02:30:58.339125Z",
-      "designed_at": "2026-06-07T02:33:25.323586+00:00",
-      "generated_at": "2026-06-07T03:40:00.000000+00:00",
-      "completed_at": "2026-06-07T03:45:00.000000+00:00",
-      "error": null
-    },
-    "prefect-certified": {
-      "status": "done",
-      "started_at": "2026-06-07T04:00:00.000000+00:00",
-      "designed_at": "2026-06-07T04:20:00.000000+00:00",
-      "generated_at": "2026-06-07T13:30:00.000000+00:00",
-      "completed_at": "2026-06-07T13:45:00.000000+00:00",
-      "error": null
-    },
-    "duckdb-certified": {
-      "status": "done",
-      "started_at": "2026-06-07T13:46:00.000000+00:00",
-      "designed_at": "2026-06-07T13:55:00.000000+00:00",
-      "generated_at": "2026-06-07T18:10:00.000000+00:00",
-      "completed_at": "2026-06-07T18:15:00.000000+00:00",
-      "error": null
-    },
-    "fastapi-certified": {
-      "status": "done",
-      "started_at": "2026-06-07T18:15:00.000000+00:00",
-      "designed_at": "2026-06-07T18:20:00.000000+00:00",
-      "generated_at": "2026-06-07T19:00:00.000000+00:00",
-      "completed_at": "2026-06-07T19:05:00.000000+00:00",
-      "error": null
-    },
-    "kestra-certified": {
-      "status": "done",
-      "started_at": "2026-06-10T14:00:00.000000Z",
-      "designed_at": "2026-06-07T14:00:00.000000Z",
-      "generated_at": "2026-06-10T14:30:00.000000Z",
-      "completed_at": "2026-06-10T14:35:00.000000Z",
-      "error": null
-    },
-    "pydantic-certified": {
-      "status": "done",
-      "started_at": "2026-06-10T14:35:00.000000Z",
-      "designed_at": "2026-06-10T14:40:00.000000Z",
-      "generated_at": "2026-06-10T15:10:00.000000Z",
-      "completed_at": "2026-06-10T15:15:00.000000Z",
-      "error": null
-    },
-    "ray-certified": {
-      "status": "done",
-      "started_at": "2026-06-10T15:15:00.000000Z",
-      "designed_at": "2026-06-10T15:20:00.000000Z",
-      "generated_at": "2026-06-10T23:50:00.000000Z",
-      "completed_at": "2026-06-11T00:00:00.000000Z",
-      "error": null
-    },
-    "sodacore-certified": {
-      "status": "done",
-      "started_at": "2026-06-11T00:05:00.000000Z",
-      "designed_at": "2026-06-11T00:08:00.000000Z",
-      "generated_at": "2026-06-11T01:55:00.000000Z",
-      "completed_at": "2026-06-11T02:00:00.000000Z",
-      "error": null
-    },
+    "mlflow-certified": {"status": "done", "started_at": "2026-06-07T02:30:58.339125Z", "designed_at": "2026-06-07T02:33:25.323586+00:00", "generated_at": "2026-06-07T03:40:00.000000+00:00", "completed_at": "2026-06-07T03:45:00.000000+00:00", "error": null},
+    "prefect-certified": {"status": "done", "started_at": "2026-06-07T04:00:00.000000+00:00", "designed_at": "2026-06-07T04:20:00.000000+00:00", "generated_at": "2026-06-07T13:30:00.000000+00:00", "completed_at": "2026-06-07T13:45:00.000000+00:00", "error": null},
+    "duckdb-certified": {"status": "done", "started_at": "2026-06-07T13:46:00.000000+00:00", "designed_at": "2026-06-07T13:55:00.000000+00:00", "generated_at": "2026-06-07T18:10:00.000000+00:00", "completed_at": "2026-06-07T18:15:00.000000+00:00", "error": null},
+    "fastapi-certified": {"status": "done", "started_at": "2026-06-07T18:15:00.000000+00:00", "designed_at": "2026-06-07T18:20:00.000000+00:00", "generated_at": "2026-06-07T19:00:00.000000+00:00", "completed_at": "2026-06-07T19:05:00.000000+00:00", "error": null},
+    "kestra-certified": {"status": "done", "started_at": "2026-06-10T14:00:00.000000Z", "designed_at": "2026-06-07T14:00:00.000000Z", "generated_at": "2026-06-10T14:30:00.000000Z", "completed_at": "2026-06-10T14:35:00.000000Z", "error": null},
+    "pydantic-certified": {"status": "done", "started_at": "2026-06-10T14:35:00.000000Z", "designed_at": "2026-06-10T14:40:00.000000Z", "generated_at": "2026-06-10T15:10:00.000000Z", "completed_at": "2026-06-10T15:15:00.000000Z", "error": null},
+    "ray-certified": {"status": "done", "started_at": "2026-06-10T15:15:00.000000Z", "designed_at": "2026-06-10T15:20:00.000000Z", "generated_at": "2026-06-10T23:50:00.000000Z", "completed_at": "2026-06-11T00:00:00.000000Z", "error": null},
+    "sodacore-certified": {"status": "done", "started_at": "2026-06-11T00:05:00.000000Z", "designed_at": "2026-06-11T00:08:00.000000Z", "generated_at": "2026-06-11T01:55:00.000000Z", "completed_at": "2026-06-11T02:00:00.000000Z", "error": null},
     "pandera-certified": {
-      "status": "pending",
-      "started_at": null,
-      "designed_at": null,
+      "status": "generating",
+      "started_at": "2026-06-11T02:05:00.000000Z",
+      "designed_at": "2026-06-11T02:08:00.000000Z",
       "generated_at": null,
       "completed_at": null,
       "error": null
