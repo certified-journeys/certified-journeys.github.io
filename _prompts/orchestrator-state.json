@@ -7,8 +7,8 @@
     "auto_commit": true,
     "on_validation_failure": "stop"
   },
-  "current_course": "altair-certified",
-  "current_phase": "pending",
+  "current_course": null,
+  "current_phase": "idle",
   "last_updated": "2026-06-12T00:00:00.000000+00:00",
   "schedule_id": null,
   "courses": {
@@ -21,13 +21,6 @@
     "ray-certified": {"status": "done", "started_at": "2026-06-10T15:15:00.000000Z", "designed_at": "2026-06-10T15:20:00.000000Z", "generated_at": "2026-06-10T23:50:00.000000Z", "completed_at": "2026-06-11T00:00:00.000000Z", "error": null},
     "sodacore-certified": {"status": "done", "started_at": "2026-06-11T00:05:00.000000Z", "designed_at": "2026-06-11T00:08:00.000000Z", "generated_at": "2026-06-11T01:55:00.000000Z", "completed_at": "2026-06-11T02:00:00.000000Z", "error": null},
     "pandera-certified": {"status": "done", "started_at": "2026-06-11T02:05:00.000000Z", "designed_at": "2026-06-11T02:08:00.000000Z", "generated_at": "2026-06-11T03:30:00.000000Z", "completed_at": "2026-06-11T03:35:00.000000Z", "error": null},
-    "altair-certified": {
-      "status": "pending",
-      "started_at": null,
-      "designed_at": null,
-      "generated_at": null,
-      "completed_at": null,
-      "error": null
-    }
+    "altair-certified": {"status": "done", "started_at": "2026-06-12T00:00:00.000000Z", "designed_at": "2026-06-12T00:00:00.000000Z", "generated_at": "2026-06-12T00:30:00.000000Z", "completed_at": "2026-06-12T00:35:00.000000Z", "error": null}
   }
 }

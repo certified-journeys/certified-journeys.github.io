@@ -16,3 +16,4 @@ No two courses may share the same capstone artifact.
 | ray-certified     | Distributed ML pipeline: Data → Train → Tune → Serve |
 | prefect-certified | Production ETL pipeline with scheduling, retries, and notifications |
 | mlflow-certified  | Full MLOps pipeline: Train → Track → Register → Serve |
+| altair-certified  | Fully interactive multi-panel EDA dashboard with linked brushing and cross-filtering across scatter, histogram, and bar panels, built from the gapminder Vega dataset |

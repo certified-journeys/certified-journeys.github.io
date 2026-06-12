@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vega-Altair for Data Visualization · certified-journeys</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#4F86C6; --green-light:#EBF3FB; --green-dark:#2D5F8A;
+  --blue:#378ADD; --blue-light:#EAF3FD; --blue-dark:#185FA5;
+  --amber:#BA7517; --amber-light:#FDF3E3;
+  --coral:#D85A30; --coral-light:#FAEDE8; --coral-dark:#993C1D;
+  --purple:#7F77DD; --purple-light:#EEEDFE;
+  --orange:#E8890C; --orange-light:#FEF3E2;
+  --teal:#0891B2; --teal-light:#E0F5FA;
+  --bg:#F5F4F0; --surface:#FFFFFF; --surface2:#EEECE5; --surface3:#E8E6DF;
+  --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.16);
+  --text:#18181A; --text2:#52524E; --text3:#8C8B85;
+  --radius:14px; --radius-sm:9px; --radius-xs:5px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.06);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#0A1A2E;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}}
+[data-theme="dark"]{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#0A1A2E;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}
+/* Nav */
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);border-bottom:0.5px solid var(--border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav{background:rgba(26,26,26,0.85);}}
+[data-theme="dark"] nav{background:rgba(26,26,26,0.85);}
+.nav-inner{max-width:860px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-0.025em;color:var(--text);text-decoration:none;}
+.nav-brand:hover{text-decoration:none;opacity:0.85;}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-gh-icon{width:34px;height:34px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;justify-content:center;transition:all 0.15s;text-decoration:none;flex-shrink:0;}
+.nav-gh-icon:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.theme-btn{width:34px;height:34px;border-radius:99px;flex-shrink:0;border:0.5px solid var(--border2);background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;}
+.theme-btn:hover{background:var(--surface2);color:var(--text);}
+/* Action row */
+.nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
+.nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
+.nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
+/* Linked resources & tasks */
+a.res-pill{text-decoration:none;cursor:pointer;}
+a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:var(--text);}
+.task-link{color:var(--blue-dark);font-size:11px;margin-left:6px;flex-shrink:0;opacity:0.7;line-height:1.5;}
+.task-link:hover{opacity:1;text-decoration:none;}
+/* Task tick checkboxes */
+.task-tick{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px;background:none;padding:0;}
+.task-tick:hover{border-color:var(--green);}
+.task-tick.ticked{background:var(--green);border-color:var(--green);}
+.task-tick.ticked::after{content:"✓";font-size:10px;color:#fff;font-weight:700;line-height:1;}
+.task.task-done>span{text-decoration:line-through;color:var(--text3);}
+/* Per-day task progress bar */
+.task-progress{height:3px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
+.task-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;}
+/* Score/hours/complete */
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.score-row label{font-size:12px;color:var(--text2);}
+.score-row input{width:72px;font-size:13px;padding:5px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.hours-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text2);}
+.hours-row input{width:60px;font-size:13px;padding:4px 8px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.complete-btn{width:100%;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s;font-weight:400;}
+.complete-btn:hover{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+.complete-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);font-weight:500;}
+/* AI cards */
+.ai-prompt-box{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:10px;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;line-height:1.7;white-space:pre-wrap;}
+.ai-link-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-family:inherit;text-decoration:none;}
+.ai-link-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+/* GitHub sync modal */
+.gh-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;}
+.gh-modal.open{display:flex;}
+.gh-modal-box{background:var(--surface);border-radius:var(--radius);padding:1.5rem;max-width:440px;width:90%;box-shadow:var(--shadow-md);}
+.gh-modal-box h3{font-size:17px;font-weight:600;margin-bottom:6px;}
+.gh-modal-sub{font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.6;}
+.gh-field{margin-bottom:10px;}
+.gh-field label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.gh-field input{width:100%;font-size:13px;padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Mono',monospace;}
+.gh-field input:focus{outline:none;border-color:var(--green);}
+.gh-modal-actions{display:flex;gap:8px;align-items:center;margin-top:1rem;flex-wrap:wrap;}
+.gh-btn-save{font-size:13px;padding:8px 18px;border-radius:var(--radius-sm);background:var(--green);color:#fff;border:none;font-family:inherit;font-weight:500;cursor:pointer;}
+.gh-btn-save:hover{background:var(--green-dark);}
+.gh-btn-cancel{font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--text2);border:.5px solid var(--border2);font-family:inherit;cursor:pointer;}
+.gh-btn-cancel:hover{background:var(--surface2);}
+.gh-btn-disconnect{font-size:12px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--coral-dark);border:.5px solid var(--coral);font-family:inherit;cursor:pointer;}
+.gh-modal-msg{font-size:12px;color:var(--text2);}
+/* Sync badge */
+.sync-badge{font-size:12px;padding:5px 12px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s;}
+.sync-badge:hover{background:var(--surface2);color:var(--text);}
+.sync-badge.connected{color:var(--green-dark);border-color:var(--green);}
+.sync-badge.syncing{color:var(--amber);border-color:var(--amber);}
+.sync-badge.error{color:var(--coral-dark);border-color:var(--coral);}
+/* Layout */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1rem;}
+a{color:var(--green-dark);text-decoration:none;}
+a:hover{text-decoration:underline;}
+.app{max-width:780px;margin:0 auto;}
+.breadcrumb{font-size:13px;color:var(--text3);margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
+.breadcrumb a{color:var(--text3);}
+.breadcrumb a:hover{color:var(--text);}
+.breadcrumb-sep{opacity:.4;}
+/* Hero */
+.course-hero{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:0 0 1.25rem;box-shadow:var(--shadow);}
+.course-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.course-icon-wrap{width:52px;height:52px;border-radius:12px;background:var(--green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.course-icon{font-size:15px;font-weight:700;color:var(--green-dark);font-family:'DM Mono',monospace;letter-spacing:-.5px;}
+.course-title-block{flex:1;}
+.course-title-block h1{font-size:20px;font-weight:700;line-height:1.2;margin-bottom:6px;}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;}
+.tag{font-size:11px;padding:2px 9px;border-radius:99px;background:var(--green-light);color:var(--green-dark);font-weight:500;}
+.hero-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.meta-item{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;}
+.meta-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.meta-val{font-size:14px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;}
+/* Progress strip */
+.prog-strip{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1.25rem;box-shadow:var(--shadow);}
+.prog-strip-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prog-label{font-size:13px;font-weight:500;}
+.prog-pct{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;color:var(--green);}
+.bar-bg{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:10px;}
+.bar-fill{height:100%;background:var(--green);border-radius:99px;transition:width .4s;}
+.readiness{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;background:var(--surface2);color:var(--text3);margin-bottom:10px;}
+.readiness.early{background:var(--amber-light);color:var(--amber);}
+.readiness.close{background:var(--orange-light);color:var(--orange);}
+.readiness.ready{background:var(--green-light);color:var(--green-dark);}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.stat{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.stat-val{font-size:18px;font-weight:700;font-family:'DM Mono',monospace;}
+.stat-val.ok{color:var(--green-dark);}
+.stat-val.warn{color:var(--amber);}
+.stat-val.danger{color:var(--coral);}
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;}
+.tab{font-size:13px;padding:7px 14px;border-radius:var(--radius-sm);border:.5px solid var(--border);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .15s;}
+.tab:hover{background:var(--surface2);}
+.tab.active{background:var(--surface);border-color:var(--border2);color:var(--text);font-weight:500;box-shadow:var(--shadow);}
+.panel{display:none;}
+.panel.active{display:block;}
+/* Day cards */
+.day-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:8px;box-shadow:var(--shadow);overflow:hidden;}
+.day-card.completed{border-color:var(--green);background:var(--green-light);}
+.day-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
+.day-header:hover{background:var(--surface2);}
+.day-card.completed .day-header:hover{background:transparent;}
+.day-num{font-size:12px;font-weight:700;font-family:'DM Mono',monospace;color:var(--text3);width:34px;flex-shrink:0;}
+.day-meta{flex:1;min-width:0;}
+.day-title{font-size:14px;font-weight:600;line-height:1.3;}
+.day-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.day-badge{font-size:10px;padding:2px 9px;border-radius:99px;font-weight:600;flex-shrink:0;}
+.badge-learn{background:var(--blue-light);color:var(--blue-dark);}
+.badge-practice{background:var(--orange-light);color:var(--orange);}
+.badge-review{background:var(--purple-light);color:var(--purple);}
+.badge-exam{background:var(--coral-light);color:var(--coral-dark);}
+.chevron{font-size:12px;color:var(--text3);transition:transform .2s;flex-shrink:0;}
+.day-card.open .chevron{transform:rotate(180deg);}
+.day-body{padding:0 16px 16px;display:none;}
+.day-card.open .day-body{display:block;}
+.tip-box{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px;font-size:12px;color:var(--text2);line-height:1.6;}
+.task-list{margin-bottom:10px;}
+.task{display:flex;align-items:flex-start;gap:8px;padding:5px 0;font-size:13px;line-height:1.5;}
+.resources-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.res-pill{font-size:11px;padding:4px 10px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:var(--surface2);display:inline-flex;align-items:center;gap:4px;transition:all .15s;}
+.score-badge{font-size:11px;padding:2px 9px;border-radius:99px;font-weight:600;}
+/* Topics */
+.topic-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.topic-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;box-shadow:var(--shadow);}
+.topic-card h4{font-size:14px;font-weight:600;margin-bottom:8px;}
+.t-bar-bg{height:5px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:6px;}
+.t-bar-fill{height:100%;border-radius:99px;transition:width .4s;}
+.t-pct{font-size:11px;color:var(--text3);margin-bottom:8px;}
+.topic-days{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.topic-day-btn{font-size:11px;padding:2px 8px;border-radius:99px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
+.topic-day-btn:hover{background:var(--surface3);color:var(--text);}
+.topic-day-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+/* Topic pills on day cards */
+.day-topic-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.day-topic-pill{font-size:10px;padding:2px 9px;border-radius:99px;border:.5px solid;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.day-topic-pill:hover{opacity:.7;}
+/* AI cards */
+.ai-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:12px;box-shadow:var(--shadow);}
+.ai-card-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+.ai-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ai-card-title{font-size:14px;font-weight:600;line-height:1.3;}
+.ai-card-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.ai-card-body{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:4px;}
+/* Exam */
+.exam-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;}
+.exam-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;box-shadow:var(--shadow);}
+.exam-card-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.exam-card-val{font-size:20px;font-weight:700;font-family:'DM Mono',monospace;color:var(--text);}
+.exam-card-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+/* Resources */
+.res-section{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:12px;box-shadow:var(--shadow);}
+.res-section-title{font-size:13px;font-weight:600;margin-bottom:10px;}
+.res-link-list{display:flex;flex-direction:column;gap:8px;}
+.res-link-item{display:flex;align-items:flex-start;gap:10px;}
+.res-link-index{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);min-width:22px;padding-top:2px;}
+.res-link-body{flex:1;}
+.res-link-body a{font-size:13px;font-weight:500;color:var(--green-dark);}
+.res-link-body a:hover{text-decoration:underline;}
+.res-link-desc{font-size:11px;color:var(--text3);margin-top:2px;}
+/* Shared */
+.info-box{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px;}
+/* Footer */
+.page-footer{text-align:center;font-size:12px;color:var(--text3);padding:2rem 0 1rem;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.page-footer a{color:var(--text3);}
+.page-footer a:hover{color:var(--text);}
+/* Responsive */
+@media(max-width:640px){
+  .topic-grid{grid-template-columns:1fr;}
+  .hero-meta{grid-template-columns:repeat(2,1fr);}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .exam-grid{grid-template-columns:1fr;}
+}
+</style>
+<script>(function(){const t=localStorage.getItem('cj-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="../../index.html">
+      <div class="brand-mark">CJ</div>
+      certified-journeys
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" id="theme-btn" aria-label="Switch to dark mode" onclick="toggleTheme()"></button>
+      <a class="nav-gh-icon" href="https://github.com/certified-journeys" target="_blank" aria-label="GitHub">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
+<div class="app">
+
+  <div class="breadcrumb">
+    <a href="../../index.html">certified-journeys</a>
+    <span class="breadcrumb-sep">›</span>
+    <span>Vega-Altair for Data Visualization</span>
+  </div>
+
+  <div class="course-hero">
+    <div class="course-hero-top">
+      <div class="course-icon-wrap">
+        <span class="course-icon">AL</span>
+      </div>
+      <div class="course-title-block">
+        <h1>Vega-Altair for Data Visualization</h1>
+        <div class="tag-row">
+          <span class="tag">Visualization</span>
+          <span class="tag">Python</span>
+          <span class="tag">Data Science</span>
+          <span class="tag">Vega-Lite</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val">Free</div></div>
+      <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">10 days</div></div>
+      <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val">Self-paced</div></div>
+      <div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-val">Intermediate</div></div>
+    </div>
+  </div>
+
+  <div class="prog-strip">
+    <div class="prog-strip-top">
+      <span class="prog-label">Overall Progress</span>
+      <span class="prog-pct" id="prog-pct">0%</span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+    <div class="readiness" id="readiness">🌱 Just getting started</div>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-label">Days Done</div><div class="stat-val" id="stat-days">0/10</div></div>
+      <div class="stat"><div class="stat-label">Avg Score</div><div class="stat-val" id="stat-score">—</div></div>
+      <div class="stat"><div class="stat-label">Hours Logged</div><div class="stat-val" id="stat-hours">0</div></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showPanel('schedule',this)">📅 Daily Plan</button>
+    <button class="tab" onclick="showPanel('topics',this)">📚 Topics</button>
+    <button class="tab" onclick="showPanel('ai',this)">🤖 AI Tools</button>
+    <button class="tab" onclick="showPanel('resources',this)">🔗 Resources</button>
+    <button class="tab" onclick="showPanel('exam',this)">🎓 Exam Prep</button>
+  </div>
+
+  <div id="panel-schedule"  class="panel active"></div>
+  <div id="panel-topics"    class="panel"></div>
+  <div id="panel-ai"        class="panel"></div>
+  <div id="panel-resources" class="panel"></div>
+  <div id="panel-exam"      class="panel"></div>
+
+  <div class="page-footer">
+    <button class="sync-badge" id="sync-badge" onclick="openGHModal()">☁ Connect GitHub</button>
+    · <span id="sk-display">cj_altair-certified_v1</span> · <a href="../../index.html">← All journeys</a>
+  </div>
+
+</div>
+
+<!-- GitHub sync modal -->
+<div class="gh-modal" id="gh-modal" onclick="if(event.target===this)closeGHModal()">
+  <div class="gh-modal-box">
+    <h3>☁ GitHub Sync</h3>
+    <p class="gh-modal-sub">Progress is committed to <code>courses/altair-certified/progress.json</code>
+    in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
+    <div class="gh-field"><label>Personal Access Token</label><input id="gh-pat" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+    <div class="gh-field"><label>Owner</label><input id="gh-owner" type="text" placeholder="your-username"></div>
+    <div class="gh-field"><label>Repository</label><input id="gh-repo" type="text" placeholder="certified-journeys.github.io"></div>
+    <div class="gh-field"><label>Branch</label><input id="gh-branch" type="text" placeholder="main"></div>
+    <div class="gh-modal-actions">
+      <button class="gh-btn-save" onclick="saveGHCreds()">Test &amp; Save</button>
+      <button class="gh-btn-cancel" onclick="closeGHModal()">Cancel</button>
+      <button class="gh-btn-disconnect" id="gh-disconnect-btn" style="display:none" onclick="disconnectGH()">Disconnect</button>
+      <span class="gh-modal-msg" id="gh-modal-msg"></span>
+    </div>
+  </div>
+</div>
+
+<script src="../../github-sync.js"></script>
+<script>
+if (typeof GHSync === 'undefined') {
+  window.GHSync = {
+    isConnected: () => false, saveCreds: () => {}, getCreds: () => null,
+    connect: async () => ({ok:false,msg:''}), fetchState: async () => null,
+    pushState: async () => false, saveDebounced: () => {},
+    testConnection: async () => ({ok:false,msg:''}),
+    exportConfig: () => '', importConfig: () => null, getLastSynced: () => null
+  };
+}
+
+const COURSE_ID   = 'altair-certified';
+const STORAGE_KEY = 'cj_altair-certified_v1';
+const TOTAL_DAYS  = 10;
+
+const NOTEBOOKS = [
+  'day-01-altair-foundations',
+  'day-02-data-shapes',
+  'day-03-marks-deep-dive',
+  'day-04-encodings-scales',
+  'day-05-transforms',
+  'day-06-compound-charts',
+  'day-07-interactivity',
+  'day-08-customization',
+  'day-09-geographic-viz',
+  'day-10-capstone-dashboard'
+];
+
+const days = [
+  {
+    title: 'Altair Foundations',
+    badge: 'learn',
+    sub: 'Day 1 · Foundations',
+    tasks: [
+      {text: 'Install Altair and vega-datasets', url: 'https://altair-viz.github.io/getting_started/installation.html'},
+      {text: 'Create your first Chart with mark_point and a Vega sample dataset', url: 'https://altair-viz.github.io/getting_started/starting.html'},
+      'Add x/y encodings using shorthand syntax (field:Q)',
+      'Add a color encoding to distinguish categories',
+      'Set chart title and adjust width/height with .properties()',
+      'Save a chart to HTML with chart.save() and open in browser'
+    ],
+    resources: [
+      {text: 'Altair Getting Started', url: 'https://altair-viz.github.io/getting_started/overview.html'},
+      {text: 'Altair User Guide', url: 'https://altair-viz.github.io/user_guide/data.html'},
+      {text: 'vega-datasets on GitHub', url: 'https://github.com/altair-viz/vega_datasets'}
+    ],
+    tip: 'The grammar is declarative — you describe what you want, not how to draw it. Think of mark_* as chart type and encode() as the mapping from data columns to visual channels.',
+    hasScore: false
+  },
+  {
+    title: 'Data Shapes & Sources',
+    badge: 'learn',
+    sub: 'Day 2 · Foundations',
+    tasks: [
+      {text: 'Load a Vega sample dataset (cars, movies, gapminder) and inspect its shape', url: 'https://github.com/altair-viz/vega_datasets'},
+      {text: 'Understand long-form vs wide-form data and why Altair prefers tidy data', url: 'https://altair-viz.github.io/user_guide/data.html#long-form-vs-wide-form-data'},
+      'Reshape wide→long with pandas melt and verify the chart renders correctly',
+      'Use the fold transform to reshape inside Vega-Lite (no pandas needed)',
+      'Load data from a URL directly in a Chart (no Python data wrangling)',
+      'Handle missing values and data type coercions before plotting'
+    ],
+    resources: [
+      {text: 'Altair Data Guide', url: 'https://altair-viz.github.io/user_guide/data.html'},
+      {text: 'Long-form vs Wide-form', url: 'https://altair-viz.github.io/user_guide/data.html#long-form-vs-wide-form-data'},
+      {text: 'Vega-Datasets available datasets', url: 'https://github.com/altair-viz/vega_datasets'}
+    ],
+    tip: 'Altair works best with tidy (long-form) data — one row per observation, one column per variable. Reshape with melt before plotting if your data is wide.',
+    hasScore: false
+  },
+  {
+    title: 'Marks Deep Dive',
+    badge: 'practice',
+    sub: 'Day 3 · Marks & Encodings',
+    tasks: [
+      {text: 'Build a mark_point scatter plot with jitter', url: 'https://altair-viz.github.io/user_guide/marks/point.html'},
+      {text: 'Build a mark_line time series chart with multiple series', url: 'https://altair-viz.github.io/user_guide/marks/line.html'},
+      {text: 'Build a mark_bar grouped bar chart and a stacked bar chart', url: 'https://altair-viz.github.io/user_guide/marks/bar.html'},
+      {text: 'Build a mark_area chart with opacity for overlap', url: 'https://altair-viz.github.io/user_guide/marks/area.html'},
+      {text: 'Build a mark_rect heatmap from aggregated data', url: 'https://altair-viz.github.io/user_guide/marks/rect.html'},
+      {text: 'Build a mark_arc pie and donut chart', url: 'https://altair-viz.github.io/user_guide/marks/arc.html'},
+      {text: 'Add mark_text labels to a bar chart', url: 'https://altair-viz.github.io/user_guide/marks/text.html'},
+      'Add a mark_rule reference line at a mean value'
+    ],
+    resources: [
+      {text: 'Altair Marks Reference', url: 'https://altair-viz.github.io/user_guide/marks/index.html'},
+      {text: 'Altair Gallery', url: 'https://altair-viz.github.io/gallery/index.html'},
+      {text: 'mark_arc docs', url: 'https://altair-viz.github.io/user_guide/marks/arc.html'}
+    ],
+    tip: 'Every mark_* accepts size, color, opacity as direct kwargs for static (non-encoded) visual properties — e.g., mark_point(size=100, opacity=0.6). Use encode() only for data-driven channels.',
+    hasScore: true
+  },
+  {
+    title: 'Encodings & Scales',
+    badge: 'practice',
+    sub: 'Day 4 · Marks & Encodings',
+    tasks: [
+      {text: 'Compare :Q vs :O vs :N vs :T types on the same field and observe axis/legend differences', url: 'https://altair-viz.github.io/user_guide/encodings/index.html'},
+      'Use shorthand "field:Q" and longhand alt.X("field", type="quantitative", title="Label")',
+      'Override axis titles, number formats (format=".2f"), and date formats',
+      {text: 'Apply a named color scheme with alt.Scale(scheme="viridis")', url: 'https://vega.github.io/vega/docs/schemes/'},
+      'Use stack encoding for 100% stacked bars',
+      'Use sort encoding to order bars by value (sort="-y")',
+      'Clamp a scale with alt.Scale(domain=[0, 100])'
+    ],
+    resources: [
+      {text: 'Encoding Channels Reference', url: 'https://altair-viz.github.io/user_guide/encodings/index.html'},
+      {text: 'Vega Color Schemes', url: 'https://vega.github.io/vega/docs/schemes/'},
+      {text: 'Axis configuration', url: 'https://altair-viz.github.io/user_guide/configuration.html#axis-config'}
+    ],
+    tip: 'Use :O for small integer ranges you want treated as discrete — it changes axis ticks, legend type, and default sort behavior compared to :Q.',
+    hasScore: true
+  },
+  {
+    title: 'Transforms',
+    badge: 'practice',
+    sub: 'Day 5 · Transforms',
+    tasks: [
+      {text: 'Use transform_filter with alt.datum to filter rows', url: 'https://altair-viz.github.io/user_guide/transform/filter.html'},
+      {text: 'Use transform_calculate to create derived fields (e.g., log-transform)', url: 'https://altair-viz.github.io/user_guide/transform/calculate.html'},
+      {text: 'Use transform_aggregate to compute group means and counts', url: 'https://altair-viz.github.io/user_guide/transform/aggregate.html'},
+      {text: 'Use transform_bin to build a histogram without pre-binning in pandas', url: 'https://altair-viz.github.io/user_guide/transform/bin.html'},
+      {text: 'Use transform_window with a frame to compute rolling averages', url: 'https://altair-viz.github.io/user_guide/transform/window.html'},
+      {text: 'Use transform_fold to pivot wide columns to long form inside Vega-Lite', url: 'https://altair-viz.github.io/user_guide/transform/fold.html'}
+    ],
+    resources: [
+      {text: 'Altair Transforms Reference', url: 'https://altair-viz.github.io/user_guide/transform/index.html'},
+      {text: 'transform_window docs', url: 'https://altair-viz.github.io/user_guide/transform/window.html'},
+      {text: 'Vega-Lite transform spec', url: 'https://vega.github.io/vega-lite/docs/transform.html'}
+    ],
+    tip: 'Prefer Vega-Lite transforms when your data comes from a URL — they run in the browser without Python. Use pandas transforms when you need complex logic or when data is already in-memory.',
+    hasScore: true
+  },
+  {
+    title: 'Compound Charts',
+    badge: 'practice',
+    sub: 'Day 6 · Compound Charts',
+    tasks: [
+      {text: 'Layer two marks with + operator (e.g., bar + line trend overlay)', url: 'https://altair-viz.github.io/user_guide/compound_charts.html'},
+      'Use resolve_scale to give layers independent y-axes',
+      {text: 'Concatenate charts horizontally with | and vertically with &', url: 'https://altair-viz.github.io/user_guide/compound_charts.html#hconcat-and-vconcat'},
+      {text: 'Build a 2x2 grid of small multiples with facet', url: 'https://altair-viz.github.io/user_guide/compound_charts.html#faceted-charts'},
+      {text: 'Use repeat for a matrix/SPLOM chart', url: 'https://altair-viz.github.io/user_guide/compound_charts.html#repeated-charts'},
+      'Set shared vs independent axes across facets'
+    ],
+    resources: [
+      {text: 'Compound Charts Guide', url: 'https://altair-viz.github.io/user_guide/compound_charts.html'},
+      {text: 'Facet docs', url: 'https://altair-viz.github.io/user_guide/compound_charts.html#faceted-charts'},
+      {text: 'Vega-Lite concat spec', url: 'https://vega.github.io/vega-lite/docs/concat.html'}
+    ],
+    tip: '+ is layering (same coordinate space, same axes), | and & are concatenation (separate panels with separate axes). Choose layering when marks share a meaningful axis; concatenation when they are independent views.',
+    hasScore: true
+  },
+  {
+    title: 'Interactivity',
+    badge: 'practice',
+    sub: 'Day 7 · Interactivity',
+    tasks: [
+      {text: 'Add selection_point for click-to-filter on a scatter plot', url: 'https://altair-viz.github.io/user_guide/interactions.html'},
+      {text: 'Add selection_interval for a brush rectangle selection', url: 'https://altair-viz.github.io/user_guide/interactions.html'},
+      'Use transform_filter(selection) to filter a second chart by the brush',
+      'Bind a selection to the legend for legend-click filtering',
+      'Add a dropdown filter with bind_select and encodings that respond to it',
+      'Use conditional encoding to highlight selected points and grey out the rest',
+      'Build a two-panel linked brushing dashboard: brush on scatter updates a bar chart'
+    ],
+    resources: [
+      {text: 'Altair Interactions Guide', url: 'https://altair-viz.github.io/user_guide/interactions.html'},
+      {text: 'Interactive Charts Gallery', url: 'https://altair-viz.github.io/gallery/index.html#interactive-charts'},
+      {text: 'Vega-Lite Selection spec', url: 'https://vega.github.io/vega-lite/docs/selection.html'}
+    ],
+    tip: 'Selections become filters via transform_filter(selection) — always chain it after the selection definition. The selection object is a predicate, not a dataframe slice.',
+    hasScore: true
+  },
+  {
+    title: 'Customization & Themes',
+    badge: 'review',
+    sub: 'Day 8 · Customization & Geo',
+    tasks: [
+      {text: 'Apply built-in themes: fivethirtyeight, ggplot2, dark, latimes', url: 'https://altair-viz.github.io/user_guide/configuration.html'},
+      'Configure axis label font size, angle, and grid lines with configure_axis()',
+      'Move the legend position with configure_legend()',
+      'Set responsive width with width="container" and fixed height',
+      'Build a custom reusable theme function with alt.theme.register()',
+      {text: 'Export a chart to PNG with altair-saver', url: 'https://github.com/altair-viz/altair_saver'}
+    ],
+    resources: [
+      {text: 'Altair Configuration Guide', url: 'https://altair-viz.github.io/user_guide/configuration.html'},
+      {text: 'altair-saver on GitHub', url: 'https://github.com/altair-viz/altair_saver'},
+      {text: 'Vega Themes', url: 'https://github.com/vega/vega-themes'}
+    ],
+    tip: 'Set width="container" to make charts fill their parent element in Jupyter or HTML pages. Combine with chart.properties(height=300) for a fixed-height responsive chart.',
+    hasScore: true
+  },
+  {
+    title: 'Geographic Visualization',
+    badge: 'practice',
+    sub: 'Day 9 · Customization & Geo',
+    tasks: [
+      {text: 'Load world TopoJSON from vega-datasets and render a base map with mark_geoshape', url: 'https://altair-viz.github.io/gallery/index.html#maps'},
+      {text: 'Join population or GDP data to map features with transform_lookup', url: 'https://altair-viz.github.io/user_guide/transform/lookup.html'},
+      'Color-fill countries by a numeric field to create a choropleth',
+      'Add country-name labels with a layered mark_text',
+      'Apply a map projection with alt.Projection(type="naturalEarth1")',
+      'Layer point marks (cities) on top of the choropleth'
+    ],
+    resources: [
+      {text: 'Altair Maps Gallery', url: 'https://altair-viz.github.io/gallery/index.html#maps'},
+      {text: 'transform_lookup docs', url: 'https://altair-viz.github.io/user_guide/transform/lookup.html'},
+      {text: 'TopoJSON on GitHub', url: 'https://github.com/topojson/topojson'}
+    ],
+    tip: 'Always use transform_lookup to join your data to the GeoJSON features — the TopoJSON topology by itself has no values, only geometry. Match on the feature id or name property.',
+    hasScore: true
+  },
+  {
+    title: 'Capstone — Interactive EDA Dashboard',
+    badge: 'exam',
+    sub: 'Day 10 · Capstone',
+    tasks: [
+      {text: 'Choose the gapminder or movies dataset from vega-datasets as your data source', url: 'https://github.com/altair-viz/vega_datasets'},
+      {text: 'Build Panel 1: scatter plot (x=GDP/year, y=life expectancy/rating) with interval brush selection', url: 'https://altair-viz.github.io/user_guide/interactions.html'},
+      'Build Panel 2: histogram that updates count/distribution based on Panel 1 brush',
+      'Build Panel 3: grouped bar chart with dropdown country/genre filter',
+      'Layer a linear regression trend line over the scatter panel',
+      'Add a choropleth map panel colored by a summary statistic',
+      'Wire all panels with shared selections using transform_filter',
+      'Apply a consistent custom theme across all panels'
+    ],
+    resources: [
+      {text: 'Altair Gallery (Interactive)', url: 'https://altair-viz.github.io/gallery/index.html#interactive-charts'},
+      {text: 'Vega-Datasets', url: 'https://github.com/altair-viz/vega_datasets'},
+      {text: 'Altair Full Example Notebooks', url: 'https://github.com/altair-viz/altair/tree/main/tools/notebooks'}
+    ],
+    tip: 'Build and test each panel independently before wiring linked selections — debug in isolation, compose last. Use | and & to join panels, then wrap in alt.hconcat() for final layout control.',
+    hasScore: false
+  }
+];
+
+const topics = [
+  {name: 'Foundations', color: '#4F86C6', days: [0, 1]},
+  {name: 'Marks & Encodings', color: '#E8890C', days: [2, 3]},
+  {name: 'Transforms', color: '#2563EB', days: [4]},
+  {name: 'Compound Charts', color: '#7F77DD', days: [5]},
+  {name: 'Interactivity', color: '#0891B2', days: [6]},
+  {name: 'Customization & Geo', color: '#BA7517', days: [7, 8]},
+  {name: 'Capstone', color: '#D85A30', days: [9]}
+];
+
+const exam = {
+  questions:  null,
+  minutes:    null,
+  passScore:  'N/A',
+  cost:       'Free',
+  provider:   'Self-paced',
+  link:       'https://altair-viz.github.io/',
+  notes:      'No formal exam. Complete all 10 days and the capstone interactive dashboard.'
+};
+
+let state = {
+  completed:    [],
+  scores:       {},
+  hours:        {},
+  completedAt:  {},
+  tasksDone:    {},
+  openDay:      null,
+  startDate:    null,
+  lastActivity: null,
+  status:       'not_started'
+};
+
+async function loadState() {
+  try { const s = localStorage.getItem(STORAGE_KEY); if (s) state = {...state, ...JSON.parse(s)}; } catch(e) {}
+  if (GHSync.isConnected()) {
+    updateSyncBadge('syncing');
+    const gh = await GHSync.fetchState(COURSE_ID);
+    if (gh) { state = {...state, ...gh}; try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
+    updateSyncBadge(gh ? 'connected' : 'error');
+  } else { updateSyncBadge('disconnected'); }
+}
+
+function saveState() {
+  const done = state.completed.length;
+  const pct = Math.round((done / TOTAL_DAYS) * 100);
+  if (done === 0) state.status = 'not_started';
+  else if (done === TOTAL_DAYS) state.status = 'complete';
+  else state.status = 'in_progress';
+  state.lastActivity = new Date().toISOString();
+  if (!state.startDate && done > 0) state.startDate = new Date().toISOString();
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  broadcastStatus();
+  if (GHSync.isConnected())
+    GHSync.saveDebounced(COURSE_ID, state, 2500,
+      () => updateSyncBadge('syncing'),
+      ok => updateSyncBadge(ok ? 'connected' : 'error'));
+}
+
+function broadcastStatus() {
+  const summary = {
+    id: COURSE_ID, status: state.status,
+    completed: state.completed.length, total: TOTAL_DAYS,
+    scores: Object.values(state.scores).filter(s => s > 0),
+    totalHours: Object.values(state.hours).reduce((a, b) => a + b, 0),
+    completedAt: state.completedAt, startDate: state.startDate,
+    lastActivity: state.lastActivity
+  };
+  try { localStorage.setItem('cj_summary_altair-certified', JSON.stringify(summary)); } catch(e) {}
+}
+
+function resetAll() {
+  if (!confirm('Reset all progress? This cannot be undone.')) return;
+  state = {completed:[], scores:{}, hours:{}, completedAt:{}, tasksDone:{}, openDay:null, startDate:null, lastActivity:null, status:'not_started'};
+  saveState(); renderAll();
+}
+
+function isCompleted(i) { return state.completed.includes(i); }
+
+function toggleComplete(i) {
+  if (isCompleted(i)) {
+    state.completed = state.completed.filter(x => x !== i);
+    delete state.completedAt[i];
+  } else {
+    state.completed.push(i);
+    state.completedAt[i] = new Date().toISOString();
+  }
+  saveState(); renderSchedule(); updateStats();
+}
+
+function toggleDay(i) {
+  state.openDay = state.openDay === i ? null : i;
+  saveState(); renderSchedule();
+}
+
+function logScore(i, val) {
+  state.scores[i] = parseFloat(val) || 0;
+  saveState(); updateStats();
+}
+
+function logHours(i, val) {
+  state.hours[i] = parseFloat(val) || 0;
+  saveState(); updateStats();
+}
+
+function scoreClass(s) {
+  if (!s) return '';
+  if (s >= 80) return 'ok';
+  if (s >= 60) return 'warn';
+  return 'danger';
+}
+
+function badgeClass(b) {
+  return {learn:'badge-learn', practice:'badge-practice', review:'badge-review', exam:'badge-exam'}[b] || 'badge-learn';
+}
+
+function badgeLabel(b) {
+  return {learn:'Learn', practice:'Practice', review:'Review', exam:'Capstone'}[b] || b;
+}
+
+const dayTopics = (() => {
+  const m = {};
+  topics.forEach(t => t.days.forEach(d => { (m[d] = m[d] || []).push(t); }));
+  return m;
+})();
+
+function goToDay(i) {
+  showPanel('schedule', document.querySelector('.tab'));
+  setTimeout(() => {
+    state.openDay = i; saveState(); renderSchedule();
+    const el = document.querySelector('.day-card:nth-child(' + (i + 1) + ')');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
+
+function renderTask(t, di, ti) {
+  const done = (state.tasksDone[di] || []).includes(ti);
+  const text = typeof t === 'string' ? t : t.text;
+  const link = (typeof t === 'object' && t.url)
+    ? `<a class="task-link" href="${t.url}" target="_blank" rel="noopener">↗</a>` : '';
+  return `<div class="task${done ? ' task-done' : ''}">
+    <button class="task-tick${done ? ' ticked' : ''}"
+      onclick="event.stopPropagation();tickTask(${di},${ti})"></button>
+    <span>${text}</span>${link}
+  </div>`;
+}
+
+function tickTask(di, ti) {
+  const arr = state.tasksDone[di] || (state.tasksDone[di] = []);
+  const idx = arr.indexOf(ti);
+  if (idx === -1) arr.push(ti); else arr.splice(idx, 1);
+  const total = days[di].tasks.length;
+  const done  = arr.length;
+  if (done === total && !isCompleted(di)) { toggleComplete(di); return; }
+  if (done < total  &&  isCompleted(di)) {
+    state.completed = state.completed.filter(x => x !== di);
+    delete state.completedAt[di];
+  }
+  saveState(); renderSchedule();
+}
+
+function renderRes(r) {
+  if (typeof r === 'string')
+    return `<span class="res-pill">📎 ${r}</span>`;
+  return r.url
+    ? `<a class="res-pill" href="${r.url}" target="_blank" rel="noopener">📎 ${r.text}</a>`
+    : `<span class="res-pill">📎 ${r.text}</span>`;
+}
+
+function updateStats() {
+  const done = state.completed.length;
+  const pct  = Math.round((done / TOTAL_DAYS) * 100);
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('bar-fill').style.width = pct + '%';
+  document.getElementById('stat-days').textContent = done + '/' + TOTAL_DAYS;
+
+  const scores = Object.values(state.scores).filter(s => s > 0);
+  const avg = scores.length ? Math.round(scores.reduce((a,b) => a+b, 0) / scores.length) : null;
+  const scoreEl = document.getElementById('stat-score');
+  scoreEl.textContent = avg ? avg + '%' : '—';
+  scoreEl.className = 'stat-val ' + (avg ? scoreClass(avg) : '');
+
+  const totalHrs = Object.values(state.hours).reduce((a,b) => a+b, 0);
+  document.getElementById('stat-hours').textContent = totalHrs % 1 === 0 ? totalHrs : totalHrs.toFixed(1);
+
+  const readEl = document.getElementById('readiness');
+  if (pct === 0) { readEl.className = 'readiness'; readEl.textContent = '🌱 Just getting started'; }
+  else if (pct < 40) { readEl.className = 'readiness early'; readEl.textContent = '📖 Building foundations'; }
+  else if (pct < 70) { readEl.className = 'readiness early'; readEl.textContent = '⚡ Making good progress'; }
+  else if (pct < 100) { readEl.className = 'readiness close'; readEl.textContent = '🔥 Almost there!'; }
+  else { readEl.className = 'readiness ready'; readEl.textContent = '✅ Course complete!'; }
+}
+
+function renderSchedule() {
+  const el = document.getElementById('panel-schedule');
+  el.innerHTML = days.map((d, i) => {
+    const comp  = isCompleted(i);
+    const open  = state.openDay === i;
+    const score = state.scores[i];
+    const hrs   = state.hours[i];
+    const nb = NOTEBOOKS[i];
+    const dayNum = String(i + 1).padStart(2, '0');
+    const tot = d.tasks.length;
+    const doneCount = (state.tasksDone[i] || []).length;
+    return `<div class="day-card${comp ? ' completed' : ''}${open ? ' open' : ''}">
+      <div class="day-header" onclick="toggleDay(${i})">
+        <span class="day-num">${comp ? '✓' : String(i+1).padStart(2,'0')}</span>
+        <div class="day-meta">
+          <div class="day-title">${d.title}</div>
+          <div class="day-sub">${d.sub}</div>
+        </div>
+        <span class="day-badge ${badgeClass(d.badge)}">${badgeLabel(d.badge)}</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="day-body">
+        <div class="nb-row">
+          <a class="nb-btn" href="notebooks/${nb}.ipynb" target="_blank">📓 Open notebook</a>
+          <a class="nb-btn nb-btn-colab"
+             href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/altair-certified/notebooks/${nb}.ipynb"
+             target="_blank">▶ Open in Colab</a>
+          <a class="nb-btn" href="https://github.com/certified-journeys/certified-journeys.github.io/edit/main/courses/altair-certified/notes/day-${dayNum}.md" target="_blank">📝 notes/day-${dayNum}.md</a>
+        </div>
+        <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
+        ${(dayTopics[i]||[]).length ? `<div class="day-topic-pills">
+          ${(dayTopics[i]||[]).map(t => `<span class="day-topic-pill"
+            style="background:${t.color}18;color:${t.color};border-color:${t.color}40"
+            onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])"
+            title="View topic in Topics tab">${t.name}</span>`).join('')}
+        </div>` : ''}
+        ${tot ? `<div class="task-progress"><div class="task-progress-fill" style="width:${Math.round(doneCount/tot*100)}%"></div></div>` : ''}
+        <div class="task-list">${d.tasks.map((t, j) => renderTask(t, i, j)).join('')}</div>
+        <div class="resources-row">${d.resources.map(renderRes).join('')}</div>
+        ${d.hasScore ? `<div class="score-row"><label>Practice score (%):</label><input type="number" min="0" max="100" placeholder="e.g. 84" value="${score||''}" onchange="logScore(${i},this.value)">${score ? `<span class="score-badge ${scoreClass(score)==='ok'?'badge-learn':scoreClass(score)==='warn'?'badge-review':'badge-exam'}">${score}%</span>` : ''}</div>` : ''}
+        <div class="hours-row"><label>Hours spent today:</label><input type="number" min="0" max="24" step="0.5" placeholder="e.g. 2.5" value="${hrs||''}" onchange="logHours(${i},this.value)"><span style="font-size:11px;color:var(--text3);">hrs</span></div>
+        <button class="complete-btn ${comp?'done':''}" onclick="event.stopPropagation();toggleComplete(${i})">${comp?'✓ Completed':'Mark as complete'}</button>
+      </div>
+    </div>`;
+  }).join('') + `<div style="margin-top:12px;text-align:right;"><button onclick="resetAll()" style="font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px 8px;">↺ Reset all progress</button></div>`;
+}
+
+function renderTopics() {
+  document.getElementById('panel-topics').innerHTML = `<div class="topic-grid">${
+    topics.map(t => {
+      const cov = t.days.filter(d => state.completed.includes(d)).length;
+      const pct = Math.round((cov / t.days.length) * 100);
+      const dayBtns = t.days.map(d =>
+        `<button class="topic-day-btn${state.completed.includes(d) ? ' done' : ''}"
+          onclick="goToDay(${d})">Day ${d + 1}</button>`
+      ).join('');
+      return `<div class="topic-card">
+        <h4>${t.name}</h4>
+        <div class="t-bar-bg"><div class="t-bar-fill" style="width:${pct}%;background:${t.color}"></div></div>
+        <div class="t-pct">${pct}% covered · ${cov}/${t.days.length} sessions</div>
+        <div class="topic-days">${dayBtns}</div>
+      </div>`;
+    }).join('')
+  }</div>`;
+}
+
+function renderAI() {
+  document.getElementById('panel-ai').innerHTML = `
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#E8F0FE;">🎙</div>
+        <div>
+          <div class="ai-card-title">NotebookLM — Audio Podcast Summary</div>
+          <div class="ai-card-sub">Generate a personalized audio briefing of your learning</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Upload your day-card notes plus the official docs as sources in NotebookLM, then generate a podcast covering key concepts and exam traps.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Audio:
+"Create a 10-minute podcast episode for someone studying Vega-Altair for Data Visualization. Cover: selection_point vs selection_interval and how to wire linked brushing across multiple panels, layering with + vs concatenation with | and &amp; — when each is appropriate and how resolve_scale works, and long-form vs wide-form data and when to use the fold transform vs reshaping in pandas before plotting — include the most common misconceptions and the 3 things that will trip you up on the exam."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#FEF3E2;">🃏</div>
+        <div>
+          <div class="ai-card-title">NotebookLM — AI Flashcards</div>
+          <div class="ai-card-sub">Generate quiz cards from your notes</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Upload your notes and the official docs to NotebookLM and use the Study Guide feature to generate Q&amp;A flashcards.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Quiz:
+"Generate 20 flashcard-style Q&amp;A pairs for someone studying Vega-Altair for Data Visualization. Include at least 5 cards on selection_point vs selection_interval and how to wire linked brushing across multiple panels, 5 on layering with + vs concatenation with | and &amp; — when each is appropriate and how resolve_scale works, and 5 on long-form vs wide-form data and when to use the fold transform vs reshaping in pandas before plotting. Focus on concept distinctions, common misconceptions, and scenario-based questions."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#EEE9FF;">💬</div>
+        <div>
+          <div class="ai-card-title">Claude — Deep Dive Prompts</div>
+          <div class="ai-card-sub">Use when a concept isn't clicking</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Copy any of these prompts directly into Claude when you need a deeper explanation.</div>
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior engineer:
+"I'm studying Vega-Altair for Data Visualization. Explain selection_point vs selection_interval and how to wire linked brushing across multiple panels as if I'm already experienced. Skip the basics — focus on nuance, edge cases, and real-world decisions."
+
+Prompt 2 — Exam scenario questions:
+"Give me 5 scenario-based exam questions for Vega-Altair for Data Visualization on layering with + vs concatenation with | and &amp; — when each is appropriate and how resolve_scale works. After each question, explain why the correct answer is right and why the distractors are wrong."
+
+Prompt 3 — Gap analysis study plan:
+"I've studied Vega-Altair for Data Visualization but I'm unsure about long-form vs wide-form data and when to use the fold transform vs reshaping in pandas before plotting. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+    </div>`;
+}
+
+function renderResources() {
+  document.getElementById('panel-resources').innerHTML = `
+    <div class="res-section">
+      <div class="res-section-title">📖 Core Reading</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">01</span>
+          <div class="res-link-body">
+            <a href="https://altair-viz.github.io/getting_started/overview.html" target="_blank">Altair Getting Started</a>
+            <div class="res-link-desc">Official introduction: installation, first chart, core concepts</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">02</span>
+          <div class="res-link-body">
+            <a href="https://altair-viz.github.io/user_guide/data.html" target="_blank">Altair User Guide — Data</a>
+            <div class="res-link-desc">How Altair handles data: tidy format, URL sources, long vs wide form</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">03</span>
+          <div class="res-link-body">
+            <a href="https://altair-viz.github.io/user_guide/encodings/index.html" target="_blank">Encoding Channels Reference</a>
+            <div class="res-link-desc">All visual encoding channels: x, y, color, size, shape, tooltip, etc.</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">04</span>
+          <div class="res-link-body">
+            <a href="https://vega.github.io/vega-lite/docs/" target="_blank">Vega-Lite Specification Docs</a>
+            <div class="res-link-desc">Underlying grammar spec that powers Altair — essential reference for advanced usage</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🛠 Hands-On Resources</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">05</span>
+          <div class="res-link-body">
+            <a href="https://altair-viz.github.io/gallery/index.html" target="_blank">Altair Gallery</a>
+            <div class="res-link-desc">Browsable gallery of 100+ chart examples with full source code</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">06</span>
+          <div class="res-link-body">
+            <a href="https://github.com/altair-viz/vega_datasets" target="_blank">vega-datasets on GitHub</a>
+            <div class="res-link-desc">Free sample datasets (cars, gapminder, movies, world-110m) used in all examples</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">07</span>
+          <div class="res-link-body">
+            <a href="https://altair-viz.github.io/user_guide/interactions.html" target="_blank">Altair Interactions Guide</a>
+            <div class="res-link-desc">Full guide to selections, brushing, binding, and linked views</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">08</span>
+          <div class="res-link-body">
+            <a href="https://altair-viz.github.io/user_guide/transform/index.html" target="_blank">Altair Transforms Reference</a>
+            <div class="res-link-desc">All built-in transforms: filter, calculate, aggregate, bin, fold, window, lookup</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🔧 Ecosystem &amp; Tooling</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">09</span>
+          <div class="res-link-body">
+            <a href="https://altair-viz.github.io/user_guide/compound_charts.html" target="_blank">Compound Charts Guide</a>
+            <div class="res-link-desc">Layering, concatenation, faceting, and repeat — when to use each pattern</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">10</span>
+          <div class="res-link-body">
+            <a href="https://github.com/altair-viz/altair_saver" target="_blank">altair-saver on GitHub</a>
+            <div class="res-link-desc">Export Altair charts to PNG, SVG, PDF from Python</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">11</span>
+          <div class="res-link-body">
+            <a href="https://vega.github.io/vega/docs/schemes/" target="_blank">Vega Color Schemes</a>
+            <div class="res-link-desc">All named color schemes available in alt.Scale(scheme=…)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">⬆ Upgrade Path</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">12</span>
+          <div class="res-link-body">
+            <a href="https://altair-viz.github.io/user_guide/configuration.html" target="_blank">Altair Configuration Guide</a>
+            <div class="res-link-desc">Custom themes, configure_axis, configure_legend, and global style overrides</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">13</span>
+          <div class="res-link-body">
+            <a href="https://github.com/vega/vega-themes" target="_blank">Vega Themes on GitHub</a>
+            <div class="res-link-desc">Built-in themes (fivethirtyeight, ggplot2, dark, latimes) — source and usage</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">14</span>
+          <div class="res-link-body">
+            <a href="https://github.com/altair-viz/altair/tree/main/tools/notebooks" target="_blank">Altair Example Notebooks</a>
+            <div class="res-link-desc">Full-length demonstration notebooks from the Altair core team</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderExam() {
+  const checklist = [
+    'Completed all 10 days and can recreate any mark type (point, bar, line, area, rect, arc) from memory',
+    'Can write a layered chart with linked brush selection across two panels without looking at docs',
+    'Can explain the difference between selection_point and selection_interval and when to use each',
+    'Capstone dashboard loads without JS errors and all linked interactions work correctly',
+    'Can convert wide-form data to long-form using both pandas melt and Altair fold transform'
+  ];
+  document.getElementById('panel-exam').innerHTML = `
+    <div class="exam-grid">
+      <div class="exam-card">
+        <div class="exam-card-label">Format</div>
+        <div class="exam-card-val">Project</div>
+        <div class="exam-card-sub">No formal exam — capstone dashboard</div>
+      </div>
+      <div class="exam-card">
+        <div class="exam-card-label">Pass Requirement</div>
+        <div class="exam-card-val">N/A</div>
+        <div class="exam-card-sub">Complete all 10 days and capstone</div>
+      </div>
+      <div class="exam-card">
+        <div class="exam-card-label">Cost</div>
+        <div class="exam-card-val">Free</div>
+        <div class="exam-card-sub">Self-paced</div>
+      </div>
+      <div class="exam-card">
+        <div class="exam-card-label">Provider</div>
+        <div class="exam-card-val" style="font-size:14px;">Self-paced</div>
+        <div class="exam-card-sub"><a href="https://altair-viz.github.io/" target="_blank">altair-viz.github.io ↗</a></div>
+      </div>
+    </div>
+    <div class="info-box">${exam.notes}</div>
+    <div style="background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow);">
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px;">✅ Readiness Checklist</div>
+      ${checklist.map((item, i) => `
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border);font-size:13px;line-height:1.5;">
+          <input type="checkbox" id="chk${i}" style="margin-top:3px;accent-color:var(--green);flex-shrink:0;">
+          <label for="chk${i}" style="cursor:pointer;color:var(--text2);">${item}</label>
+        </div>`).join('')}
+    </div>`;
+}
+
+function showPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'topics') renderTopics();
+  if (name === 'ai') renderAI();
+  if (name === 'resources') renderResources();
+  if (name === 'exam') renderExam();
+}
+
+function renderAll() {
+  renderSchedule();
+  updateStats();
+  renderTopics();
+}
+
+function updateSyncBadge(s) {
+  const el = document.getElementById('sync-badge'); if (!el) return;
+  const L = {disconnected:'☁ Connect GitHub', connected:'✓ Synced', syncing:'↑ Syncing…', error:'⚠ Sync failed'};
+  el.textContent = L[s] || L.disconnected;
+  el.className = 'sync-badge' + (s==='connected' ? ' connected' : s==='syncing' ? ' syncing' : s==='error' ? ' error' : '');
+}
+
+function openGHModal() {
+  const creds = GHSync.getCreds();
+  if (creds) {
+    document.getElementById('gh-pat').value    = creds.pat    || '';
+    document.getElementById('gh-owner').value  = creds.owner  || '';
+    document.getElementById('gh-repo').value   = creds.repo   || '';
+    document.getElementById('gh-branch').value = creds.branch || 'main';
+    document.getElementById('gh-disconnect-btn').style.display = 'inline-flex';
+  } else {
+    document.getElementById('gh-pat').value    = '';
+    document.getElementById('gh-owner').value  = '';
+    document.getElementById('gh-repo').value   = '';
+    document.getElementById('gh-branch').value = 'main';
+    document.getElementById('gh-disconnect-btn').style.display = 'none';
+  }
+  document.getElementById('gh-modal-msg').textContent = '';
+  document.getElementById('gh-modal').classList.add('open');
+}
+
+function closeGHModal() { document.getElementById('gh-modal').classList.remove('open'); }
+
+async function saveGHCreds() {
+  const c = {
+    pat:    document.getElementById('gh-pat').value.trim(),
+    owner:  document.getElementById('gh-owner').value.trim(),
+    repo:   document.getElementById('gh-repo').value.trim(),
+    branch: document.getElementById('gh-branch').value.trim() || 'main'
+  };
+  if (!c.pat || !c.owner || !c.repo) {
+    document.getElementById('gh-modal-msg').textContent = 'Fill in all fields.'; return;
+  }
+  document.getElementById('gh-modal-msg').textContent = 'Testing…';
+  GHSync.saveCreds(c);
+  const r = await GHSync.testConnection();
+  if (r.ok) {
+    document.getElementById('gh-modal-msg').textContent = '✓ Connected!';
+    updateSyncBadge('connected');
+    setTimeout(closeGHModal, 900);
+  } else {
+    document.getElementById('gh-modal-msg').textContent = 'Error: ' + r.msg;
+  }
+}
+
+function disconnectGH() { GHSync.saveCreds(null); updateSyncBadge('disconnected'); closeGHModal(); }
+
+loadState().then(renderAll);
+
+// Dark mode toggle
+const MOON = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function getEffectiveTheme(){const t=document.documentElement.getAttribute('data-theme');if(t)return t;return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+function applyThemeBtn(){const btn=document.getElementById('theme-btn');if(!btn)return;const dark=getEffectiveTheme()==='dark';btn.innerHTML=dark?SUN:MOON;btn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');}
+window.toggleTheme=function(){const next=getEffectiveTheme()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);localStorage.setItem('cj-theme',next);applyThemeBtn();};
+applyThemeBtn();
+</script>
+</body>
+</html>
