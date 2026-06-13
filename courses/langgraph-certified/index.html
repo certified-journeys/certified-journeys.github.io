@@ -41,7 +41,7 @@ nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);border-bo
 .nav-inner{max-width:860px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
 .nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-0.025em;color:var(--text);text-decoration:none;}
 .nav-brand:hover{text-decoration:none;opacity:0.85;}
-.brand-mark{width:30px;height:30px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
+.brand-mark{width:32px;height:32px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
 .nav-right{display:flex;align-items:center;gap:8px;}
 .nav-gh{font-size:12px;padding:6px 14px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;gap:5px;transition:all 0.15s;text-decoration:none;font-weight:500;}
 .nav-gh:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
@@ -71,7 +71,7 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 .tag{font-size:11px;padding:3px 10px;border-radius:99px;background:var(--surface2);color:var(--text2);border:0.5px solid var(--border);}
 .hero-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
 .meta-item{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;}
-.meta-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.meta-label{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
 .meta-val{font-size:14px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;}
 .prog-strip{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.25rem;}
 .prog-strip-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;}
@@ -86,7 +86,7 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 .readiness.early span{color:var(--coral);}
 .stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:1.25rem;}
 .stat{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:.9rem;}
-.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.stat-label{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
 .stat-val{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.02em;font-family:'DM Mono',monospace;}
 .stat-val.ok{color:var(--green);} .stat-val.warn{color:var(--amber);} .stat-val.danger{color:var(--coral);}
 .tabs{display:flex;gap:2px;margin-bottom:1.25rem;background:var(--surface2);border-radius:99px;padding:4px;overflow-x:auto;}
@@ -125,10 +125,10 @@ code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 5px;
 .task-progress{height:5px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
 .task-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;}
 .resources-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
-.res-pill{font-size:11px;padding:4px 11px;border-radius:99px;background:var(--surface2);border:.5px solid var(--border);color:var(--text2);}
+.res-pill{font-size:12px;padding:4px 11px;border-radius:99px;background:var(--surface2);border:.5px solid var(--border);color:var(--text2);}
 a.res-pill{text-decoration:none;cursor:pointer;}
 a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:var(--text);}
-.task-link{color:var(--blue-dark);font-size:11px;margin-left:6px;flex-shrink:0;opacity:0.7;line-height:1.5;}
+.task-link{color:var(--blue-dark);font-size:12px;margin-left:6px;flex-shrink:0;opacity:0.7;line-height:1.5;}
 .task-link:hover{opacity:1;text-decoration:none;}
 .nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
 .nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
@@ -151,7 +151,7 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 .t-bar-fill{height:100%;border-radius:99px;transition:width .7s cubic-bezier(.4,0,.2,1);}
 .t-pct{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
 .day-topic-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
-.day-topic-pill{font-size:10px;padding:2px 9px;border-radius:99px;border:.5px solid;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.day-topic-pill{font-size:12px;padding:2px 9px;border-radius:99px;border:.5px solid;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
 .day-topic-pill:hover{opacity:.7;}
 .topic-days{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
 .topic-day-btn{font-size:11px;padding:2px 8px;border-radius:99px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
@@ -220,6 +220,24 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
 .nav-gh-icon:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
 .meta-val-free{color:var(--green) !important;}
 .meta-val-paid{color:var(--amber) !important;}
+
+@media(max-width:640px){
+  body{font-size:16px;}
+  .course-title-block h1{font-size:clamp(17px,5vw,22px);}
+  .tab{font-size:14px;padding:8px 16px;}
+  .day-title{font-size:15px;}
+  .task{font-size:14px;}
+  .complete-btn{font-size:14px;padding:11px;}
+  .exam-card-label{font-size:12px;}
+  .meta-val{font-size:13px;}
+  .nav-brand{font-size:14px;}
+}
+@media(max-width:400px){
+  .course-title-block h1{font-size:17px;}
+  .day-title{font-size:14px;}
+  .task{font-size:13px;}
+  .stats-row{gap:1rem;}
+}
 </style>
 <script>(function(){const t=localStorage.getItem('cj-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
 </head>
