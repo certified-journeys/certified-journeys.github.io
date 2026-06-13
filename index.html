@@ -227,6 +227,8 @@ nav {
 .card-btn:hover { background: var(--surface2); color: var(--text); text-decoration: none; }
 .card-btn-primary { background: var(--green); color: #fff; border-color: var(--green); justify-content: center; font-weight: 700; width: 100%; font-size: 15px; }
 .card-btn-primary:hover { opacity: 0.88; }
+.card-btn-continue { background: var(--blue); color: #fff; border-color: var(--blue); justify-content: center; font-weight: 700; width: 100%; font-size: 15px; }
+.card-btn-continue:hover { opacity: 0.88; text-decoration: none; }
 .card-btn-icon { width: 40px; min-height: 40px; padding: 0; justify-content: center; flex-shrink: 0; }
 
 /* Footer note */
@@ -558,6 +560,7 @@ function renderGrid() {
     const ago  = p.status !== 'not_started' ? timeAgo(p.lastActivity) : null;
     const actionLabel = p.status === 'not_started' ? 'Start →' : p.status === 'completed' ? 'Review →' : 'Continue →';
     const ariaAction  = p.status === 'not_started' ? `Start ${c.fullName} journey` : p.status === 'completed' ? `Review ${c.fullName}` : `Continue ${c.fullName}`;
+    const actionClass = p.status === 'in_progress' ? 'card-btn card-btn-continue' : 'card-btn card-btn-primary';
 
     // "What's next" for completed courses
     let nextHint = '';
@@ -571,7 +574,6 @@ function renderGrid() {
 
     return `
     <div class="card${c.featured ? ' card-featured' : ''}">
-      ${c.featured ? `<div class="card-featured-badge">★ Recommended start</div>` : ''}
       <div class="card-top">
         <div class="card-icon" style="background:${c.colorDim};color:${c.color};">${c.icon}</div>
         <span class="badge ${si.cls}">${si.label}</span>
@@ -587,7 +589,7 @@ function renderGrid() {
       </div>
       ${nextHint || `<div class="card-extras">${ago ? 'Active ' + ago : p.totalHours > 0 ? p.totalHours.toFixed(1) + ' h logged' : ''}</div>`}
       <div class="card-footer">
-        <a class="card-btn card-btn-primary" href="courses/${c.id}/index.html" aria-label="${ariaAction}">${actionLabel}</a>
+        <a class="${actionClass}" href="courses/${c.id}/index.html" aria-label="${ariaAction}">${actionLabel}</a>
         <a class="card-btn card-btn-ghost card-btn-icon" href="${c.examLink}" target="_blank" aria-label="Open ${c.name} exam page" title="Exam / official docs"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
       </div>
     </div>`;
