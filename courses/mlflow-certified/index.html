@@ -270,7 +270,7 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
     <div class="hero-meta">
       <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val meta-val-free">Free</div></div>
       <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">14 days</div></div>
-      <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Databricks (Self-paced)</div></div>
+      <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Databricks (Free)</div></div>
       <div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Intermediate</div></div>
     </div>
   </div>
@@ -637,9 +637,9 @@ const exam = {
   minutes:   null,
   passScore: 'N/A',
   cost:      'Free',
-  provider:  'Databricks (Self-paced)',
-  link:      'https://mlflow.org/docs/latest/index.html',
-  notes:     'No formal exam. Completion of all 14 days and the capstone project demonstrates proficiency.',
+  provider:  'Databricks (Free)',
+  link:      'https://www.databricks.com/learn/training/home',
+  notes:     'Free official training via Databricks Academy — free on-demand courses with a shareable LinkedIn badge. Complete all 14 days and the capstone project to demonstrate proficiency.',
 };
 
 let state = {
@@ -942,7 +942,7 @@ function renderExam() {
       • Consistent progress — not rushed through, each day's tasks genuinely completed
     </div>
     <div style="margin-top:12px;">
-      <a href="${exam.link}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:10px 20px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-weight:500;text-decoration:none;">View MLflow Docs →</a>
+      <a href="${exam.link}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:10px 20px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-weight:500;text-decoration:none;">Get MLflow Certified →</a>
     </div>`;
 }
 

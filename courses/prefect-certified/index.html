@@ -290,7 +290,7 @@ a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:va
   <div class="hero-meta">
     <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val meta-val-free">Free</div></div>
     <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">14 days</div></div>
-    <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:12px;font-family:'DM Sans',system-ui;">Prefect</div></div>
+    <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:12px;font-family:'DM Sans',system-ui;">Prefect (Free)</div></div>
     <div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-val" style="font-size:12px;font-family:'DM Sans',system-ui;">Intermediate</div></div>
   </div>
 </div>
@@ -648,9 +648,9 @@ const exam={
   minutes:null,
   passScore:"N/A",
   cost:"Free",
-  provider:"Prefect (Self-paced)",
-  link:"https://docs.prefect.io/latest/",
-  notes:"No formal exam. Build the capstone pipeline to demonstrate proficiency."
+  provider:"Prefect (Free)",
+  link:"https://learn.prefect.io/",
+  notes:"Free official courses via learn.prefect.io — hands-on labs covering flows, tasks, deployments, and production patterns. Build the capstone pipeline to demonstrate proficiency."
 };
 
 let state={completed:[],scores:{},hours:{},completedAt:{},tasksDone:{},openDay:null,startDate:null,lastActivity:null,status:'not_started'};
@@ -947,7 +947,7 @@ function renderExam(){
     <div class="info-box"><strong>Notes:</strong> ${e.notes}</div>
     <div class="info-box"><strong>Upgrade path:</strong> Pair with dbt and Kubernetes for a full production data engineering stack.</div>
     <div style="margin-top:12px;">
-      <a href="${e.link}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:10px 20px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-weight:500;text-decoration:none;">Prefect Docs →</a>
+      <a href="${e.link}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:10px 20px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-weight:500;text-decoration:none;">Get Prefect Certified →</a>
     </div>
     <div class="info-box" style="margin-top:12px;">
       <strong>📋 Readiness checklist:</strong><br>
