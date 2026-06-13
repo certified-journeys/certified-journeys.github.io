@@ -381,4 +381,292 @@ EXAM_NOTES:       No formal exam. Complete all 10 days and the capstone interact
 
 ---
 
-*Queue v1.0 — 10 courses — updated 2026-06-06*
+---
+
+### 11. huggingface-nlp-certified
+
+```
+COURSE_ID:        huggingface-nlp-certified
+COURSE_FULL_NAME: Hugging Face NLP for Engineers
+ICON:             HF
+ACCENT_COLOR:     #FF9D00
+ACCENT_LIGHT:     #FFF7E6
+ACCENT_DARK:      #CC7A00
+ACCENT_DARK_DIM:  #2E1B00
+PROVIDER:         Hugging Face (Self-paced)
+COST:             Free
+TOTAL_DAYS:       14
+DIFFICULTY:       Intermediate
+TAGS:             NLP, Python, Transformers, Deep Learning
+EXAM_LINK:        https://huggingface.co/learn/nlp-course
+EXAM_QUESTIONS:   null
+EXAM_MINUTES:     null
+EXAM_PASS_SCORE:  N/A
+EXAM_NOTES:       No formal exam. Complete all 14 days and the capstone fine-tuning project.
+```
+
+**Core topics for Design Agent to expand:**
+- Tokenizers: BPE, WordPiece, SentencePiece — how they work and when to choose
+- The `transformers` pipeline API: text classification, NER, summarization, translation
+- Loading pretrained models with `AutoModel` and `AutoTokenizer`
+- Fine-tuning BERT/RoBERTa for text classification with the Trainer API
+- Datasets library: loading, filtering, mapping, and tokenizing HuggingFace datasets
+- Evaluate library: computing metrics (F1, BLEU, ROUGE, accuracy) after fine-tuning
+- Token classification: NER with IOB tagging and sequence labeling heads
+- Question answering: extractive QA with squad-style models
+- Pushing models to the Hub: `model.push_to_hub()`, model cards, spaces
+- Capstone: fine-tune a transformer on a custom NLP task and deploy to HuggingFace Spaces
+
+---
+
+### 12. llm-engineering-certified
+
+```
+COURSE_ID:        llm-engineering-certified
+COURSE_FULL_NAME: LLM Engineering with LangChain
+ICON:             LC
+ACCENT_COLOR:     #1C7A4A
+ACCENT_LIGHT:     #E6F5ED
+ACCENT_DARK:      #145C37
+ACCENT_DARK_DIM:  #051A0F
+PROVIDER:         Self-paced
+COST:             Free
+TOTAL_DAYS:       14
+DIFFICULTY:       Intermediate
+TAGS:             LLMs, Python, LangChain, RAG, Prompt Engineering
+EXAM_LINK:        https://python.langchain.com/docs/introduction/
+EXAM_QUESTIONS:   null
+EXAM_MINUTES:     null
+EXAM_PASS_SCORE:  N/A
+EXAM_NOTES:       No formal exam. Build the capstone RAG application to demonstrate proficiency.
+```
+
+**Core topics for Design Agent to expand:**
+- LangChain fundamentals: chains, runnables, LCEL (LangChain Expression Language)
+- Chat models and LLM wrappers: OpenAI, Anthropic, local models via Ollama
+- Prompt templates: `ChatPromptTemplate`, few-shot prompting, dynamic examples
+- Output parsers: structured outputs with Pydantic, JSON, and custom parsers
+- Document loaders and text splitters: PDFs, web pages, chunking strategies
+- Embeddings and vector stores: FAISS, Chroma, pgvector for semantic search
+- Retrieval-Augmented Generation (RAG): full pipeline from ingestion to retrieval
+- Memory: `ConversationBufferMemory`, `ConversationSummaryMemory` for chat history
+- LangChain agents: `create_react_agent`, tool calling, custom tools
+- Capstone: build a production RAG chatbot over custom documents with LangChain
+
+---
+
+### 13. ai-agents-certified
+
+```
+COURSE_ID:        ai-agents-certified
+COURSE_FULL_NAME: Building AI Agents with LangGraph
+ICON:             AG
+ACCENT_COLOR:     #6366F1
+ACCENT_LIGHT:     #EEF2FF
+ACCENT_DARK:      #4338CA
+ACCENT_DARK_DIM:  #0F0E35
+PROVIDER:         Self-paced
+COST:             Free
+TOTAL_DAYS:       10
+DIFFICULTY:       Advanced
+TAGS:             AI Agents, LangGraph, Python, LLMs, Workflows
+EXAM_LINK:        https://langchain-ai.github.io/langgraph/
+EXAM_QUESTIONS:   null
+EXAM_MINUTES:     null
+EXAM_PASS_SCORE:  N/A
+EXAM_NOTES:       No formal exam. Ship a working multi-agent system as the capstone.
+```
+
+**Core topics for Design Agent to expand:**
+- LangGraph fundamentals: StateGraph, nodes, edges, and state schemas
+- Conditional edges and branching: routing logic between agent nodes
+- Human-in-the-loop: `interrupt_before`, `interrupt_after`, resuming from breakpoints
+- Persistence: checkpointers with SQLite and PostgreSQL for long-running agents
+- ReAct agents in LangGraph: tool calling loop with `ToolNode`
+- Multi-agent architectures: supervisor pattern, handoffs between specialized agents
+- Streaming: token-level and node-level streaming for real-time UX
+- Memory store: long-term memory with `InMemoryStore` and vector-backed stores
+- LangGraph Platform: deploying agents as APIs with LangServe
+- Capstone: build a multi-agent research system that searches, summarizes, and drafts reports
+
+---
+
+### 14. llama-certified
+
+```
+COURSE_ID:        llama-certified
+COURSE_FULL_NAME: Llama & Local LLMs in Production
+ICON:             LL
+ACCENT_COLOR:     #0057FF
+ACCENT_LIGHT:     #E6EEFF
+ACCENT_DARK:      #003FCC
+ACCENT_DARK_DIM:  #000F33
+PROVIDER:         Meta / Ollama (Self-paced)
+COST:             Free
+TOTAL_DAYS:       10
+DIFFICULTY:       Advanced
+TAGS:             LLMs, Llama, Ollama, Python, Inference
+EXAM_LINK:        https://llama.meta.com/docs/
+EXAM_QUESTIONS:   null
+EXAM_MINUTES:     null
+EXAM_PASS_SCORE:  N/A
+EXAM_NOTES:       No formal exam. Run and serve a fine-tuned Llama model as the capstone.
+```
+
+**Core topics for Design Agent to expand:**
+- Llama model family: Llama 3.1/3.2 variants, parameter counts, context windows
+- Running Llama locally with Ollama: `ollama run`, Modelfile, custom model configs
+- Quantization: GGUF formats (Q4_K_M, Q8_0), tradeoffs between speed and quality
+- Inference backends: llama.cpp, vLLM, Transformers for different deployment needs
+- Prompt formatting: Llama chat templates, system prompts, instruction formatting
+- Fine-tuning with QLoRA: `peft`, `trl`, `SFTTrainer` on consumer hardware
+- GGUF conversion: converting HuggingFace checkpoints to GGUF for llama.cpp
+- Serving with Ollama REST API and OpenAI-compatible endpoints
+- Benchmarking: measuring tokens/sec, memory usage, quality vs quantization level
+- Capstone: fine-tune Llama on a domain dataset and serve it via an OpenAI-compatible API
+
+---
+
+### 15. prompt-engineering-certified
+
+```
+COURSE_ID:        prompt-engineering-certified
+COURSE_FULL_NAME: Prompt Engineering for Developers
+ICON:             PE
+ACCENT_COLOR:     #E040FB
+ACCENT_LIGHT:     #FCE4FF
+ACCENT_DARK:      #AA00CC
+ACCENT_DARK_DIM:  #280030
+PROVIDER:         DeepLearning.AI (Self-paced)
+COST:             Free
+TOTAL_DAYS:       7
+DIFFICULTY:       Beginner
+TAGS:             Prompt Engineering, LLMs, Python, AI
+EXAM_LINK:        https://www.deeplearning.ai/short-courses/
+EXAM_QUESTIONS:   null
+EXAM_MINUTES:     null
+EXAM_PASS_SCORE:  N/A
+EXAM_NOTES:       No formal exam. Seven focused days covering prompting techniques from basics to advanced patterns.
+```
+
+**Core topics for Design Agent to expand:**
+- Prompting principles: clarity, specificity, role assignment, output format control
+- Zero-shot vs few-shot prompting: when examples help and when they hurt
+- Chain-of-thought (CoT): step-by-step reasoning, self-consistency sampling
+- Iterative prompt refinement: identifying failure modes and fixing them systematically
+- Structured outputs: JSON mode, function calling, schema-constrained generation
+- Advanced techniques: ReAct, Tree of Thought, self-reflection, meta-prompting
+- Evaluation: building prompt test suites, LLM-as-judge, benchmark datasets
+- Capstone: design and evaluate a prompt system for a real NLP task with measurable quality gates
+
+---
+
+### 16. github-actions-certified
+
+```
+COURSE_ID:        github-actions-certified
+COURSE_FULL_NAME: GitHub Actions for MLOps
+ICON:             GA
+ACCENT_COLOR:     #24292F
+ACCENT_LIGHT:     #F0F2F4
+ACCENT_DARK:      #1A1E22
+ACCENT_DARK_DIM:  #050607
+PROVIDER:         GitHub (Self-paced)
+COST:             Free
+TOTAL_DAYS:       7
+DIFFICULTY:       Intermediate
+TAGS:             CI/CD, MLOps, GitHub, Automation, DevOps
+EXAM_LINK:        https://skills.github.com/
+EXAM_QUESTIONS:   null
+EXAM_MINUTES:     null
+EXAM_PASS_SCORE:  N/A
+EXAM_NOTES:       No formal exam. Seven days building automated ML pipelines with GitHub Actions.
+```
+
+**Core topics for Design Agent to expand:**
+- GitHub Actions fundamentals: workflows, jobs, steps, runners, triggers
+- YAML syntax: `on`, `jobs`, `steps`, `uses`, `with`, `env`, `secrets`
+- Reusable workflows and composite actions: DRY CI/CD patterns
+- Matrix strategies: testing across Python versions, OS, and model configs
+- Caching dependencies: `actions/cache` for pip, conda, model weights
+- Secrets management: `GITHUB_TOKEN`, repo secrets, environment secrets
+- ML-specific patterns: training on GPU runners, DVC integration, model registry push
+- Container actions: running ML jobs in Docker with GPU support
+- Branch protection and required checks: enforcing quality gates before merge
+- Capstone: build a full ML CI/CD pipeline — test, train, evaluate, and deploy on push
+
+---
+
+### 17. dbt-certified
+
+```
+COURSE_ID:        dbt-certified
+COURSE_FULL_NAME: dbt for Analytics Engineers
+ICON:             DT
+ACCENT_COLOR:     #FF694B
+ACCENT_LIGHT:     #FFF0ED
+ACCENT_DARK:      #CC4429
+ACCENT_DARK_DIM:  #330E06
+PROVIDER:         dbt Labs (Self-paced)
+COST:             Free
+TOTAL_DAYS:       10
+DIFFICULTY:       Intermediate
+TAGS:             Analytics Engineering, SQL, dbt, Data Modeling
+EXAM_LINK:        https://courses.getdbt.com/
+EXAM_QUESTIONS:   null
+EXAM_MINUTES:     null
+EXAM_PASS_SCORE:  N/A
+EXAM_NOTES:       No formal exam. Build a complete dbt project with staging, marts, and tests as the capstone.
+```
+
+**Core topics for Design Agent to expand:**
+- dbt fundamentals: models, materializations (table, view, incremental, ephemeral)
+- Sources and refs: `{{ source() }}`, `{{ ref() }}`, lineage and DAG
+- Testing: `dbt test`, schema tests (not_null, unique, accepted_values, relationships)
+- Documentation: `dbt docs generate`, `dbt docs serve`, descriptions in YAML
+- Jinja and macros: reusable SQL logic, `{{ config() }}`, custom macros
+- Incremental models: `is_incremental()`, unique keys, merge strategies
+- Seeds and snapshots: loading static data, SCD Type 2 with `dbt snapshot`
+- Packages: dbt-utils, dbt-expectations, installing from dbt Hub
+- dbt Cloud vs dbt Core: job scheduling, environments, CI integration
+- Capstone: build a full analytics engineering project — raw → staging → marts with full test coverage
+
+---
+
+### 18. great-expectations-certified
+
+```
+COURSE_ID:        great-expectations-certified
+COURSE_FULL_NAME: Great Expectations for Data Quality
+ICON:             GX
+ACCENT_COLOR:     #FF6B6B
+ACCENT_LIGHT:     #FFF0F0
+ACCENT_DARK:      #CC3333
+ACCENT_DARK_DIM:  #330000
+PROVIDER:         Great Expectations (Self-paced)
+COST:             Free
+TOTAL_DAYS:       7
+DIFFICULTY:       Intermediate
+TAGS:             Data Quality, Python, Testing, Data Engineering
+EXAM_LINK:        https://docs.greatexpectations.io/
+EXAM_QUESTIONS:   null
+EXAM_MINUTES:     null
+EXAM_PASS_SCORE:  N/A
+EXAM_NOTES:       No formal exam. Seven days building a complete data quality framework with GX.
+```
+
+**Core topics for Design Agent to expand:**
+- GX architecture: Data Context, Data Sources, Expectations, Checkpoints, Data Docs
+- Connecting to data: Pandas, Spark, SQL databases, S3/GCS file backends
+- Expectations: `expect_column_values_to_not_be_null`, `expect_column_mean_to_be_between`, custom expectations
+- Expectation Suites: grouping expectations, editing and versioning suites
+- Validators and Checkpoints: running validation and generating Data Docs reports
+- Data Docs: auto-generated HTML reports, sharing results with stakeholders
+- Integrating GX into pipelines: Airflow operators, Prefect tasks, dbt tests
+- Custom expectations: subclassing `ColumnMapExpectation`, registering new expectations
+- Schema validation and drift detection: catching upstream schema changes automatically
+- Capstone: add a full GX validation layer to a multi-step data pipeline with CI gating
+
+---
+
+*Queue v1.0 — 18 courses — updated 2026-06-13*
