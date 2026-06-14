@@ -451,6 +451,7 @@ const COURSES = [
   {id:'sodacore-certified',name:'Soda Core',  fullName:'Soda Core for Data Quality',                    icon:'SC', color:'#0D9488', colorDim:'#CCFBF1', provider:'Soda (Self-paced)', cost:'Free', totalDays:10, tags:['Data Quality','Data Engineering','Testing','SQL'], domains:['Data'], examLink:'https://docs.soda.io/soda-core/overview-main.html'},
   {id:'altair-certified',  name:'Altair',     fullName:'Vega-Altair for Data Visualization',             icon:'AL', color:'#4F86C6', colorDim:'#EBF3FB', provider:'Self-paced',           cost:'Free', totalDays:10, tags:['Visualization','Python','Data Science','Vega-Lite'], domains:['Data','Python'], examLink:'https://altair-viz.github.io/'},
   {id:'huggingface-nlp-certified', name:'HF NLP', fullName:'Hugging Face NLP for Engineers', icon:'HF', color:'#FF9D00', colorDim:'#FFF7E6', provider:'Hugging Face (Self-paced)', cost:'Free', totalDays:14, tags:['NLP','Python','Transformers','Deep Learning'], domains:['AI','Python'], examLink:'https://huggingface.co/learn/nlp-course'},
+  {id:'llm-engineering-certified', name:'LangChain', fullName:'LLM Engineering with LangChain', icon:'LC', color:'#1C7A4A', colorDim:'#E6F5ED', provider:'Self-paced', cost:'Free', totalDays:14, tags:['LLMs','Python','LangChain','RAG','Prompt Engineering'], domains:['AI','Python'], examLink:'https://python.langchain.com/docs/introduction/'},
   {id:'langgraph-certified', name:'LangGraph', fullName:'AI Agents in LangGraph',                         icon:'LG', color:'#7F77DD', colorDim:'#EEEDFE', provider:'DeepLearning.AI', cost:'Free', totalDays:14, tags:['AI Agents','LangGraph','Python','LLMs'], domains:['AI','Python'], examLink:'https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/'},
   {id:'crewai-certified',   name:'CrewAI',    fullName:'Multi AI Agent Systems with CrewAI',              icon:'CR', color:'#0891B2', colorDim:'#E0F5FA', provider:'DeepLearning.AI', cost:'Free', totalDays:12, tags:['AI Agents','CrewAI','Python','Multi-Agent'], domains:['AI','Python'], examLink:'https://www.deeplearning.ai/short-courses/multi-ai-agent-systems-with-crewai/'},
   {id:'llamaindex-certified',name:'LlamaIndex',fullName:'Building Agentic RAG with LlamaIndex',           icon:'LI', color:'#E8890C', colorDim:'#FEF3E2', provider:'DeepLearning.AI', cost:'Free', totalDays:12, tags:['RAG','LlamaIndex','Python','LLMs'], domains:['AI','Python'], examLink:'https://www.deeplearning.ai/short-courses/building-agentic-rag-with-llamaindex/'},
@@ -514,6 +515,7 @@ const NEXT_JOURNEY = {
   'sodacore-certified':    'duckdb-certified',
   'altair-certified':      'polars-certified',
   'huggingface-nlp-certified': 'llm-engineering-certified',
+  'llm-engineering-certified': 'ai-agents-certified',
 };
 
 let activeFilter = 'All';
