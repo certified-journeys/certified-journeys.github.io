@@ -161,6 +161,13 @@ nav {
 
 /* Grid */
 .grid-header { margin-bottom: 1rem; }
+.search-wrap { position: relative; margin-bottom: 10px; }
+.search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
+#course-search { width: 100%; box-sizing: border-box; padding: 9px 36px 9px 36px; border-radius: 10px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.15s; }
+#course-search:focus { border-color: var(--brand); }
+#course-search::placeholder { color: var(--text3); }
+.search-clear { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text3); padding: 2px; display: none; line-height: 1; }
+.search-clear:hover { color: var(--text); }
 .filter-bar { display: flex; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
 .filter-btn { font-size: 13px; padding: 6px 18px; border-radius: 99px; border: 1px solid var(--border2); color: var(--text2); background: none; cursor: pointer; font-family: inherit; font-weight: 500; transition: all 0.15s; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .filter-btn .fc { font-size: 11px; font-weight: 700; background: var(--surface3); color: var(--text3); border-radius: 99px; padding: 1px 6px; min-width: 18px; text-align: center; }
@@ -360,6 +367,11 @@ nav {
   </div>
 
   <div class="grid-header">
+    <div class="search-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="course-search" type="search" placeholder="Search courses, tags, providers…" oninput="onSearch(this.value)" onkeydown="if(event.key==='Escape'){clearSearch()}" autocomplete="off" spellcheck="false">
+      <button class="search-clear" id="search-clear" onclick="clearSearch()" aria-label="Clear search">&#x2715;</button>
+    </div>
     <div class="filter-bar" id="filter-bar"></div>
   </div>
   <div class="course-grid" id="course-grid"></div>
@@ -520,6 +532,21 @@ const NEXT_JOURNEY = {
 };
 
 let activeFilter = 'All';
+let searchQuery = '';
+
+function onSearch(val) {
+  searchQuery = val.trim().toLowerCase();
+  document.getElementById('search-clear').style.display = searchQuery ? 'block' : 'none';
+  renderGrid();
+}
+
+function clearSearch() {
+  searchQuery = '';
+  const el = document.getElementById('course-search');
+  if (el) el.value = '';
+  document.getElementById('search-clear').style.display = 'none';
+  renderGrid();
+}
 
 function setFilter(domain) {
   activeFilter = domain;
@@ -554,14 +581,27 @@ function render() {
 function renderGrid() {
   const all = COURSES.map(c => ({ c, p: getProgress(c.id) }));
 
+  // Apply search filter
+  const afterSearch = searchQuery
+    ? all.filter(({ c }) => {
+        const hay = [c.fullName, c.name, c.provider, ...(c.tags || [])].join(' ').toLowerCase();
+        return hay.includes(searchQuery);
+      })
+    : all;
+
   // Apply domain filter
   const filtered = activeFilter === 'All'
-    ? all
-    : all.filter(({ c }) => c.domains && c.domains.includes(activeFilter));
+    ? afterSearch
+    : afterSearch.filter(({ c }) => c.domains && c.domains.includes(activeFilter));
 
   // Sort: in_progress first, then not_started, then completed
   const ORDER = { in_progress: 0, not_started: 1, completed: 2 };
   filtered.sort((a, b) => (ORDER[a.p.status] ?? 1) - (ORDER[b.p.status] ?? 1));
+
+  if (filtered.length === 0) {
+    document.getElementById('course-grid').innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem 1rem;color:var(--text3);font-size:15px;">No courses match <strong style="color:var(--text2)">"${searchQuery}"</strong>. Try a different keyword.</div>`;
+    return;
+  }
 
   document.getElementById('course-grid').innerHTML = filtered.map(({ c, p }) => {
     const pct  = Math.round((p.completed / c.totalDays) * 100);
