@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Actions for MLOps · certified-journeys</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#24292F; --green-light:#F0F2F4; --green-dark:#1A1E22;
+  --blue:#378ADD; --blue-light:#EAF3FD; --blue-dark:#185FA5;
+  --amber:#BA7517; --amber-light:#FDF3E3;
+  --coral:#D85A30; --coral-light:#FAEDE8; --coral-dark:#993C1D;
+  --purple:#7F77DD; --purple-light:#EEEDFE;
+  --orange:#E8890C; --orange-light:#FEF3E2;
+  --teal:#0891B2; --teal-light:#E0F5FA;
+  --bg:#F5F4F0; --surface:#FFFFFF; --surface2:#EEECE5; --surface3:#E8E6DF;
+  --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.16);
+  --text:#18181A; --text2:#52524E; --text3:#8C8B85;
+  --radius:14px; --radius-sm:9px; --radius-xs:5px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.06);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#050607;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}}
+[data-theme="dark"]{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#050607;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}
+/* Nav */
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);border-bottom:0.5px solid var(--border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav{background:rgba(26,26,26,0.85);}}
+[data-theme="dark"] nav{background:rgba(26,26,26,0.85);}
+.nav-inner{max-width:860px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-0.025em;color:var(--text);text-decoration:none;}
+.nav-brand:hover{text-decoration:none;opacity:0.85;}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-gh-icon{width:34px;height:34px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;justify-content:center;transition:all 0.15s;text-decoration:none;flex-shrink:0;}
+.nav-gh-icon:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.theme-btn{width:34px;height:34px;border-radius:99px;flex-shrink:0;border:0.5px solid var(--border2);background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;}
+.theme-btn:hover{background:var(--surface2);color:var(--text);}
+/* Action row */
+.nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
+.nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
+.nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
+/* Linked resources & tasks */
+a.res-pill{text-decoration:none;cursor:pointer;}
+a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:var(--text);}
+.task-link{color:var(--blue-dark);font-size:11px;margin-left:6px;flex-shrink:0;opacity:0.7;line-height:1.5;}
+.task-link:hover{opacity:1;text-decoration:none;}
+/* Task tick checkboxes */
+.task-tick{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px;background:none;padding:0;}
+.task-tick:hover{border-color:var(--green);}
+.task-tick.ticked{background:var(--green);border-color:var(--green);}
+.task-tick.ticked::after{content:"✓";font-size:10px;color:#fff;font-weight:700;line-height:1;}
+.task.task-done>span{text-decoration:line-through;color:var(--text3);}
+/* Per-day task progress bar */
+.task-progress{height:3px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
+.task-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;}
+/* Score, hours, complete */
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.score-row label{font-size:12px;color:var(--text2);}
+.score-row input{width:72px;font-size:13px;padding:5px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.hours-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text2);}
+.hours-row input{width:60px;font-size:13px;padding:4px 8px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.complete-btn{width:100%;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s;font-weight:400;}
+.complete-btn:hover{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+.complete-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);font-weight:500;}
+/* AI cards */
+.ai-prompt-box{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:10px;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;line-height:1.7;white-space:pre-wrap;}
+.ai-link-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-family:inherit;text-decoration:none;}
+.ai-link-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+/* GitHub sync modal */
+.gh-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;}
+.gh-modal.open{display:flex;}
+.gh-modal-box{background:var(--surface);border-radius:var(--radius);padding:1.5rem;max-width:440px;width:90%;box-shadow:var(--shadow-md);}
+.gh-modal-box h3{font-size:17px;font-weight:600;margin-bottom:6px;}
+.gh-modal-sub{font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.6;}
+.gh-field{margin-bottom:10px;}
+.gh-field label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.gh-field input{width:100%;font-size:13px;padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Mono',monospace;}
+.gh-field input:focus{outline:none;border-color:var(--green);}
+.gh-modal-actions{display:flex;gap:8px;align-items:center;margin-top:1rem;flex-wrap:wrap;}
+.gh-btn-save{font-size:13px;padding:8px 18px;border-radius:var(--radius-sm);background:var(--green);color:#fff;border:none;font-family:inherit;font-weight:500;cursor:pointer;}
+.gh-btn-save:hover{background:var(--green-dark);}
+.gh-btn-cancel{font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--text2);border:.5px solid var(--border2);font-family:inherit;cursor:pointer;}
+.gh-btn-cancel:hover{background:var(--surface2);}
+.gh-btn-disconnect{font-size:12px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--coral-dark);border:.5px solid var(--coral);font-family:inherit;cursor:pointer;}
+.gh-modal-msg{font-size:12px;color:var(--text2);}
+/* Topic pills on day cards */
+.day-topic-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.day-topic-pill{font-size:10px;padding:2px 9px;border-radius:99px;border:.5px solid;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.day-topic-pill:hover{opacity:.7;}
+.topic-days{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.topic-day-btn{font-size:11px;padding:2px 8px;border-radius:99px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
+.topic-day-btn:hover{background:var(--surface3);color:var(--text);}
+.topic-day-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+/* Layout */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;}
+.app{max-width:860px;margin:0 auto;padding:1.5rem 1.25rem 4rem;}
+.breadcrumb{font-size:12px;color:var(--text3);margin-bottom:1rem;display:flex;align-items:center;gap:6px;}
+.breadcrumb a{color:var(--text3);text-decoration:none;}
+.breadcrumb a:hover{color:var(--text);}
+.breadcrumb-sep{color:var(--text3);}
+/* Hero */
+.course-hero{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:1.5rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.course-hero-top{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1rem;}
+.course-icon-wrap{flex-shrink:0;}
+.course-icon{width:56px;height:56px;border-radius:14px;background:#24292F;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;letter-spacing:-.02em;}
+.course-title-block{flex:1;min-width:0;}
+.course-title-block h1{font-size:22px;font-weight:700;letter-spacing:-.03em;line-height:1.2;margin-bottom:6px;}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.tag{font-size:10px;padding:2px 8px;border-radius:99px;background:var(--surface2);color:var(--text2);border:.5px solid var(--border);}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px;}
+.meta-item{display:flex;flex-direction:column;gap:2px;padding:8px 12px;background:var(--surface2);border-radius:var(--radius-sm);border:.5px solid var(--border);}
+.meta-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:500;}
+.meta-val{font-size:13px;font-weight:600;color:var(--text);}
+/* Progress strip */
+.prog-strip{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.prog-strip-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.prog-label{font-size:13px;font-weight:600;}
+.prog-pct{font-size:13px;color:var(--text2);}
+.bar-bg{height:6px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-bottom:10px;}
+.bar-fill{height:100%;background:var(--green);border-radius:99px;transition:width .4s;}
+.readiness{font-size:12px;font-weight:500;padding:4px 10px;border-radius:99px;display:inline-block;margin-bottom:10px;}
+.readiness.early{background:var(--surface2);color:var(--text2);}
+.readiness.close{background:var(--amber-light);color:var(--amber);}
+.readiness.ready{background:var(--green-light);color:var(--green-dark);}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+@media(max-width:640px){.stats-grid{grid-template-columns:repeat(2,1fr);}.hero-meta{flex-direction:column;}.topic-grid{grid-template-columns:1fr;}}
+.stat{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;border:.5px solid var(--border);}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.stat-val{font-size:20px;font-weight:700;letter-spacing:-.03em;}
+.stat-val.ok{color:var(--green-dark);}
+.stat-val.warn{color:var(--amber);}
+.stat-val.danger{color:var(--coral);}
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:1rem;background:var(--surface);border-radius:var(--radius-sm);padding:4px;border:.5px solid var(--border);overflow-x:auto;}
+.tab{flex:1;font-size:12px;padding:7px 6px;border-radius:6px;border:none;background:none;color:var(--text2);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;font-weight:500;}
+.tab:hover{background:var(--surface2);color:var(--text);}
+.tab.active{background:var(--surface3);color:var(--text);font-weight:600;}
+.panel{display:none;}
+.panel.active{display:block;}
+/* Day cards */
+.day-card{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow);transition:box-shadow .15s;}
+.day-card.completed{border-color:var(--green);}
+.day-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
+.day-header:hover{background:var(--surface2);}
+.day-num{width:32px;height:32px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text2);flex-shrink:0;font-family:'DM Mono',monospace;}
+.day-card.completed .day-num{background:var(--green);color:#fff;}
+.day-meta{flex:1;min-width:0;}
+.day-title{font-size:14px;font-weight:600;line-height:1.3;margin-bottom:2px;}
+.day-sub{font-size:11px;color:var(--text3);}
+.day-badge{font-size:10px;padding:3px 8px;border-radius:99px;font-weight:600;flex-shrink:0;}
+.badge-learn{background:var(--blue-light);color:var(--blue-dark);}
+.badge-practice{background:var(--purple-light);color:var(--purple);}
+.badge-review{background:var(--amber-light);color:var(--amber);}
+.badge-exam{background:var(--green-light);color:var(--green-dark);}
+.chevron{font-size:12px;color:var(--text3);flex-shrink:0;transition:transform .2s;}
+.day-card.open .chevron{transform:rotate(90deg);}
+.day-body{padding:0 16px 16px;border-top:.5px solid var(--border);display:none;}
+.day-card.open .day-body{display:block;padding-top:14px;}
+.tip-box{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--text2);line-height:1.6;border-left:3px solid var(--green);}
+.task-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.task{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.5;}
+.resources-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.res-pill{font-size:11px;padding:4px 10px;border-radius:99px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);display:inline-flex;align-items:center;gap:4px;transition:all .15s;}
+.score-badge{font-size:11px;padding:3px 8px;border-radius:99px;font-weight:600;}
+/* Topics */
+.topic-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.topic-card{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:1.25rem;box-shadow:var(--shadow);}
+.topic-card h4{font-size:14px;font-weight:600;margin-bottom:8px;}
+.t-bar-bg{height:5px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-bottom:6px;}
+.t-bar-fill{height:100%;border-radius:99px;transition:width .4s;}
+.t-pct{font-size:11px;color:var(--text3);margin-bottom:6px;}
+/* AI */
+.ai-card{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:1.25rem;margin-bottom:10px;box-shadow:var(--shadow);}
+.ai-card-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+.ai-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ai-card-title{font-size:14px;font-weight:600;margin-bottom:3px;}
+.ai-card-sub{font-size:11px;color:var(--text2);}
+.ai-card-body{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:6px;}
+/* Exam */
+.exam-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1rem;}
+.exam-card{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:1.25rem;box-shadow:var(--shadow);}
+.exam-card-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.exam-card-val{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:3px;}
+.exam-card-sub{font-size:11px;color:var(--text2);}
+/* Resources */
+.res-section{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:1.25rem;margin-bottom:10px;box-shadow:var(--shadow);}
+.res-section-title{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text);}
+.res-link-list{display:flex;flex-direction:column;gap:10px;}
+.res-link-item{display:flex;align-items:flex-start;gap:10px;}
+.res-link-index{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);flex-shrink:0;padding-top:2px;width:20px;}
+.res-link-body a{font-size:13px;font-weight:500;color:var(--blue-dark);text-decoration:none;}
+.res-link-body a:hover{text-decoration:underline;}
+.res-link-desc{font-size:11px;color:var(--text3);margin-top:2px;}
+/* Info box */
+.info-box{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+/* Sync badge */
+.sync-badge{font-size:11px;padding:4px 10px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s;}
+.sync-badge:hover{background:var(--surface2);color:var(--text);}
+.sync-badge.connected{color:var(--green-dark);border-color:var(--green);}
+.sync-badge.syncing{color:var(--amber);border-color:var(--amber);}
+.sync-badge.error{color:var(--coral);border-color:var(--coral);}
+/* Footer */
+.page-footer{text-align:center;font-size:11px;color:var(--text3);margin-top:2rem;padding-top:1rem;border-top:.5px solid var(--border);display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.page-footer a{color:var(--text3);}
+.page-footer a:hover{color:var(--text);}
+</style>
+<script>(function(){const t=localStorage.getItem('cj-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="../../index.html">
+      <div class="brand-mark">CJ</div>
+      certified-journeys
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" id="theme-btn" aria-label="Switch to dark mode" onclick="toggleTheme()"></button>
+      <a class="nav-gh-icon" href="https://github.com/certified-journeys" target="_blank" aria-label="GitHub">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
+<div class="app">
+
+  <div class="breadcrumb">
+    <a href="../../index.html">certified-journeys</a>
+    <span class="breadcrumb-sep">›</span>
+    <span>GitHub Actions for MLOps</span>
+  </div>
+
+  <div class="course-hero">
+    <div class="course-hero-top">
+      <div class="course-icon-wrap">
+        <div class="course-icon">GA</div>
+      </div>
+      <div class="course-title-block">
+        <h1>GitHub Actions for MLOps</h1>
+        <div class="tag-row">
+          <span class="tag">CI/CD</span>
+          <span class="tag">MLOps</span>
+          <span class="tag">GitHub</span>
+          <span class="tag">Automation</span>
+          <span class="tag">DevOps</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div class="meta-item">
+        <span class="meta-label">Cost</span>
+        <span class="meta-val">Free</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Duration</span>
+        <span class="meta-val">7 days</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Provider</span>
+        <span class="meta-val">GitHub (Self-paced)</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Difficulty</span>
+        <span class="meta-val">Intermediate</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prog-strip">
+    <div class="prog-strip-top">
+      <span class="prog-label">Overall progress</span>
+      <span class="prog-pct" id="prog-pct">0 / 7 days</span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+    <span class="readiness early" id="readiness-badge">Just getting started</span>
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-label">Days done</div>
+        <div class="stat-val" id="stat-done">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Avg score</div>
+        <div class="stat-val" id="stat-score">—</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Hours logged</div>
+        <div class="stat-val" id="stat-hours">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Streak</div>
+        <div class="stat-val" id="stat-streak">0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showPanel('schedule',this)">📅 Daily Plan</button>
+    <button class="tab" onclick="showPanel('topics',this)">📚 Topics</button>
+    <button class="tab" onclick="showPanel('ai',this)">🤖 AI Tools</button>
+    <button class="tab" onclick="showPanel('resources',this)">🔗 Resources</button>
+    <button class="tab" onclick="showPanel('exam',this)">🎓 Exam Prep</button>
+  </div>
+
+  <div id="panel-schedule"  class="panel active"></div>
+  <div id="panel-topics"    class="panel"></div>
+  <div id="panel-ai"        class="panel"></div>
+  <div id="panel-resources" class="panel"></div>
+  <div id="panel-exam"      class="panel"></div>
+
+  <div class="page-footer">
+    <button class="sync-badge" id="sync-badge" onclick="openGHModal()">☁ Connect GitHub</button>
+    · <span id="sk-display">cj_github-actions-certified_v1</span> · <a href="../../index.html">← All journeys</a>
+  </div>
+
+</div>
+
+<!-- GitHub sync modal -->
+<div class="gh-modal" id="gh-modal" onclick="if(event.target===this)closeGHModal()">
+  <div class="gh-modal-box">
+    <h3>☁ GitHub Sync</h3>
+    <p class="gh-modal-sub">Progress is committed to <code>courses/github-actions-certified/progress.json</code>
+    in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
+    <div class="gh-field"><label>Personal Access Token</label><input id="gh-pat" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+    <div class="gh-field"><label>Owner</label><input id="gh-owner" type="text" placeholder="your-username"></div>
+    <div class="gh-field"><label>Repository</label><input id="gh-repo" type="text" placeholder="certified-journeys.github.io"></div>
+    <div class="gh-field"><label>Branch</label><input id="gh-branch" type="text" placeholder="main"></div>
+    <div class="gh-modal-actions">
+      <button class="gh-btn-save" onclick="saveGHCreds()">Test &amp; Save</button>
+      <button class="gh-btn-cancel" onclick="closeGHModal()">Cancel</button>
+      <button class="gh-btn-disconnect" id="gh-disconnect-btn" style="display:none" onclick="disconnectGH()">Disconnect</button>
+      <span class="gh-modal-msg" id="gh-modal-msg"></span>
+    </div>
+  </div>
+</div>
+
+<script src="../../github-sync.js"></script>
+<script>
+if (typeof GHSync === 'undefined') {
+  window.GHSync = {
+    isConnected: () => false, saveCreds: () => {}, getCreds: () => null,
+    connect: async () => ({ok:false,msg:''}), fetchState: async () => null,
+    pushState: async () => false, saveDebounced: () => {},
+    testConnection: async () => ({ok:false,msg:''}),
+    exportConfig: () => '', importConfig: () => null, getLastSynced: () => null
+  };
+}
+
+const COURSE_ID   = 'github-actions-certified';
+const STORAGE_KEY = 'cj_github-actions-certified_v1';
+const TOTAL_DAYS  = 7;
+
+const NOTEBOOKS = [
+  'day-01-actions-fundamentals',
+  'day-02-yaml-syntax',
+  'day-03-reusable-workflows',
+  'day-04-matrix-and-caching',
+  'day-05-secrets-and-security',
+  'day-06-ml-cicd-patterns',
+  'day-07-capstone-ml-pipeline'
+];
+
+const days = [
+  {
+    title: "GitHub Actions Fundamentals — Workflows, Jobs, Steps, and Triggers",
+    badge: "learn",
+    sub: "Day 1 · Fundamentals",
+    tasks: [
+      {text: "Read the GitHub Actions quickstart guide", url: "https://docs.github.com/en/actions/writing-workflows/quickstart"},
+      "Create a hello-world workflow: one job, one step, triggered on push to main",
+      "Add a second job that depends on the first using needs: and inspect the job graph",
+      "Trigger the same workflow on push, pull_request, and workflow_dispatch — observe which events fire",
+      {text: "Read the events that trigger workflows reference", url: "https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows"}
+    ],
+    resources: [
+      {text: "GitHub Actions Quickstart", url: "https://docs.github.com/en/actions/writing-workflows/quickstart"},
+      {text: "Events That Trigger Workflows", url: "https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows"},
+      {text: "GitHub Skills — Introduction to GitHub Actions", url: "https://skills.github.com/"}
+    ],
+    tip: "Jobs run in parallel by default. needs: is the only thing that serializes them. If you forget needs:, your deploy job will race your test job — and sometimes win.",
+    hasScore: false
+  },
+  {
+    title: "YAML Syntax Deep Dive — on, jobs, steps, uses, with, env",
+    badge: "learn",
+    sub: "Day 2 · YAML and Syntax",
+    tasks: [
+      {text: "Read the workflow syntax reference", url: "https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions"},
+      "Write a workflow that sets environment variables at three levels: workflow, job, and step — verify precedence",
+      "Use actions/checkout@v4 and actions/setup-python@v5 with explicit with: inputs",
+      "Add a run: step with a multi-line shell script using the | YAML literal block scalar",
+      {text: "Read the contexts and expressions reference", url: "https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/contexts"}
+    ],
+    resources: [
+      {text: "Workflow Syntax Reference", url: "https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions"},
+      {text: "Contexts and Expressions", url: "https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/contexts"},
+      {text: "actions/checkout", url: "https://github.com/actions/checkout"}
+    ],
+    tip: "YAML indentation errors are the #1 cause of 'workflow file is invalid' errors. Always use 2-space indentation, never tabs, and validate locally with actionlint before pushing.",
+    hasScore: false
+  },
+  {
+    title: "Reusable Workflows and Composite Actions",
+    badge: "practice",
+    sub: "Day 3 · Reuse Patterns",
+    tasks: [
+      {text: "Read the reusable workflows guide", url: "https://docs.github.com/en/actions/sharing-automations/reusing-workflows"},
+      "Extract a lint + test job into a reusable workflow triggered by workflow_call with one input and one secret",
+      "Call the reusable workflow from two separate caller workflows and verify both pass",
+      {text: "Read the composite actions guide", url: "https://docs.github.com/en/actions/sharing-automations/creating-actions/creating-a-composite-action"},
+      "Build a composite action that installs Python dependencies and caches them — use it in 3 steps of a single job"
+    ],
+    resources: [
+      {text: "Reusing Workflows", url: "https://docs.github.com/en/actions/sharing-automations/reusing-workflows"},
+      {text: "Creating a Composite Action", url: "https://docs.github.com/en/actions/sharing-automations/creating-actions/creating-a-composite-action"},
+      {text: "Security Hardening for GitHub Actions", url: "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions"}
+    ],
+    tip: "Use reusable workflows when you need a full job with its own runner and environment isolation. Use composite actions when you just need to share a few steps inside a job. The key difference: only reusable workflows can use secrets: inherit.",
+    hasScore: true
+  },
+  {
+    title: "Matrix Strategies and Dependency Caching",
+    badge: "practice",
+    sub: "Day 4 · Performance and Security",
+    tasks: [
+      {text: "Read the matrix strategy documentation", url: "https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-matrix"},
+      "Build a matrix that tests across Python 3.10, 3.11, 3.12 and Ubuntu + macOS — verify 6 parallel jobs fire",
+      "Add fail-fast: false and max-parallel: 3 and observe the difference in job behavior",
+      {text: "Read the caching dependencies guide", url: "https://docs.github.com/en/actions/writing-workflows/caching-dependencies-to-speed-up-workflows"},
+      "Add actions/cache with a pip cache key based on hashFiles and verify cache hit on second run"
+    ],
+    resources: [
+      {text: "Matrix Strategy Docs", url: "https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-matrix"},
+      {text: "Caching Dependencies", url: "https://docs.github.com/en/actions/writing-workflows/caching-dependencies-to-speed-up-workflows"},
+      {text: "actions/cache", url: "https://github.com/actions/cache"}
+    ],
+    tip: "Cache keys must be deterministic and specific. A key like runner.os-pip-hashFiles adds a restore-keys: fallback for partial hits when requirements change.",
+    hasScore: true
+  },
+  {
+    title: "Secrets Management and Security Best Practices",
+    badge: "practice",
+    sub: "Day 5 · Performance and Security",
+    tasks: [
+      {text: "Read the encrypted secrets guide", url: "https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions"},
+      "Add a repository secret and consume it in a workflow step — verify it is masked in logs",
+      {text: "Read the security hardening guide", url: "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions"},
+      "Scope GITHUB_TOKEN permissions to least-privilege using the permissions: key at the job level",
+      {text: "Read the OIDC guide", url: "https://docs.github.com/en/actions/security-for-github-actions/security-guides/about-security-hardening-with-openid-connect"}
+    ],
+    resources: [
+      {text: "Using Secrets in GitHub Actions", url: "https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions"},
+      {text: "Security Hardening for GitHub Actions", url: "https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions"},
+      {text: "About OIDC with GitHub Actions", url: "https://docs.github.com/en/actions/security-for-github-actions/security-guides/about-security-hardening-with-openid-connect"}
+    ],
+    tip: "Never echo a secret directly. GitHub masks registered secrets in logs, but echo $MY_SECRET | base64 will print it unmasked. Pass secrets via environment variables to subprocess calls, never via positional arguments.",
+    hasScore: true
+  },
+  {
+    title: "ML-Specific Patterns — Training, Evaluation, and Model Registry",
+    badge: "practice",
+    sub: "Day 6 · ML Patterns and Capstone",
+    tasks: [
+      {text: "Read the GitHub Releases API documentation", url: "https://docs.github.com/en/rest/releases/assets"},
+      "Write a workflow that trains a sklearn model on push to main and uploads the .pkl file as a release asset",
+      "Add an evaluation step that fails the workflow if accuracy drops below a threshold",
+      {text: "Read the DVC GitHub Actions integration guide", url: "https://dvc.org/doc/start/data-management/data-versioning"},
+      {text: "Add a step that posts a PR comment with evaluation results using actions/github-script", url: "https://github.com/actions/github-script"}
+    ],
+    resources: [
+      {text: "GitHub Releases — Uploading Assets", url: "https://docs.github.com/en/rest/releases/assets"},
+      {text: "DVC — Data Versioning with GitHub Actions", url: "https://dvc.org/doc/start/data-management/data-versioning"},
+      {text: "actions/github-script", url: "https://github.com/actions/github-script"}
+    ],
+    tip: "Use softprops/action-gh-release to upload model artifacts to GitHub Releases — it handles asset uploads and tag creation in one step. Pin it to a commit SHA, not a tag, to prevent supply chain attacks.",
+    hasScore: true
+  },
+  {
+    title: "Capstone — Full ML CI/CD Pipeline",
+    badge: "exam",
+    sub: "Day 7 · ML Patterns and Capstone",
+    tasks: [
+      "Design the full pipeline on paper: triggers, jobs, steps, artifacts, and quality gates",
+      "Write the test job: run pytest tests/ and fail fast if any test fails",
+      "Write the train job: depends on test, trains sklearn model, saves .pkl artifact with actions/upload-artifact",
+      "Write the evaluate job: downloads the artifact, scores it on a held-out set, fails if accuracy < threshold",
+      "Write the release job: depends on evaluate, uploads .pkl to GitHub Releases",
+      "Write a PR comment step using actions/github-script that posts accuracy and a confusion matrix markdown table"
+    ],
+    resources: [
+      {text: "actions/upload-artifact and download-artifact", url: "https://github.com/actions/upload-artifact"},
+      {text: "softprops/action-gh-release", url: "https://github.com/softprops/action-gh-release"},
+      {text: "actions/github-script", url: "https://github.com/actions/github-script"}
+    ],
+    tip: "The hardest part of the capstone is passing the model artifact between jobs. Use actions/upload-artifact in the train job and actions/download-artifact in evaluate and release. Both must reference the exact same artifact name.",
+    hasScore: false
+  }
+];
+
+const topics = [
+  {name: "Fundamentals", color: "#24292F", days: [0, 1]},
+  {name: "YAML and Syntax", color: "#0891B2", days: [1, 2]},
+  {name: "Reuse Patterns", color: "#7F77DD", days: [2, 3]},
+  {name: "Performance and Security", color: "#E8890C", days: [3, 4]},
+  {name: "ML Patterns and Capstone", color: "#BA7517", days: [5, 6]}
+];
+
+const exam = {
+  questions:  null,
+  minutes:    null,
+  passScore:  "N/A",
+  cost:       "Free",
+  provider:   "GitHub (Self-paced)",
+  link:       "https://skills.github.com/",
+  notes:      "No formal exam. Seven days building automated ML pipelines with GitHub Actions. Ship a full ML CI/CD pipeline as the capstone."
+};
+
+let state = {
+  completed:    [],
+  scores:       {},
+  hours:        {},
+  completedAt:  {},
+  tasksDone:    {},
+  openDay:      null,
+  startDate:    null,
+  lastActivity: null,
+  status:       'not_started'
+};
+
+async function loadState() {
+  try { const s = localStorage.getItem(STORAGE_KEY); if (s) state = {...state, ...JSON.parse(s)}; } catch(e) {}
+  if (GHSync.isConnected()) {
+    updateSyncBadge('syncing');
+    const gh = await GHSync.fetchState(COURSE_ID);
+    if (gh) { state = {...state, ...gh}; try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
+    updateSyncBadge(gh ? 'connected' : 'error');
+  } else { updateSyncBadge('disconnected'); }
+}
+
+function saveState() {
+  const done = state.completed.length;
+  const total = TOTAL_DAYS;
+  if (done === 0) state.status = 'not_started';
+  else if (done < total) state.status = 'in_progress';
+  else state.status = 'completed';
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  broadcastStatus();
+  if (GHSync.isConnected())
+    GHSync.saveDebounced(COURSE_ID, state, 2500,
+      () => updateSyncBadge('syncing'),
+      ok => updateSyncBadge(ok ? 'connected' : 'error'));
+}
+
+function broadcastStatus() {
+  const summary = {
+    id: COURSE_ID, status: state.status,
+    completed: state.completed.length, total: TOTAL_DAYS,
+    scores: Object.values(state.scores).filter(s => s > 0),
+    totalHours: Object.values(state.hours).reduce((a, b) => a + b, 0),
+    completedAt: state.completedAt, startDate: state.startDate,
+    lastActivity: state.lastActivity
+  };
+  try { localStorage.setItem('cj_summary_' + COURSE_ID, JSON.stringify(summary)); } catch(e) {}
+}
+
+function resetAll() {
+  if (!confirm('Reset all progress for this course?')) return;
+  state = {completed:[], scores:{}, hours:{}, completedAt:{}, tasksDone:{}, openDay:null, startDate:null, lastActivity:null, status:'not_started'};
+  saveState(); renderAll();
+}
+
+function isCompleted(i) { return state.completed.includes(i); }
+
+function toggleComplete(i) {
+  const now = new Date().toISOString();
+  if (isCompleted(i)) {
+    state.completed = state.completed.filter(x => x !== i);
+    delete state.completedAt[i];
+  } else {
+    state.completed.push(i);
+    state.completedAt[i] = now;
+    state.lastActivity = now;
+    if (!state.startDate) state.startDate = now;
+  }
+  saveState(); renderSchedule(); updateStats();
+}
+
+function toggleDay(i) {
+  state.openDay = state.openDay === i ? null : i;
+  saveState(); renderSchedule();
+}
+
+function logScore(i, val) {
+  state.scores[i] = parseFloat(val) || 0;
+  saveState(); updateStats();
+}
+
+function logHours(i, val) {
+  state.hours[i] = parseFloat(val) || 0;
+  saveState(); updateStats();
+}
+
+function scoreClass(s) {
+  if (s >= 80) return 'ok';
+  if (s >= 65) return 'warn';
+  return 'danger';
+}
+
+function badgeClass(b) {
+  return 'badge-' + b;
+}
+
+function badgeLabel(b) {
+  return {learn:'Learn', practice:'Practice', review:'Review', exam:'Capstone'}[b] || b;
+}
+
+const dayTopics = (() => {
+  const m = {};
+  topics.forEach(t => t.days.forEach(d => { (m[d] = m[d] || []).push(t); }));
+  return m;
+})();
+
+function goToDay(i) {
+  showPanel('schedule', document.querySelector('.tab'));
+  setTimeout(() => {
+    state.openDay = i; saveState(); renderSchedule();
+    const el = document.querySelector('.day-card:nth-child(' + (i + 1) + ')');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
+
+function renderTask(t, di, ti) {
+  const done = (state.tasksDone[di] || []).includes(ti);
+  const text = typeof t === 'string' ? t : t.text;
+  const link = (typeof t === 'object' && t.url)
+    ? `<a class="task-link" href="${t.url}" target="_blank" rel="noopener">↗</a>` : '';
+  return `<div class="task${done ? ' task-done' : ''}">
+    <button class="task-tick${done ? ' ticked' : ''}"
+      onclick="event.stopPropagation();tickTask(${di},${ti})"></button>
+    <span>${text}</span>${link}
+  </div>`;
+}
+
+function tickTask(di, ti) {
+  const arr = state.tasksDone[di] || (state.tasksDone[di] = []);
+  const idx = arr.indexOf(ti);
+  if (idx === -1) arr.push(ti); else arr.splice(idx, 1);
+  const total = days[di].tasks.length;
+  const done  = arr.length;
+  if (done === total && !isCompleted(di)) { toggleComplete(di); return; }
+  if (done < total  &&  isCompleted(di)) {
+    state.completed = state.completed.filter(x => x !== di);
+    delete state.completedAt[di];
+  }
+  saveState(); renderSchedule();
+}
+
+function renderRes(r) {
+  if (typeof r === 'string')
+    return `<span class="res-pill">📎 ${r}</span>`;
+  return r.url
+    ? `<a class="res-pill" href="${r.url}" target="_blank" rel="noopener">📎 ${r.text}</a>`
+    : `<span class="res-pill">📎 ${r.text}</span>`;
+}
+
+function renderSchedule() {
+  document.getElementById('panel-schedule').innerHTML = days.map((d, i) => {
+    const comp  = isCompleted(i);
+    const open  = state.openDay === i;
+    const score = state.scores[i];
+    const hrs   = state.hours[i];
+    const tot   = d.tasks.length;
+    const ticksDone = (state.tasksDone[i] || []).length;
+    const pct   = tot ? Math.round(ticksDone / tot * 100) : 0;
+    return `<div class="day-card${comp?' completed':''}${open?' open':''}" id="day-card-${i}">
+      <div class="day-header" onclick="toggleDay(${i})">
+        <div class="day-num">${comp ? '✓' : i+1}</div>
+        <div class="day-meta">
+          <div class="day-title">${d.title}</div>
+          <div class="day-sub">${d.sub}</div>
+        </div>
+        <span class="day-badge ${badgeClass(d.badge)}">${badgeLabel(d.badge)}</span>
+        <span class="chevron">›</span>
+      </div>
+      ${open ? `<div class="day-body">
+        <div class="nb-row">
+          <a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a>
+          <a class="nb-btn nb-btn-colab"
+             href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/${COURSE_ID}/notebooks/${NOTEBOOKS[i]}.ipynb"
+             target="_blank">▶ Open in Colab</a>
+          <a class="nb-btn" href="https://github.com/certified-journeys/certified-journeys.github.io/edit/main/courses/${COURSE_ID}/notes/day-${String(i+1).padStart(2,'0')}.md" target="_blank">📝 notes/day-${String(i+1).padStart(2,'0')}.md</a>
+        </div>
+        <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
+        ${(dayTopics[i]||[]).length ? `<div class="day-topic-pills">
+          ${(dayTopics[i]||[]).map(t => `<span class="day-topic-pill"
+            style="background:${t.color}18;color:${t.color};border-color:${t.color}40"
+            onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])"
+            title="View topic in Topics tab">${t.name}</span>`).join('')}
+        </div>` : ''}
+        ${tot ? `<div class="task-progress"><div class="task-progress-fill" style="width:${pct}%"></div></div>` : ''}
+        <div class="task-list">${d.tasks.map((t, j) => renderTask(t, i, j)).join('')}</div>
+        <div class="resources-row">${d.resources.map(renderRes).join('')}</div>
+        ${d.hasScore ? `<div class="score-row"><label>Practice score (%):</label><input type="number" min="0" max="100" placeholder="e.g. 84" value="${score||''}" onchange="logScore(${i},this.value)">${score ? `<span class="score-badge ${scoreClass(score)==='ok'?'badge-learn':scoreClass(score)==='warn'?'badge-review':'badge-exam'}">${score}%</span>` : ''}</div>` : ''}
+        <div class="hours-row"><label>Hours spent today:</label><input type="number" min="0" max="24" step="0.5" placeholder="e.g. 2.5" value="${hrs||''}" onchange="logHours(${i},this.value)"><span style="font-size:11px;color:var(--text3);">hrs</span></div>
+        <button class="complete-btn ${comp?'done':''}" onclick="event.stopPropagation();toggleComplete(${i})">${comp?'✓ Completed':'Mark as complete'}</button>
+      </div>` : ''}
+    </div>`;
+  }).join('') + `<div style="margin-top:1rem;text-align:right;"><button onclick="resetAll()" style="font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;font-family:inherit;">Reset all progress</button></div>`;
+}
+
+function renderTopics() {
+  document.getElementById('panel-topics').innerHTML = `<div class="topic-grid">${
+    topics.map(t => {
+      const cov = t.days.filter(d => state.completed.includes(d)).length;
+      const pct = Math.round((cov / t.days.length) * 100);
+      const dayBtns = t.days.map(d =>
+        `<button class="topic-day-btn${state.completed.includes(d) ? ' done' : ''}"
+          onclick="goToDay(${d})">Day ${d + 1}</button>`
+      ).join('');
+      return `<div class="topic-card">
+        <h4>${t.name}</h4>
+        <div class="t-bar-bg"><div class="t-bar-fill" style="width:${pct}%;background:${t.color}"></div></div>
+        <div class="t-pct">${pct}% covered · ${cov}/${t.days.length} sessions</div>
+        <div class="topic-days">${dayBtns}</div>
+      </div>`;
+    }).join('')
+  }</div>`;
+}
+
+function renderAI() {
+  document.getElementById('panel-ai').innerHTML = `
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#E8F0FE;">🎙</div>
+        <div>
+          <div class="ai-card-title">NotebookLM — Audio Podcast Summary</div>
+          <div class="ai-card-sub">Generate a personalized audio briefing of your learning</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Upload your day-card notes plus the official docs as sources in NotebookLM, then generate a podcast covering key concepts and exam traps.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Audio:
+"Create a 10-minute podcast episode for someone studying GitHub Actions for MLOps. Cover: GitHub Actions runner architecture — the difference between GitHub-hosted runners (ephemeral VMs reset after every job, billed per minute) and self-hosted runners (persistent, GPU-capable, zero billed minutes), and why ephemeral runners make secret injection safe but make model weight caching expensive — and how actions/cache with a deterministic cache key bridges the gap, reusable workflow vs composite action vs action.yml — when each abstraction is the right choice: reusable workflows (workflow_call) for full job-level isolation with their own runner and environment, composite actions for step-level reuse within the calling job's runner, and action.yml published to the Marketplace for cross-org sharing — and the one thing only reusable workflows can do: inherit secrets with secrets: inherit, and ML pipeline security with OIDC — how to scope GITHUB_TOKEN permissions to least-privilege (contents: read, packages: write), why environment protection rules block accidental prod deployments by requiring manual approval, and how OpenID Connect (OIDC) lets a workflow authenticate to AWS or GCP without storing long-lived credentials as repository secrets — include the most common misconceptions and the 3 things that will trip you up on the exam."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#FEF3E2;">🃏</div>
+        <div>
+          <div class="ai-card-title">NotebookLM — AI Flashcards</div>
+          <div class="ai-card-sub">Generate quiz cards from your notes</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Upload your notes and the official docs to NotebookLM and use the Study Guide feature to generate Q&amp;A flashcards.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Quiz:
+"Generate 20 flashcard-style Q&A pairs for someone studying GitHub Actions for MLOps. Include at least 5 cards on GitHub Actions runner architecture — the difference between GitHub-hosted runners (ephemeral VMs reset after every job, billed per minute) and self-hosted runners (persistent, GPU-capable, zero billed minutes), and why ephemeral runners make secret injection safe but make model weight caching expensive — and how actions/cache with a deterministic cache key bridges the gap, 5 on reusable workflow vs composite action vs action.yml — when each abstraction is the right choice: reusable workflows (workflow_call) for full job-level isolation with their own runner and environment, composite actions for step-level reuse within the calling job's runner, and action.yml published to the Marketplace for cross-org sharing — and the one thing only reusable workflows can do: inherit secrets with secrets: inherit, and 5 on ML pipeline security with OIDC — how to scope GITHUB_TOKEN permissions to least-privilege (contents: read, packages: write), why environment protection rules block accidental prod deployments by requiring manual approval, and how OpenID Connect (OIDC) lets a workflow authenticate to AWS or GCP without storing long-lived credentials as repository secrets. Focus on concept distinctions, common misconceptions, and scenario-based questions."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#EEE9FF;">💬</div>
+        <div>
+          <div class="ai-card-title">Claude — Deep Dive Prompts</div>
+          <div class="ai-card-sub">Use when a concept isn't clicking</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Copy any of these prompts directly into Claude when you need a deeper explanation.</div>
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior engineer:
+"I'm studying GitHub Actions for MLOps. Explain GitHub Actions runner architecture — the difference between GitHub-hosted runners (ephemeral VMs reset after every job, billed per minute) and self-hosted runners (persistent, GPU-capable, zero billed minutes), and why ephemeral runners make secret injection safe but make model weight caching expensive — and how actions/cache with a deterministic cache key bridges the gap as if I'm already experienced. Skip the basics — focus on nuance, edge cases, and real-world decisions."
+
+Prompt 2 — Exam scenario questions:
+"Give me 5 scenario-based exam questions for GitHub Actions for MLOps on reusable workflow vs composite action vs action.yml — when each abstraction is the right choice: reusable workflows (workflow_call) for full job-level isolation with their own runner and environment, composite actions for step-level reuse within the calling job's runner, and action.yml published to the Marketplace for cross-org sharing — and the one thing only reusable workflows can do: inherit secrets with secrets: inherit. After each question, explain why the correct answer is right and why the distractors are wrong."
+
+Prompt 3 — Gap analysis study plan:
+"I've studied GitHub Actions for MLOps but I'm unsure about ML pipeline security with OIDC — how to scope GITHUB_TOKEN permissions to least-privilege (contents: read, packages: write), why environment protection rules block accidental prod deployments by requiring manual approval, and how OpenID Connect (OIDC) lets a workflow authenticate to AWS or GCP without storing long-lived credentials as repository secrets. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+    </div>`;
+}
+
+function renderResources() {
+  document.getElementById('panel-resources').innerHTML = `
+    <div class="res-section">
+      <div class="res-section-title">📖 Core Reading</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">01</span>
+          <div class="res-link-body">
+            <a href="https://docs.github.com/en/actions/writing-workflows/quickstart" target="_blank">GitHub Actions Quickstart</a>
+            <div class="res-link-desc">Official 5-minute guide to writing your first workflow file</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">02</span>
+          <div class="res-link-body">
+            <a href="https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions" target="_blank">Workflow Syntax Reference</a>
+            <div class="res-link-desc">Complete reference for on:, jobs:, steps:, uses:, with:, env:, and all top-level keys</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">03</span>
+          <div class="res-link-body">
+            <a href="https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows" target="_blank">Events That Trigger Workflows</a>
+            <div class="res-link-desc">Every event type: push, pull_request, schedule, workflow_dispatch, workflow_call, and more</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">04</span>
+          <div class="res-link-body">
+            <a href="https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/contexts" target="_blank">Contexts and Expressions</a>
+            <div class="res-link-desc">github, env, secrets, steps, needs, matrix context objects and expression syntax</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🛠 Hands-On Resources</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">05</span>
+          <div class="res-link-body">
+            <a href="https://skills.github.com/" target="_blank">GitHub Skills</a>
+            <div class="res-link-desc">Interactive browser-based courses from GitHub — includes Introduction to GitHub Actions</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">06</span>
+          <div class="res-link-body">
+            <a href="https://docs.github.com/en/actions/sharing-automations/reusing-workflows" target="_blank">Reusing Workflows (Reusable Workflow Guide)</a>
+            <div class="res-link-desc">Step-by-step guide to workflow_call: inputs, secrets, outputs, and calling from multiple callers</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">07</span>
+          <div class="res-link-body">
+            <a href="https://docs.github.com/en/actions/writing-workflows/caching-dependencies-to-speed-up-workflows" target="_blank">Caching Dependencies to Speed Up Workflows</a>
+            <div class="res-link-desc">How to use actions/cache, construct cache keys with hashFiles, and set restore-keys fallbacks</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">08</span>
+          <div class="res-link-body">
+            <a href="https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-matrix" target="_blank">Matrix Strategy Documentation</a>
+            <div class="res-link-desc">Run jobs across multiple OS and Python version combinations in parallel with a single job definition</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🔧 Ecosystem &amp; Tooling</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">09</span>
+          <div class="res-link-body">
+            <a href="https://github.com/actions/cache" target="_blank">actions/cache</a>
+            <div class="res-link-desc">Official action for caching pip, npm, Maven, and other package manager dependencies between runs</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">10</span>
+          <div class="res-link-body">
+            <a href="https://github.com/actions/upload-artifact" target="_blank">actions/upload-artifact</a>
+            <div class="res-link-desc">Upload files produced in one job so downstream jobs can download and use them</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">11</span>
+          <div class="res-link-body">
+            <a href="https://github.com/softprops/action-gh-release" target="_blank">softprops/action-gh-release</a>
+            <div class="res-link-desc">Community action to create GitHub Releases and upload model artifacts — pin to a commit SHA for security</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">12</span>
+          <div class="res-link-body">
+            <a href="https://github.com/actions/github-script" target="_blank">actions/github-script</a>
+            <div class="res-link-desc">Run JavaScript with the Octokit API client pre-wired — use to post PR comments with evaluation results</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">⬆ Upgrade Path</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">13</span>
+          <div class="res-link-body">
+            <a href="https://docs.github.com/en/actions/security-for-github-actions/security-guides/about-security-hardening-with-openid-connect" target="_blank">Security Hardening with OIDC</a>
+            <div class="res-link-desc">Replace long-lived AWS/GCP credentials with short-lived OIDC tokens — no secrets stored in the repo</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">14</span>
+          <div class="res-link-body">
+            <a href="https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners" target="_blank">Self-Hosted Runners</a>
+            <div class="res-link-desc">Run jobs on GPU machines or on-premises servers — essential for large model training workflows</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">15</span>
+          <div class="res-link-body">
+            <a href="https://dvc.org/doc/start/data-management/data-versioning" target="_blank">DVC — Data Versioning with GitHub Actions</a>
+            <div class="res-link-desc">Version datasets and model artifacts alongside code using DVC remote storage and GitHub Actions integration</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">16</span>
+          <div class="res-link-body">
+            <a href="https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-to-amazon-elastic-container-service" target="_blank">Deploying to Amazon ECS with GitHub Actions</a>
+            <div class="res-link-desc">End-to-end example of building a container, pushing to ECR, and deploying to ECS in a single workflow</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderExam() {
+  const checklist = [
+    "Written a workflow with 3+ dependent jobs using needs: and verified the job graph in the Actions UI",
+    "Built a reusable workflow (workflow_call) and called it from two separate caller workflows",
+    "Implemented a matrix strategy across 3 Python versions and verified all 3 jobs ran in parallel",
+    "Added actions/cache with a hashFiles-based key and confirmed cache hit on a second run",
+    "Shipped a working train → evaluate → release pipeline where the release job only fires when accuracy meets the threshold"
+  ];
+  const doneCount = state.completed.length;
+  const scoreVals = Object.values(state.scores).filter(s => s > 0);
+  const avgScore = scoreVals.length ? Math.round(scoreVals.reduce((a,b)=>a+b,0)/scoreVals.length) : null;
+  document.getElementById('panel-exam').innerHTML = `
+    <div class="exam-grid">
+      <div class="exam-card">
+        <div class="exam-card-label">Format</div>
+        <div class="exam-card-val">Project</div>
+        <div class="exam-card-sub">No formal exam — ship a capstone pipeline</div>
+      </div>
+      <div class="exam-card">
+        <div class="exam-card-label">Pass Score</div>
+        <div class="exam-card-val">N/A</div>
+        <div class="exam-card-sub">Self-assessed against the capstone rubric</div>
+      </div>
+      <div class="exam-card">
+        <div class="exam-card-label">Cost</div>
+        <div class="exam-card-val">Free</div>
+        <div class="exam-card-sub">GitHub (Self-paced)</div>
+      </div>
+      <div class="exam-card">
+        <div class="exam-card-label">Your Avg Score</div>
+        <div class="exam-card-val ${avgScore ? scoreClass(avgScore) : ''}">${avgScore ? avgScore + '%' : '—'}</div>
+        <div class="exam-card-sub">Across ${scoreVals.length} scored days</div>
+      </div>
+    </div>
+    <div class="info-box">${exam.notes}</div>
+    <div style="background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:1.25rem;box-shadow:var(--shadow);">
+      <div style="font-size:13px;font-weight:700;margin-bottom:12px;">Capstone Readiness Checklist</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.6;">Check each item only when you can honestly say you've done it — not just read about it.</div>
+      ${checklist.map((item, i) => {
+        const key = 'exam_check_' + i;
+        const checked = (state.tasksDone['exam'] || []).includes(i);
+        return `<div class="task" style="margin-bottom:10px;">
+          <button class="task-tick${checked?' ticked':''}" onclick="toggleExamCheck(${i})"></button>
+          <span style="font-size:13px;">${item}</span>
+        </div>`;
+      }).join('')}
+      <div style="margin-top:1rem;">
+        <a href="${exam.link}" target="_blank" class="nb-btn" style="display:inline-flex;">→ Go to GitHub Skills</a>
+      </div>
+    </div>`;
+}
+
+function toggleExamCheck(i) {
+  if (!state.tasksDone['exam']) state.tasksDone['exam'] = [];
+  const arr = state.tasksDone['exam'];
+  const idx = arr.indexOf(i);
+  if (idx === -1) arr.push(i); else arr.splice(idx, 1);
+  saveState(); renderExam();
+}
+
+function updateStats() {
+  const done = state.completed.length;
+  const pct  = Math.round(done / TOTAL_DAYS * 100);
+  document.getElementById('bar-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = done + ' / ' + TOTAL_DAYS + ' days';
+  document.getElementById('stat-done').textContent = done;
+  const scoreVals = Object.values(state.scores).filter(s => s > 0);
+  const avg = scoreVals.length ? Math.round(scoreVals.reduce((a,b)=>a+b,0)/scoreVals.length) : null;
+  const scoreEl = document.getElementById('stat-score');
+  scoreEl.textContent = avg ? avg + '%' : '—';
+  scoreEl.className = 'stat-val' + (avg ? ' ' + scoreClass(avg) : '');
+  const hrs = Object.values(state.hours).reduce((a,b)=>a+b,0);
+  document.getElementById('stat-hours').textContent = hrs % 1 === 0 ? hrs : hrs.toFixed(1);
+  // Simple streak: consecutive completed days from 0
+  let streak = 0;
+  for (let i = 0; i < TOTAL_DAYS; i++) {
+    if (state.completed.includes(i)) streak++; else break;
+  }
+  document.getElementById('stat-streak').textContent = streak;
+  const badge = document.getElementById('readiness-badge');
+  if (pct === 100) { badge.className = 'readiness ready'; badge.textContent = '✓ Capstone ready'; }
+  else if (pct >= 60) { badge.className = 'readiness close'; badge.textContent = 'Getting close'; }
+  else { badge.className = 'readiness early'; badge.textContent = 'Just getting started'; }
+}
+
+function showPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'topics')    renderTopics();
+  if (name === 'ai')        renderAI();
+  if (name === 'resources') renderResources();
+  if (name === 'exam')      renderExam();
+}
+
+function renderAll() {
+  renderSchedule();
+  updateStats();
+}
+
+// GitHub sync UI
+function updateSyncBadge(s) {
+  const el = document.getElementById('sync-badge'); if (!el) return;
+  const L = {disconnected:'☁ Connect GitHub', connected:'✓ Synced', syncing:'↑ Syncing…', error:'⚠ Sync failed'};
+  el.textContent = L[s] || L.disconnected;
+  el.className = 'sync-badge' + (s==='connected' ? ' connected' : s==='syncing' ? ' syncing' : s==='error' ? ' error' : '');
+}
+
+function openGHModal() {
+  const creds = GHSync.getCreds();
+  if (creds) {
+    document.getElementById('gh-pat').value    = creds.pat    || '';
+    document.getElementById('gh-owner').value  = creds.owner  || '';
+    document.getElementById('gh-repo').value   = creds.repo   || '';
+    document.getElementById('gh-branch').value = creds.branch || 'main';
+    document.getElementById('gh-disconnect-btn').style.display = 'inline-flex';
+  } else {
+    document.getElementById('gh-pat').value    = '';
+    document.getElementById('gh-owner').value  = '';
+    document.getElementById('gh-repo').value   = '';
+    document.getElementById('gh-branch').value = 'main';
+    document.getElementById('gh-disconnect-btn').style.display = 'none';
+  }
+  document.getElementById('gh-modal-msg').textContent = '';
+  document.getElementById('gh-modal').classList.add('open');
+}
+
+function closeGHModal() { document.getElementById('gh-modal').classList.remove('open'); }
+
+async function saveGHCreds() {
+  const c = {
+    pat:    document.getElementById('gh-pat').value.trim(),
+    owner:  document.getElementById('gh-owner').value.trim(),
+    repo:   document.getElementById('gh-repo').value.trim(),
+    branch: document.getElementById('gh-branch').value.trim() || 'main'
+  };
+  if (!c.pat || !c.owner || !c.repo) {
+    document.getElementById('gh-modal-msg').textContent = 'Fill in all fields.'; return;
+  }
+  document.getElementById('gh-modal-msg').textContent = 'Testing…';
+  GHSync.saveCreds(c);
+  const r = await GHSync.testConnection();
+  if (r.ok) {
+    document.getElementById('gh-modal-msg').textContent = '✓ Connected!';
+    updateSyncBadge('connected');
+    setTimeout(closeGHModal, 900);
+  } else {
+    document.getElementById('gh-modal-msg').textContent = 'Error: ' + r.msg;
+  }
+}
+
+function disconnectGH() { GHSync.saveCreds(null); updateSyncBadge('disconnected'); closeGHModal(); }
+
+// Dark mode
+const MOON = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function getEffectiveTheme(){const t=document.documentElement.getAttribute('data-theme');if(t)return t;return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+function applyThemeBtn(){const btn=document.getElementById('theme-btn');if(!btn)return;const dark=getEffectiveTheme()==='dark';btn.innerHTML=dark?SUN:MOON;btn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');}
+window.toggleTheme=function(){const next=getEffectiveTheme()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);localStorage.setItem('cj-theme',next);applyThemeBtn();};
+applyThemeBtn();
+
+loadState().then(renderAll);
+</script>
+</body>
+</html>
