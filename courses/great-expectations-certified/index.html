@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Great Expectations for Data Quality · certified-journeys</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent:#FF6B6B; --accent-light:#FFF0F0; --accent-dark:#CC3333;
+  --green:#FF6B6B; --green-light:#FFF0F0; --green-dark:#CC3333;
+  --blue:#378ADD; --blue-light:#EAF3FD; --blue-dark:#185FA5;
+  --amber:#BA7517; --amber-light:#FDF3E3;
+  --coral:#D85A30; --coral-light:#FAEDE8; --coral-dark:#993C1D;
+  --purple:#7F77DD; --purple-light:#EEEDFE;
+  --orange:#E8890C; --orange-light:#FEF3E2;
+  --teal:#0891B2; --teal-light:#E0F5FA;
+  --bg:#F5F4F0; --surface:#FFFFFF; --surface2:#EEECE5; --surface3:#E8E6DF;
+  --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.16);
+  --text:#18181A; --text2:#52524E; --text3:#8C8B85;
+  --radius:14px; --radius-sm:9px; --radius-xs:5px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.06);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#330000;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}}
+[data-theme="dark"]{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#330000;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}
+/* Nav */
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);border-bottom:0.5px solid var(--border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav{background:rgba(26,26,26,0.85);}}
+[data-theme="dark"] nav{background:rgba(26,26,26,0.85);}
+.nav-inner{max-width:860px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-0.025em;color:var(--text);text-decoration:none;}
+.nav-brand:hover{text-decoration:none;opacity:0.85;}
+.brand-mark{width:32px;height:32px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-gh{font-size:12px;padding:6px 14px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;gap:5px;transition:all 0.15s;text-decoration:none;font-weight:500;}
+.nav-gh:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.theme-btn{width:34px;height:34px;border-radius:99px;flex-shrink:0;border:0.5px solid var(--border2);background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;}
+.theme-btn:hover{background:var(--surface2);color:var(--text);}
+@media(max-width:600px){.nav-gh{display:none;}}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1rem;}
+a{color:var(--accent-dark);text-decoration:none;}
+a:hover{text-decoration:underline;}
+.app{max-width:780px;margin:0 auto;}
+.breadcrumb{font-size:14px;color:var(--text3);margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
+.breadcrumb a{color:var(--text3);}
+.breadcrumb a:hover{color:var(--text);}
+.breadcrumb-sep{opacity:.4;}
+.course-hero{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:0 0 1.25rem;box-shadow:var(--shadow);}
+.course-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.course-icon-wrap{width:52px;height:52px;border-radius:12px;background:var(--green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.course-icon{font-size:15px;font-weight:700;color:var(--green-dark);font-family:'DM Mono',monospace;letter-spacing:-.5px;}
+.course-title-block{flex:1;}
+.course-title-block h1{font-size:clamp(20px,2.2vw+10px,24px);font-weight:700;line-height:1.2;margin-bottom:6px;}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;}
+.tag{font-size:11px;padding:2px 9px;border-radius:99px;background:var(--green-light);color:var(--green-dark);font-weight:500;}
+.hero-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.meta-item{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;}
+.meta-label{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.meta-val{font-size:15px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;}
+.prog-strip{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1.25rem;box-shadow:var(--shadow);}
+.prog-strip-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prog-label{font-size:14px;font-weight:500;}
+.prog-pct{font-size:clamp(18px,1.8vw+11px,22px);font-weight:700;font-family:'DM Mono',monospace;color:var(--accent);}
+.bar-bg{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:10px;}
+.bar-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .4s;}
+.readiness{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;background:var(--surface2);color:var(--text3);margin-bottom:10px;}
+.readiness.early{background:var(--amber-light);color:var(--amber);}
+.readiness.close{background:var(--orange-light);color:var(--orange);}
+.readiness.ready{background:var(--green-light);color:var(--green-dark);}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.stat{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 12px;}
+.stat-label{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.stat-val{font-size:18px;font-weight:700;font-family:'DM Mono',monospace;}
+.stat-val.ok{color:var(--green-dark);}
+.stat-val.warn{color:var(--amber);}
+.stat-val.danger{color:var(--coral);}
+.tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;}
+.tab{font-size:13px;padding:7px 14px;border-radius:var(--radius-sm);border:.5px solid var(--border);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .15s;}
+.tab:hover{background:var(--surface2);}
+.tab.active{background:var(--surface);border-color:var(--border2);color:var(--text);font-weight:500;box-shadow:var(--shadow);}
+.panel{display:none;}
+.panel.active{display:block;}
+.day-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:8px;box-shadow:var(--shadow);overflow:hidden;transition:box-shadow .2s;}
+.day-card.completed{border-color:var(--accent);}
+.day-card.open .day-body{display:block;}
+.day-header{display:flex;align-items:center;gap:12px;padding:1rem 1.1rem;cursor:pointer;user-select:none;}
+.day-num{font-size:11px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text3);min-width:32px;}
+.day-meta{flex:1;}
+.day-title{font-size:14px;font-weight:600;line-height:1.3;}
+.day-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.day-badge{font-size:12px;padding:2px 9px;border-radius:99px;font-weight:600;flex-shrink:0;}
+.badge-learn{background:var(--blue-light);color:var(--blue-dark);}
+.badge-practice{background:var(--green-light);color:var(--green-dark);}
+.badge-review{background:var(--amber-light);color:var(--amber);}
+.badge-exam{background:var(--coral-light);color:var(--coral-dark);}
+.chevron{font-size:11px;color:var(--text3);transition:transform .2s;flex-shrink:0;}
+.day-card.open .chevron{transform:rotate(180deg);}
+.day-body{display:none;padding:0 1.1rem 1.1rem;border-top:.5px solid var(--border);}
+.day-body{padding-top:.9rem;}
+.tip-box{background:var(--green-light);border-radius:var(--radius-sm);padding:.7rem .9rem;margin-bottom:10px;font-size:12px;color:var(--green-dark);line-height:1.6;}
+/* Action row */
+.nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
+.nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
+.nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
+/* Linked resources & tasks */
+a.res-pill{text-decoration:none;cursor:pointer;}
+a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:var(--text);}
+.task-link{color:var(--blue-dark);font-size:12px;margin-left:6px;flex-shrink:0;opacity:0.7;line-height:1.5;}
+.task-link:hover{opacity:1;text-decoration:none;}
+/* Task tick checkboxes */
+.task-tick{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px;background:none;padding:0;}
+.task-tick:hover{border-color:var(--accent);}
+.task-tick.ticked{background:var(--accent);border-color:var(--accent);}
+.task-tick.ticked::after{content:"✓";font-size:10px;color:#fff;font-weight:700;line-height:1;}
+.task.task-done>span{text-decoration:line-through;color:var(--text3);}
+/* Per-day task progress bar */
+.task-progress{height:5px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
+.task-progress-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .3s;}
+.task-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.task{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);}
+.resources-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.res-pill{font-size:12px;padding:4px 10px;border-radius:99px;border:.5px solid var(--border);background:var(--surface2);color:var(--text2);display:inline-flex;align-items:center;gap:4px;}
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.score-row label{font-size:12px;color:var(--text2);}
+.score-row input{width:72px;font-size:13px;padding:5px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.score-badge{font-size:12px;padding:2px 8px;border-radius:99px;font-weight:600;}
+.hours-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text2);}
+.hours-row input{width:60px;font-size:13px;padding:4px 8px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.complete-btn{width:100%;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s;font-weight:400;}
+.complete-btn:hover{background:var(--green-light);color:var(--green-dark);border-color:var(--accent);}
+.complete-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--accent);font-weight:500;}
+/* Topic pills */
+.day-topic-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.day-topic-pill{font-size:12px;padding:2px 9px;border-radius:99px;border:.5px solid;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.day-topic-pill:hover{opacity:.7;}
+.topic-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.topic-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;box-shadow:var(--shadow);}
+.topic-card h4{font-size:14px;font-weight:600;margin-bottom:8px;}
+.t-bar-bg{height:6px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:5px;}
+.t-bar-fill{height:100%;border-radius:99px;transition:width .4s;}
+.t-pct{font-size:11px;color:var(--text3);margin-bottom:8px;}
+.topic-days{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.topic-day-btn{font-size:11px;padding:2px 8px;border-radius:99px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
+.topic-day-btn:hover{background:var(--surface3);color:var(--text);}
+.topic-day-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--accent);}
+/* AI cards */
+.ai-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;margin-bottom:10px;box-shadow:var(--shadow);}
+.ai-card-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.ai-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ai-card-title{font-size:14px;font-weight:500;color:var(--text);}
+.ai-card-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.ai-card-body{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:6px;}
+.ai-prompt-box{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:10px;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;line-height:1.7;white-space:pre-wrap;}
+.ai-link-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-family:inherit;text-decoration:none;}
+.ai-link-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+/* Exam */
+.exam-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.exam-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.9rem 1rem;box-shadow:var(--shadow);}
+.exam-card-label{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.exam-card-val{font-size:18px;font-weight:700;font-family:'DM Mono',monospace;margin-bottom:3px;}
+.exam-card-sub{font-size:11px;color:var(--text3);}
+/* Resources */
+.res-section{margin-bottom:1.25rem;}
+.res-section-title{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.res-link-list{display:flex;flex-direction:column;gap:6px;}
+.res-link-item{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.7rem .9rem;box-shadow:var(--shadow);}
+.res-link-index{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);min-width:20px;padding-top:1px;}
+.res-link-body{flex:1;}
+.res-link-body a{font-size:13px;font-weight:500;}
+.res-link-desc{font-size:12px;color:var(--text3);margin-top:2px;line-height:1.5;}
+/* Shared */
+.info-box{background:var(--surface2);border-radius:var(--radius-sm);padding:.8rem 1rem;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+.page-footer{text-align:center;font-size:12px;color:var(--text3);margin-top:2rem;padding:1rem 0;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.sync-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .2s;}
+.sync-badge:hover{background:var(--surface2);color:var(--text2);}
+.sync-badge.connected{color:var(--green-dark);border-color:var(--accent);}
+.sync-badge.syncing{color:var(--blue-dark);border-color:var(--blue);}
+.sync-badge.error{color:var(--coral-dark);border-color:var(--coral);}
+/* GitHub modal */
+.gh-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;}
+.gh-modal.open{display:flex;}
+.gh-modal-box{background:var(--surface);border-radius:var(--radius);padding:1.5rem;max-width:440px;width:90%;box-shadow:var(--shadow-md);}
+.gh-modal-box h3{font-size:17px;font-weight:600;margin-bottom:6px;}
+.gh-modal-sub{font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.6;}
+.gh-field{margin-bottom:10px;}
+.gh-field label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.gh-field input{width:100%;font-size:13px;padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Mono',monospace;}
+.gh-field input:focus{outline:none;border-color:var(--accent);}
+.gh-modal-actions{display:flex;gap:8px;align-items:center;margin-top:1rem;flex-wrap:wrap;}
+.gh-btn-save{font-size:13px;padding:8px 18px;border-radius:var(--radius-sm);background:var(--accent);color:#fff;border:none;font-family:inherit;font-weight:500;cursor:pointer;}
+.gh-btn-save:hover{background:var(--accent-dark);}
+.gh-btn-cancel{font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--text2);border:.5px solid var(--border2);font-family:inherit;cursor:pointer;}
+.gh-btn-cancel:hover{background:var(--surface2);}
+.gh-btn-disconnect{font-size:12px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--coral-dark);border:.5px solid var(--coral);font-family:inherit;cursor:pointer;}
+.gh-modal-msg{font-size:12px;color:var(--text2);}
+@media(max-width:640px){
+  .topic-grid{grid-template-columns:1fr;}
+  .hero-meta{grid-template-columns:repeat(2,1fr);}
+  .stats-grid{grid-template-columns:repeat(3,1fr);}
+  .exam-grid{grid-template-columns:repeat(2,1fr);}
+  .course-hero-top{flex-direction:column;}
+}
+.nav-gh-icon { width: 34px; height: 34px; border-radius: 99px; flex-shrink: 0; border: 0.5px solid var(--border2); background: none; color: var(--text2); display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.15s; }
+.nav-gh-icon:hover { background: var(--surface2); color: var(--text); text-decoration: none; }
+.meta-val-free { color: var(--accent) !important; }
+.meta-val-paid { color: var(--amber) !important; }
+</style>
+<script>(function(){const t=localStorage.getItem('cj-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="../../index.html">
+      <div class="brand-mark">CJ</div>
+      certified-journeys
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" id="theme-btn" aria-label="Switch to dark mode" onclick="toggleTheme()"></button>
+      <a class="nav-gh-icon" href="https://github.com/certified-journeys" target="_blank" aria-label="GitHub">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
+<div class="app">
+
+  <div class="breadcrumb">
+    <a href="../../index.html">certified-journeys</a>
+    <span class="breadcrumb-sep">›</span>
+    <span>Great Expectations for Data Quality</span>
+  </div>
+
+  <div class="course-hero">
+    <div class="course-hero-top">
+      <div style="display:flex;align-items:flex-start;gap:14px;">
+        <div class="course-icon-wrap">
+          <div class="course-icon">GX</div>
+        </div>
+        <div class="course-title-block">
+          <h1>Great Expectations for Data Quality</h1>
+          <div class="tag-row">
+            <span class="tag">Data Quality</span>
+            <span class="tag">Python</span>
+            <span class="tag">Testing</span>
+            <span class="tag">Data Engineering</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val meta-val-free">Free</div></div>
+      <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">7 days</div></div>
+      <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Great Expectations</div></div>
+      <div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-val" style="font-size:11px;font-family:'DM Sans',system-ui;">Intermediate</div></div>
+    </div>
+  </div>
+
+  <div class="prog-strip">
+    <div class="prog-strip-top">
+      <span class="prog-label">Overall progress</span>
+      <span class="prog-pct" id="prog-pct">0%</span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+    <div class="readiness early" id="readiness">🌱 Just getting started</div>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-label">Days done</div><div class="stat-val" id="stat-days">0/7</div></div>
+      <div class="stat"><div class="stat-label">Hours logged</div><div class="stat-val" id="stat-hours">0</div></div>
+      <div class="stat"><div class="stat-label">Avg score</div><div class="stat-val" id="stat-score">—</div></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showPanel('schedule',this)">📅 Daily Plan</button>
+    <button class="tab" onclick="showPanel('topics',this)">📚 Topics</button>
+    <button class="tab" onclick="showPanel('ai',this)">🤖 AI Tools</button>
+    <button class="tab" onclick="showPanel('resources',this)">🔗 Resources</button>
+    <button class="tab" onclick="showPanel('exam',this)">🎓 Exam Prep</button>
+  </div>
+
+  <div id="panel-schedule" class="panel active"></div>
+  <div id="panel-topics"   class="panel"></div>
+  <div id="panel-ai"       class="panel"></div>
+  <div id="panel-resources" class="panel"></div>
+  <div id="panel-exam"     class="panel"></div>
+
+  <div class="page-footer">
+    <button class="sync-badge" id="sync-badge" onclick="openGHModal()">☁ Connect GitHub</button>
+    · <span id="sk-display">cj_great-expectations-certified_v1</span> · <a href="../../index.html">← All journeys</a>
+  </div>
+
+</div>
+
+<div class="gh-modal" id="gh-modal" onclick="if(event.target===this)closeGHModal()">
+  <div class="gh-modal-box">
+    <h3>☁ GitHub Sync</h3>
+    <p class="gh-modal-sub">Progress is committed to <code>courses/great-expectations-certified/progress.json</code> in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
+    <div class="gh-field"><label>Personal Access Token</label><input id="gh-pat" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+    <div class="gh-field"><label>Owner</label><input id="gh-owner" type="text" placeholder="your-username"></div>
+    <div class="gh-field"><label>Repository</label><input id="gh-repo" type="text" placeholder="certified-journeys.github.io"></div>
+    <div class="gh-field"><label>Branch</label><input id="gh-branch" type="text" placeholder="main"></div>
+    <div class="gh-modal-actions">
+      <button class="gh-btn-save" onclick="saveGHCreds()">Test &amp; Save</button>
+      <button class="gh-btn-cancel" onclick="closeGHModal()">Cancel</button>
+      <button class="gh-btn-disconnect" id="gh-disconnect-btn" style="display:none" onclick="disconnectGH()">Disconnect</button>
+      <span class="gh-modal-msg" id="gh-modal-msg"></span>
+    </div>
+  </div>
+</div>
+
+<script src="../../github-sync.js"></script>
+<script>
+if(typeof GHSync==='undefined'){window.GHSync={isConnected:()=>false,saveCreds:()=>{},getCreds:()=>null,connect:async()=>({ok:false,msg:''}),fetchState:async()=>null,pushState:async()=>false,saveDebounced:()=>{},testConnection:async()=>({ok:false,msg:''}),exportConfig:()=>'',importConfig:()=>null,getLastSynced:()=>null};}
+
+const COURSE_ID   = 'great-expectations-certified';
+const STORAGE_KEY = 'cj_great-expectations-certified_v1';
+const TOTAL_DAYS  = 7;
+
+const NOTEBOOKS = [
+  'day-01-gx-architecture',
+  'day-02-connecting-data',
+  'day-03-core-expectations',
+  'day-04-expectation-suites',
+  'day-05-checkpoints-data-docs',
+  'day-06-pipeline-integration',
+  'day-07-custom-expectations-capstone'
+];
+
+const days = [
+  {
+    title: 'GX Architecture and Data Context',
+    badge: 'learn',
+    sub: 'Day 1 · Foundations',
+    tasks: [
+      'Install GX and instantiate FileSystemDataContext',
+      'Inspect the scaffolded great_expectations/ folder structure',
+      {text: 'Explore great_expectations.yml, the expectations/ store, and the checkpoints/ directory', url: 'https://docs.greatexpectations.io/docs/core/set_up_a_gx_environment/install_gx'},
+      'Sketch a DataContext → Datasource → Validator → ExpectationSuite diagram',
+    ],
+    resources: [
+      {text: 'GX Installation Guide', url: 'https://docs.greatexpectations.io/docs/core/set_up_a_gx_environment/install_gx'},
+      {text: 'GX DataContext Overview', url: 'https://docs.greatexpectations.io/docs/core/connect_to_data/filesystem_data_assets/connect_filesystem_source_data'},
+      {text: 'GX Architecture Overview', url: 'https://docs.greatexpectations.io/docs/'},
+    ],
+    tip: 'The FileSystemDataContext scaffolds a great_expectations/ folder with great_expectations.yml, an expectations/ store, and a checkpoints/ directory. Commit this folder to your repo — the YAML stores your datasource config and suite references, making your validation layer reproducible across machines.',
+    hasScore: false,
+  },
+  {
+    title: 'Connecting to Data Sources',
+    badge: 'learn',
+    sub: 'Day 2 · Foundations',
+    tasks: [
+      {text: 'Add a Pandas filesystem datasource', url: 'https://docs.greatexpectations.io/docs/core/connect_to_data/filesystem_data_assets/connect_filesystem_source_data'},
+      'Build a BatchRequest and load a Validator',
+      'Add a SQLite datasource',
+      {text: 'Explore BatchRequest parameters and understand asset vs batch semantics', url: 'https://docs.greatexpectations.io/docs/core/connect_to_data/sql_data_assets/connect_sql_source_data'},
+    ],
+    resources: [
+      {text: 'Connect to Filesystem Data', url: 'https://docs.greatexpectations.io/docs/core/connect_to_data/filesystem_data_assets/connect_filesystem_source_data'},
+      {text: 'Connect to SQL Data', url: 'https://docs.greatexpectations.io/docs/core/connect_to_data/sql_data_assets/connect_sql_source_data'},
+      {text: 'Batch Request Reference', url: 'https://docs.greatexpectations.io/docs/'},
+    ],
+    tip: 'A DataAsset is a named logical pointer to a data source and a Batch is a concrete slice of that asset at a point in time. Define the asset once and generate batch requests many times — one per pipeline run or date partition.',
+    hasScore: false,
+  },
+  {
+    title: 'Core Expectations',
+    badge: 'practice',
+    sub: 'Day 3 · Expectations',
+    tasks: [
+      {text: 'Browse the Expectations Gallery', url: 'https://greatexpectations.io/expectations/'},
+      'Run expect_column_values_to_not_be_null, expect_column_values_to_be_between, and expect_column_values_to_match_regex',
+      'Chain 6 expectations on a single Validator and call validator.validate()',
+      'Compare result_format modes: BOOLEAN_ONLY, BASIC, SUMMARY, COMPLETE',
+      'Write an audit_df utility that runs a fixed suite and returns a structured result dict',
+      'Test schema violation expectations — expect_table_columns_to_match_ordered_list on a malformed DataFrame',
+    ],
+    resources: [
+      {text: 'Expectations Gallery', url: 'https://greatexpectations.io/expectations/'},
+      {text: 'result_format Reference', url: 'https://docs.greatexpectations.io/docs/core/trigger_actions_based_on_results/choose_a_result_format'},
+      {text: 'Validator API', url: 'https://docs.greatexpectations.io/docs/'},
+    ],
+    tip: 'When you call an expect_* method on a Validator, GX does not run the check immediately — it appends an ExpectationConfiguration to the in-memory suite. Call validator.validate() once at the end to execute all expectations in a single pass.',
+    hasScore: false,
+  },
+  {
+    title: 'Expectation Suites',
+    badge: 'practice',
+    sub: 'Day 4 · Expectations',
+    tasks: [
+      'Create and save two named suites: orders.critical and orders.distributions',
+      {text: 'Auto-generate a draft suite with the Profiler', url: 'https://docs.greatexpectations.io/docs/core/create_expectations/auto_initializing_expectations/use_a_rule_based_profiler'},
+      'Load and edit an existing suite JSON file',
+      'Write a version_suite helper that archives the old suite before saving a new version',
+      'Unit test round-trip suite serialization: save → load → compare configurations',
+    ],
+    resources: [
+      {text: 'Create Expectation Suites', url: 'https://docs.greatexpectations.io/docs/core/create_expectations/expectation_suites/manage_expectation_suites'},
+      {text: 'Rule-Based Profiler', url: 'https://docs.greatexpectations.io/docs/core/create_expectations/auto_initializing_expectations/use_a_rule_based_profiler'},
+      {text: 'ExpectationSuite JSON Format', url: 'https://docs.greatexpectations.io/docs/'},
+    ],
+    tip: 'Treat suite JSON files like migrations — name them semantically, commit them to version control, and never overwrite without archiving. A suite is your data contract.',
+    hasScore: false,
+  },
+  {
+    title: 'Checkpoints and Data Docs',
+    badge: 'practice',
+    sub: 'Day 5 · Validation Pipeline',
+    tasks: [
+      {text: 'Create a Checkpoint running two suites in one call', url: 'https://docs.greatexpectations.io/docs/core/trigger_actions_based_on_results/create_a_checkpoint_with_actions'},
+      'Inspect CheckpointResult structure and the success attribute',
+      'Enable UpdateDataDocsAction and open the generated Data Docs HTML',
+      'Write a CI gate function: if not result.success: sys.exit(1)',
+      {text: 'Read the Data Docs customization guide', url: 'https://docs.greatexpectations.io/docs/core/trigger_actions_based_on_results/host_and_share_data_docs'},
+    ],
+    resources: [
+      {text: 'Checkpoint with Actions', url: 'https://docs.greatexpectations.io/docs/core/trigger_actions_based_on_results/create_a_checkpoint_with_actions'},
+      {text: 'Host and Share Data Docs', url: 'https://docs.greatexpectations.io/docs/core/trigger_actions_based_on_results/host_and_share_data_docs'},
+      {text: 'CheckpointResult Reference', url: 'https://docs.greatexpectations.io/docs/'},
+    ],
+    tip: 'The CheckpointResult.success attribute is the single source of truth for CI gates. A simple `if not result.success: sys.exit(1)` is the correct pattern.',
+    hasScore: false,
+  },
+  {
+    title: 'Pipeline Integration and Drift Detection',
+    badge: 'review',
+    sub: 'Day 6 · Production and Capstone',
+    tasks: [
+      'Build a four-step simulated pipeline: ingest → clean → aggregate → load, each with a per-stage Checkpoint',
+      'Design schema-drift Expectations using expect_table_columns_to_match_set and expect_column_to_exist',
+      'Simulate drift by removing a column and observe Checkpoint failure',
+      {text: 'Read the Prefect + GX integration guide', url: 'https://docs.greatexpectations.io/docs/core/set_up_a_gx_environment/configure_data_contexts_in_code/manage_data_context_configuration_in_code'},
+      'Implement a drift_report function that reads CheckpointResult and summarizes which stages failed and why',
+    ],
+    resources: [
+      {text: 'GX Pipeline Integration Patterns', url: 'https://docs.greatexpectations.io/docs/'},
+      {text: 'Schema Expectations Reference', url: 'https://greatexpectations.io/expectations/'},
+      {text: 'Manage Data Context in Code', url: 'https://docs.greatexpectations.io/docs/core/set_up_a_gx_environment/configure_data_contexts_in_code/manage_data_context_configuration_in_code'},
+    ],
+    tip: 'Run the Checkpoint at the start of each stage (validating the stage\'s input), not at the end. This ensures a failing Checkpoint aborts the stage before any side effects occur.',
+    hasScore: false,
+  },
+  {
+    title: 'Custom Expectations and Capstone',
+    badge: 'exam',
+    sub: 'Day 7 · Production and Capstone',
+    tasks: [
+      {text: 'Implement ExpectColumnValuesToBeValidEmail by subclassing ColumnMapExpectation', url: 'https://docs.greatexpectations.io/docs/core/create_expectations/custom_expectations/create_a_custom_column_map_expectation'},
+      'Add a _prescriptive_renderer to your custom Expectation',
+      'Run the custom Expectation on sample data and verify it appears correctly in Data Docs',
+      'Build the full capstone: four-step pipeline + two named suites (orders.critical and orders.distributions) + Data Docs + CI gate script',
+      'Write a README documenting the validation layer, how to run the CI gate, and how to regenerate Data Docs',
+    ],
+    resources: [
+      {text: 'Custom Column Map Expectations', url: 'https://docs.greatexpectations.io/docs/core/create_expectations/custom_expectations/create_a_custom_column_map_expectation'},
+      {text: 'GX Documentation Home', url: 'https://docs.greatexpectations.io/docs/'},
+      {text: 'Expectation Renderers', url: 'https://docs.greatexpectations.io/docs/'},
+    ],
+    tip: 'The most common mistake is implementing _validate correctly but forgetting _prescriptive_renderer — your expectation then shows as raw JSON in Data Docs. Always test by running a Checkpoint with UpdateDataDocsAction and opening the HTML report.',
+    hasScore: true,
+  },
+];
+
+const topics = [
+  {name: 'Foundations',            color: '#FF6B6B', days: [0, 1]},
+  {name: 'Expectations',           color: '#CC3333', days: [2, 3]},
+  {name: 'Validation Pipeline',    color: '#E07B53', days: [4, 5]},
+  {name: 'Production and Capstone',color: '#991111', days: [5, 6]},
+];
+
+const exam = {
+  questions: null,
+  minutes:   null,
+  passScore: 'N/A',
+  cost:      'Free',
+  provider:  'Great Expectations (Self-paced)',
+  link:      'https://docs.greatexpectations.io/',
+  notes:     'No formal proctored exam — portfolio-driven self-paced course. Completion is demonstrated by a working GX validation layer integrated into a multi-step pipeline with CI gating.',
+  capstone:  'A full GX validation layer added to a four-step data pipeline (ingest → clean → aggregate → load) using a multi-suite Checkpoint, auto-generated Data Docs served locally, and a CI gate script that exits non-zero on any validation failure.',
+};
+
+const aiDeepDives = [
+  {
+    title: 'Expectation internals and the rendering pipeline',
+    body: `When you call expect_column_values_to_not_be_null('email'), GX uses a MetaExpectation metaclass that intercepts the method invocation on a Validator, wraps the arguments into an ExpectationConfiguration object, and appends it to the in-memory ExpectationSuite. Nothing is evaluated at call time — the suite is a serialisable list of configurations stored as JSON. The rendering pipeline activates at report time: each Expectation class declares @renderer methods decorated with string keys like 'renderer.prescriptive' or 'renderer.diagnostic.observed_value'. When Data Docs builds an HTML page, it dispatches each ExpectationConfiguration to its class's renderer registry and calls the matching renderer method. This is why custom Expectations must implement _prescriptive_renderer separately from _validate. Understanding this two-phase architecture — configuration capture vs. render-time dispatch — is key to debugging unexpected Data Docs output and building polished custom Expectations.`,
+  },
+  {
+    title: 'Checkpoint execution model',
+    body: `A Checkpoint is a mini-orchestrator with its own resolution order. When you call checkpoint.run(), GX walks through its validations list, resolves each BatchRequest into concrete Batch objects, and instantiates a Validator by binding a Batch to an ExecutionEngine (Pandas, Spark, or SQLAlchemy). Each (Batch, Suite) pair is validated independently, producing a ValidationResult. All results are collected into a CheckpointResult keyed by (run_id, batch_identifier, suite_name). After all validations complete, the Checkpoint triggers each configured Action in order — StoreValidationResultAction persists the result, UpdateDataDocsAction rebuilds the HTML site, SlackNotificationAction posts a message. The overall success flag is True only if every ValidationResult.success is True. For CI gates: check checkpoint_result['success'] and sys.exit(1) on False.`,
+  },
+  {
+    title: 'Schema drift detection with GX Expectations',
+    body: `GX has no background schema monitor — drift detection is triggered at validation time by Expectations that compare the observed table schema against what was captured in the suite. The primary tools are expect_table_columns_to_match_ordered_list (exact column set, exact order) and expect_column_to_exist (per-column existence check). The key design decision: use expect_table_columns_to_match_set for the required-column baseline plus individual expect_column_to_exist for columns your pipeline actively reads. This catches destructive drift (renames, drops) without false-positives on benign additive drift (new columns). Because GX stores suites as JSON, schema snapshots are version-controllable and diff-able in PRs, making schema contract changes explicit and reviewable.`,
+  },
+];
+
+let state = {
+  completed: [], scores: {}, hours: {}, completedAt: {}, tasksDone: {},
+  openDay: null, startDate: null, lastActivity: null, status: 'not_started'
+};
+
+async function loadState() {
+  try { const s = localStorage.getItem(STORAGE_KEY); if(s) state = {...state, ...JSON.parse(s)}; } catch(e) {}
+  if(GHSync.isConnected()) {
+    updateSyncBadge('syncing');
+    const gh = await GHSync.fetchState(COURSE_ID);
+    if(gh) { state = {...state, ...gh}; try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
+    updateSyncBadge(gh ? 'connected' : 'error');
+  } else { updateSyncBadge('disconnected'); }
+}
+
+function saveState() {
+  if(state.completed.length > 0 && state.status === 'not_started') {
+    state.status = 'in_progress';
+    state.startDate = state.startDate || new Date().toISOString();
+  }
+  if(state.completed.length === TOTAL_DAYS) state.status = 'completed';
+  state.lastActivity = new Date().toISOString();
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  broadcastStatus();
+  if(GHSync.isConnected())
+    GHSync.saveDebounced(COURSE_ID, state, 2500,
+      () => updateSyncBadge('syncing'),
+      ok => updateSyncBadge(ok ? 'connected' : 'error'));
+}
+
+function broadcastStatus() {
+  const summary = {
+    id: COURSE_ID, status: state.status,
+    completed: state.completed.length, total: TOTAL_DAYS,
+    scores: Object.values(state.scores).filter(s => s > 0),
+    totalHours: Object.values(state.hours).reduce((a, b) => a + b, 0),
+    completedAt: state.completedAt, startDate: state.startDate,
+    lastActivity: state.lastActivity
+  };
+  try { localStorage.setItem('cj_summary_' + COURSE_ID, JSON.stringify(summary)); } catch(e) {}
+}
+
+function resetAll() {
+  if(!confirm('Reset all progress for this course?')) return;
+  state = {completed:[], scores:{}, hours:{}, completedAt:{}, tasksDone:{}, openDay:null, startDate:null, lastActivity:null, status:'not_started'};
+  saveState(); renderAll();
+}
+
+function isCompleted(i) { return state.completed.includes(i); }
+
+function toggleComplete(i) {
+  if(isCompleted(i)) {
+    state.completed = state.completed.filter(x => x !== i);
+    delete state.completedAt[i];
+  } else {
+    state.completed.push(i);
+    state.completedAt[i] = new Date().toISOString();
+  }
+  saveState(); updateStats(); renderSchedule();
+}
+
+function toggleDay(i) {
+  state.openDay = state.openDay === i ? null : i;
+  saveState(); renderSchedule();
+}
+
+function logScore(i, val) {
+  const v = parseInt(val);
+  if(!isNaN(v) && v >= 0 && v <= 100) { state.scores[i] = v; saveState(); updateStats(); }
+}
+
+function logHours(i, val) {
+  const v = parseFloat(val);
+  if(!isNaN(v) && v >= 0) { state.hours[i] = v; saveState(); updateStats(); }
+}
+
+function scoreClass(s) { return s >= 80 ? 'ok' : s >= 60 ? 'warn' : 'danger'; }
+function badgeClass(b) { return 'badge-' + b; }
+function badgeLabel(b) { return {learn:'Learn', practice:'Practice', review:'Review', exam:'Exam'}[b] || b; }
+
+const dayTopics = (() => {
+  const m = {};
+  topics.forEach(t => t.days.forEach(d => { (m[d] = m[d] || []).push(t); }));
+  return m;
+})();
+
+function goToDay(i) {
+  showPanel('schedule', document.querySelector('.tab'));
+  setTimeout(() => {
+    state.openDay = i; saveState(); renderSchedule();
+    const el = document.querySelector('.day-card:nth-child(' + (i + 1) + ')');
+    if(el) el.scrollIntoView({behavior: 'smooth', block: 'start'});
+  }, 50);
+}
+
+function renderTask(t, di, ti) {
+  const done = (state.tasksDone[di] || []).includes(ti);
+  const text = typeof t === 'string' ? t : t.text;
+  const link = (typeof t === 'object' && t.url)
+    ? `<a class="task-link" href="${t.url}" target="_blank" rel="noopener">↗</a>` : '';
+  return `<div class="task${done ? ' task-done' : ''}">
+    <button class="task-tick${done ? ' ticked' : ''}" onclick="event.stopPropagation();tickTask(${di},${ti})"></button>
+    <span>${text}</span>${link}
+  </div>`;
+}
+
+function tickTask(di, ti) {
+  const arr = state.tasksDone[di] || (state.tasksDone[di] = []);
+  const idx = arr.indexOf(ti);
+  if(idx === -1) arr.push(ti); else arr.splice(idx, 1);
+  const total = days[di].tasks.length;
+  const done  = arr.length;
+  if(done === total && !isCompleted(di)) { toggleComplete(di); return; }
+  if(done < total  &&  isCompleted(di)) {
+    state.completed = state.completed.filter(x => x !== di);
+    delete state.completedAt[di];
+  }
+  saveState(); renderSchedule();
+}
+
+function renderRes(r) {
+  if(typeof r === 'string') return `<span class="res-pill">📎 ${r}</span>`;
+  return r.url
+    ? `<a class="res-pill" href="${r.url}" target="_blank" rel="noopener">📎 ${r.text}</a>`
+    : `<span class="res-pill">📎 ${r.text}</span>`;
+}
+
+function updateStats() {
+  const pct = Math.round((state.completed.length / TOTAL_DAYS) * 100);
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('bar-fill').style.width = pct + '%';
+  document.getElementById('stat-days').textContent = state.completed.length + '/' + TOTAL_DAYS;
+  const hrs = Object.values(state.hours).reduce((a, b) => a + b, 0);
+  document.getElementById('stat-hours').textContent = hrs % 1 === 0 ? hrs : hrs.toFixed(1);
+  const scores = Object.values(state.scores).filter(s => s > 0);
+  const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null;
+  const sv = document.getElementById('stat-score');
+  if(avg) { sv.textContent = avg + '%'; sv.className = 'stat-val ' + scoreClass(avg); }
+  else { sv.textContent = '—'; sv.className = 'stat-val'; }
+  const r = document.getElementById('readiness');
+  if(pct === 0)      { r.className = 'readiness early'; r.textContent = '🌱 Just getting started'; }
+  else if(pct < 40)  { r.className = 'readiness early'; r.textContent = '📖 Building foundations'; }
+  else if(pct < 75)  { r.className = 'readiness early'; r.textContent = '⚙️ Making solid progress'; }
+  else if(pct < 100) { r.className = 'readiness close'; r.textContent = '🔥 Almost there'; }
+  else               { r.className = 'readiness ready'; r.textContent = '✅ Course complete!'; }
+}
+
+function renderSchedule() {
+  const el = document.getElementById('panel-schedule');
+  el.innerHTML = days.map((d, i) => {
+    const comp  = isCompleted(i);
+    const open  = state.openDay === i;
+    const score = state.scores[i];
+    const hrs   = state.hours[i];
+    const tot   = d.tasks.length;
+    const done  = (state.tasksDone[i] || []).length;
+    return `<div class="day-card${comp ? ' completed' : ''}${open ? ' open' : ''}" id="day-${i}">
+      <div class="day-header" onclick="toggleDay(${i})">
+        <span class="day-num">${comp ? '✓' : ('0' + (i + 1)).slice(-2)}</span>
+        <div class="day-meta">
+          <div class="day-title">${d.title}</div>
+          <div class="day-sub">${d.sub}</div>
+        </div>
+        <span class="day-badge ${badgeClass(d.badge)}">${badgeLabel(d.badge)}</span>
+        <span class="chevron">▾</span>
+      </div>
+      ${open ? `<div class="day-body">
+        <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
+        <div class="nb-row">
+          <a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a>
+          <a class="nb-btn nb-btn-colab" href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/${COURSE_ID}/notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">▶ Open in Colab</a>
+          <a class="nb-btn" href="https://github.com/certified-journeys/certified-journeys.github.io/edit/main/courses/${COURSE_ID}/notes/day-${String(i + 1).padStart(2, '0')}.md" target="_blank">📝 notes/day-${String(i + 1).padStart(2, '0')}.md</a>
+        </div>
+        ${(dayTopics[i] || []).length ? `<div class="day-topic-pills">${(dayTopics[i] || []).map(t => `<span class="day-topic-pill" style="background:${t.color}18;color:${t.color};border-color:${t.color}40" onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])" title="View topic in Topics tab">${t.name}</span>`).join('')}</div>` : ''}
+        ${tot ? `<div class="task-progress"><div class="task-progress-fill" style="width:${Math.round(done / tot * 100)}%"></div></div>` : ''}
+        <div class="task-list">${d.tasks.map((t, j) => renderTask(t, i, j)).join('')}</div>
+        <div class="resources-row">${d.resources.map(renderRes).join('')}</div>
+        ${d.hasScore ? `<div class="score-row"><label>Practice score (%):</label><input type="number" min="0" max="100" placeholder="e.g. 84" value="${score || ''}" onchange="logScore(${i},this.value)">${score ? `<span class="score-badge ${scoreClass(score) === 'ok' ? 'badge-learn' : scoreClass(score) === 'warn' ? 'badge-review' : 'badge-exam'}">${score}%</span>` : ''}</div>` : ''}
+        <div class="hours-row"><label>Hours spent today:</label><input type="number" min="0" max="24" step="0.5" placeholder="e.g. 2.5" value="${hrs || ''}" onchange="logHours(${i},this.value)"><span style="font-size:11px;color:var(--text3);">hrs</span></div>
+        <button class="complete-btn ${comp ? 'done' : ''}" onclick="event.stopPropagation();toggleComplete(${i})">${comp ? '✓ Completed' : 'Mark as complete'}</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderTopics() {
+  document.getElementById('panel-topics').innerHTML = `<div class="topic-grid">${
+    topics.map(t => {
+      const cov = t.days.filter(d => state.completed.includes(d)).length;
+      const pct = Math.round((cov / t.days.length) * 100);
+      const dayBtns = t.days.map(d =>
+        `<button class="topic-day-btn${state.completed.includes(d) ? ' done' : ''}" onclick="goToDay(${d})">Day ${d + 1}</button>`
+      ).join('');
+      return `<div class="topic-card">
+        <h4>${t.name}</h4>
+        <div class="t-bar-bg"><div class="t-bar-fill" style="width:${pct}%;background:${t.color}"></div></div>
+        <div class="t-pct">${pct}% covered · ${cov}/${t.days.length} sessions</div>
+        <div class="topic-days">${dayBtns}</div>
+      </div>`;
+    }).join('')
+  }</div>`;
+}
+
+function renderAI() {
+  document.getElementById('panel-ai').innerHTML = `
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#E8F0FE;">🎙</div>
+        <div><div class="ai-card-title">NotebookLM — Audio Podcast Summary</div><div class="ai-card-sub">Generate a personalized audio briefing of your GX learning</div></div>
+      </div>
+      <div class="ai-card-body">Upload your day-card notes plus the official GX docs as sources in NotebookLM, then generate a podcast covering DataContext setup, Expectation Suites, Checkpoints, Data Docs, and CI integration.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Audio:
+"Create a 10-minute podcast for an intermediate Python data engineer studying Great Expectations for Data Quality. Cover: the DataContext → Datasource → Validator → ExpectationSuite architecture, how Checkpoints orchestrate multi-suite validation, how UpdateDataDocsAction generates HTML reports, how to use GX as a CI gate with sys.exit(1) on failure, and the 3 things they must understand before integrating GX into a production pipeline."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#FEF3E2;">🃏</div>
+        <div><div class="ai-card-title">NotebookLM — AI Flashcards</div><div class="ai-card-sub">Generate quiz cards from your GX notes</div></div>
+      </div>
+      <div class="ai-card-body">Upload your notes and the GX documentation to NotebookLM and use the Study Guide feature to generate Q&A flashcards on architecture, expectations, checkpoints, and pipeline integration patterns.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Quiz:
+"Generate 20 flashcard-style Q&A pairs for someone studying Great Expectations for Data Quality. Focus on: what happens when you call an expect_* method vs validator.validate(), the difference between a DataAsset and a Batch, what CheckpointResult.success represents and when it is False, how UpdateDataDocsAction triggers and where it writes files, when to use expect_table_columns_to_match_set vs expect_table_columns_to_match_ordered_list, and why _prescriptive_renderer must be implemented separately from _validate in custom Expectations."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#FFF0F0;">🔬</div>
+        <div><div class="ai-card-title">Claude — Deep Dive Prompts</div><div class="ai-card-sub">Explore GX internals with targeted prompts</div></div>
+      </div>
+      <div class="ai-card-body">Use these prompts when a concept isn't clicking or you want to go deeper on a specific GX design decision.</div>
+      <div class="ai-prompt-box">Prompt 1 — Expectation internals:
+"I'm studying Great Expectations for Data Engineers. Explain the two-phase architecture: configuration capture at expect_* call time vs. render-time dispatch when Data Docs builds HTML. Why does this mean _prescriptive_renderer must be implemented separately from _validate? Assume I'm experienced — focus on the MetaExpectation metaclass and renderer registry internals, not basics."
+
+Prompt 2 — Checkpoint design scenario:
+"Give me 3 realistic scenario questions about designing GX Checkpoints for a production data pipeline. After each, explain the correct Checkpoint configuration and what common mistakes engineers make when wiring Actions."
+
+Prompt 3 — Gap analysis study plan:
+"I've studied Great Expectations but I'm unsure about schema drift detection — specifically when to use expect_table_columns_to_match_set vs expect_table_columns_to_match_ordered_list and how to avoid false positives on additive drift. Give me a focused 30-minute study plan with concrete exercises."</div>
+    </div>
+    ${aiDeepDives.map((d, i) => `
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#FFF0F0;">💡</div>
+        <div><div class="ai-card-title">Deep Dive ${i + 1} — ${d.title}</div><div class="ai-card-sub">Architecture and internals deep dive</div></div>
+      </div>
+      <div class="ai-card-body">${d.body}</div>
+    </div>`).join('')}`;
+}
+
+function renderResources() {
+  document.getElementById('panel-resources').innerHTML = `
+    <div class="res-section">
+      <div class="res-section-title">📖 Core Reading</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">01</span><div class="res-link-body"><a href="https://docs.greatexpectations.io/docs/" target="_blank">Great Expectations Official Documentation</a><div class="res-link-desc">Complete reference: DataContext setup, Datasources, Expectations, Suites, Validators, Checkpoints, Actions, and Data Docs.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">02</span><div class="res-link-body"><a href="https://greatexpectations.io/expectations/" target="_blank">Expectations Gallery</a><div class="res-link-desc">Full browsable catalog of all built-in Expectations with parameters, result formats, and example output.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">03</span><div class="res-link-body"><a href="https://docs.greatexpectations.io/docs/core/connect_to_data/filesystem_data_assets/connect_filesystem_source_data" target="_blank">Connect to Filesystem Data Sources</a><div class="res-link-desc">Adding Pandas filesystem datasources, defining DataAssets, and building BatchRequests for file-based data.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">04</span><div class="res-link-body"><a href="https://docs.greatexpectations.io/docs/core/create_expectations/expectation_suites/manage_expectation_suites" target="_blank">Manage Expectation Suites</a><div class="res-link-desc">Creating, saving, loading, and editing named Expectation Suites — the version-controlled data contracts at the core of GX.</div></div></div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🛠 Hands-On Resources</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">05</span><div class="res-link-body"><a href="https://docs.greatexpectations.io/docs/core/trigger_actions_based_on_results/create_a_checkpoint_with_actions" target="_blank">Checkpoints with Actions</a><div class="res-link-desc">Creating Checkpoints that run multiple suites, configuring StoreValidationResultAction and UpdateDataDocsAction, and reading CheckpointResult.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">06</span><div class="res-link-body"><a href="https://docs.greatexpectations.io/docs/core/trigger_actions_based_on_results/host_and_share_data_docs" target="_blank">Host and Share Data Docs</a><div class="res-link-desc">Generating and customizing the HTML Data Docs site, serving it locally, and configuring alternate hosting (S3, GCS, Azure Blob).</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">07</span><div class="res-link-body"><a href="https://docs.greatexpectations.io/docs/core/trigger_actions_based_on_results/choose_a_result_format" target="_blank">result_format Reference</a><div class="res-link-desc">BOOLEAN_ONLY, BASIC, SUMMARY, and COMPLETE modes — understanding what each returns and when to use each in CI vs debugging contexts.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">08</span><div class="res-link-body"><a href="https://docs.greatexpectations.io/docs/core/create_expectations/auto_initializing_expectations/use_a_rule_based_profiler" target="_blank">Rule-Based Profiler</a><div class="res-link-desc">Auto-generating draft Expectation Suites from data samples using the Profiler — bootstrap fast, then harden manually.</div></div></div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🔧 Advanced and Ecosystem</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">09</span><div class="res-link-body"><a href="https://docs.greatexpectations.io/docs/core/create_expectations/custom_expectations/create_a_custom_column_map_expectation" target="_blank">Custom Column Map Expectations</a><div class="res-link-desc">Subclassing ColumnMapExpectation, implementing _validate and _prescriptive_renderer, and testing in Data Docs.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">10</span><div class="res-link-body"><a href="https://docs.greatexpectations.io/docs/core/connect_to_data/sql_data_assets/connect_sql_source_data" target="_blank">Connect to SQL Data Sources</a><div class="res-link-desc">Adding SQLAlchemy datasources (SQLite, Postgres, Snowflake), building SQL BatchRequests, and running Expectations against SQL tables.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">11</span><div class="res-link-body"><a href="https://docs.greatexpectations.io/docs/core/set_up_a_gx_environment/configure_data_contexts_in_code/manage_data_context_configuration_in_code" target="_blank">Manage DataContext in Code</a><div class="res-link-desc">Configuring DataContext programmatically rather than via YAML — useful for CI environments and dynamic pipeline configurations.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">12</span><div class="res-link-body"><a href="https://github.com/great-expectations/great_expectations" target="_blank">Great Expectations GitHub Repository</a><div class="res-link-desc">Source code, open issues, release notes, and community examples — a good place to see real-world integration patterns.</div></div></div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">⬆ Upgrade Path</div>
+      <div class="res-link-list">
+        <div class="res-link-item"><span class="res-link-index">13</span><div class="res-link-body"><a href="https://docs.greatexpectations.io/docs/" target="_blank">GX Cloud — Managed Validation Platform</a><div class="res-link-desc">Great Expectations Cloud adds centralized suite management, scheduled runs, Slack/PagerDuty alerting, and a hosted Data Docs UI.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">14</span><div class="res-link-body"><a href="https://docs.greatexpectations.io/docs/core/trigger_actions_based_on_results/send_email_notifications" target="_blank">Alerting Actions — Email and Slack</a><div class="res-link-desc">Configuring SlackNotificationAction and EmailAction to alert on Checkpoint failure — the production alerting layer beyond CI gates.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">15</span><div class="res-link-body"><a href="https://pandera.readthedocs.io/en/stable/" target="_blank">Pandera — Column-Level Schema Validation</a><div class="res-link-desc">When GX suite overhead is too heavy for fast unit tests: Pandera offers lightweight schema validation at the DataFrame API level.</div></div></div>
+        <div class="res-link-item"><span class="res-link-index">16</span><div class="res-link-body"><a href="https://soda.io/docs" target="_blank">Soda Core — Alternative Data Quality Framework</a><div class="res-link-desc">YAML-driven data quality checks with a similar Checkpoint-and-alert model — worth comparing to GX for SQL-heavy pipelines.</div></div></div>
+      </div>
+    </div>`;
+}
+
+function renderExam() {
+  document.getElementById('panel-exam').innerHTML = `
+    <div class="exam-grid">
+      <div class="exam-card"><div class="exam-card-label">Cost</div><div class="exam-card-val">${exam.cost}</div><div class="exam-card-sub">Self-paced, free</div></div>
+      <div class="exam-card"><div class="exam-card-label">Questions</div><div class="exam-card-val">N/A</div><div class="exam-card-sub">No formal exam</div></div>
+      <div class="exam-card"><div class="exam-card-label">Time limit</div><div class="exam-card-val">N/A</div><div class="exam-card-sub">Portfolio-based</div></div>
+      <div class="exam-card"><div class="exam-card-label">Pass mark</div><div class="exam-card-val" style="font-size:13px;">${exam.passScore}</div><div class="exam-card-sub">CI gate passes</div></div>
+    </div>
+    <div class="info-box"><strong>Completion format:</strong> ${exam.notes}</div>
+    <div class="info-box" style="margin-top:10px;"><strong>Capstone project:</strong> ${exam.capstone}</div>
+    <div class="info-box" style="margin-top:10px;">
+      <strong>📋 Readiness checklist — before marking yourself done:</strong><br><br>
+      • Completed all ${TOTAL_DAYS} days of the study plan<br>
+      • Built the full capstone: four-step pipeline with multi-suite Checkpoint, Data Docs, and CI gate<br>
+      • Custom Expectation (ExpectColumnValuesToBeValidEmail) renders correctly in Data Docs HTML<br>
+      • Can explain every Topics tab item without notes<br>
+      • Written a GX cheat sheet (DataContext, Datasource, Validator, ExpectationSuite, Checkpoint, Actions) from memory and verified it<br>
+      • CI gate script exits non-zero on any validation failure — tested with an intentional schema drift<br>
+      • Consistent progress — each day's tasks genuinely completed, not rushed through
+    </div>
+    <div style="margin-top:12px;">
+      <a href="${exam.link}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:10px 20px;border-radius:var(--radius-sm);background:var(--accent);color:#fff;font-weight:500;text-decoration:none;">View GX Docs →</a>
+    </div>`;
+}
+
+function showPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(name === 'topics')    renderTopics();
+  if(name === 'ai')        renderAI();
+  if(name === 'resources') renderResources();
+  if(name === 'exam')      renderExam();
+}
+
+function renderAll() {
+  renderSchedule();
+  updateStats();
+}
+
+function updateSyncBadge(s) {
+  const el = document.getElementById('sync-badge'); if(!el) return;
+  const L = {disconnected: '☁ Connect GitHub', connected: '✓ Synced', syncing: '↑ Syncing…', error: '⚠ Sync failed'};
+  el.textContent = L[s] || L.disconnected;
+  el.className = 'sync-badge' + (s === 'connected' ? ' connected' : s === 'syncing' ? ' syncing' : s === 'error' ? ' error' : '');
+}
+
+function openGHModal() {
+  const creds = GHSync.getCreds();
+  if(creds) {
+    document.getElementById('gh-pat').value    = creds.pat    || '';
+    document.getElementById('gh-owner').value  = creds.owner  || '';
+    document.getElementById('gh-repo').value   = creds.repo   || '';
+    document.getElementById('gh-branch').value = creds.branch || 'main';
+    document.getElementById('gh-disconnect-btn').style.display = 'inline-flex';
+  } else {
+    document.getElementById('gh-disconnect-btn').style.display = 'none';
+  }
+  document.getElementById('gh-modal').classList.add('open');
+}
+function closeGHModal() { document.getElementById('gh-modal').classList.remove('open'); }
+async function saveGHCreds() {
+  const c = {
+    pat:    document.getElementById('gh-pat').value.trim(),
+    owner:  document.getElementById('gh-owner').value.trim(),
+    repo:   document.getElementById('gh-repo').value.trim(),
+    branch: document.getElementById('gh-branch').value.trim() || 'main'
+  };
+  if(!c.pat || !c.owner || !c.repo) { document.getElementById('gh-modal-msg').textContent = 'Fill in all fields.'; return; }
+  document.getElementById('gh-modal-msg').textContent = 'Testing…';
+  GHSync.saveCreds(c);
+  const r = await GHSync.testConnection();
+  if(r.ok) { document.getElementById('gh-modal-msg').textContent = '✓ Connected!'; updateSyncBadge('connected'); setTimeout(closeGHModal, 900); }
+  else { document.getElementById('gh-modal-msg').textContent = 'Error: ' + r.msg; }
+}
+function disconnectGH() { GHSync.saveCreds(null); updateSyncBadge('disconnected'); closeGHModal(); }
+
+loadState().then(renderAll);
+
+// Dark mode toggle
+const MOON = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function getEffectiveTheme(){const t=document.documentElement.getAttribute('data-theme');if(t)return t;return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+function applyThemeBtn(){const btn=document.getElementById('theme-btn');if(!btn)return;const dark=getEffectiveTheme()==='dark';btn.innerHTML=dark?SUN:MOON;btn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');}
+window.toggleTheme=function(){const next=getEffectiveTheme()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);localStorage.setItem('cj-theme',next);applyThemeBtn();};
+applyThemeBtn();
+</script>
+</body>
+</html>
