@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building AI Agents with LangGraph · certified-journeys</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#6366F1; --green-light:#EEF2FF; --green-dark:#4338CA;
+  --blue:#378ADD; --blue-light:#EAF3FD; --blue-dark:#185FA5;
+  --amber:#BA7517; --amber-light:#FDF3E3;
+  --coral:#D85A30; --coral-light:#FAEDE8; --coral-dark:#993C1D;
+  --purple:#7F77DD; --purple-light:#EEEDFE;
+  --orange:#E8890C; --orange-light:#FEF3E2;
+  --teal:#0891B2; --teal-light:#E0F5FA;
+  --bg:#F5F4F0; --surface:#FFFFFF; --surface2:#EEECE5; --surface3:#E8E6DF;
+  --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.16);
+  --text:#18181A; --text2:#52524E; --text3:#8C8B85;
+  --radius:14px; --radius-sm:9px; --radius-xs:5px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.06);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#0F0E35;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}}
+[data-theme="dark"]{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#0F0E35;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}
+/* Nav */
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);border-bottom:0.5px solid var(--border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav{background:rgba(26,26,26,0.85);}}
+[data-theme="dark"] nav{background:rgba(26,26,26,0.85);}
+.nav-inner{max-width:860px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-0.025em;color:var(--text);text-decoration:none;}
+.nav-brand:hover{text-decoration:none;opacity:0.85;}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-gh-icon{width:34px;height:34px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;justify-content:center;transition:all 0.15s;text-decoration:none;flex-shrink:0;}
+.nav-gh-icon:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.theme-btn{width:34px;height:34px;border-radius:99px;flex-shrink:0;border:0.5px solid var(--border2);background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;}
+.theme-btn:hover{background:var(--surface2);color:var(--text);}
+/* Action row */
+.nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
+.nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
+.nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
+/* Linked resources & tasks */
+a.res-pill{text-decoration:none;cursor:pointer;}
+a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:var(--text);}
+.task-link{color:var(--blue-dark);font-size:11px;margin-left:6px;flex-shrink:0;opacity:0.7;line-height:1.5;}
+.task-link:hover{opacity:1;text-decoration:none;}
+/* Task tick checkboxes */
+.task-tick{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px;background:none;padding:0;}
+.task-tick:hover{border-color:var(--green);}
+.task-tick.ticked{background:var(--green);border-color:var(--green);}
+.task-tick.ticked::after{content:"✓";font-size:10px;color:#fff;font-weight:700;line-height:1;}
+.task.task-done>span{text-decoration:line-through;color:var(--text3);}
+/* Per-day task progress bar */
+.task-progress{height:3px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
+.task-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;}
+/* Score, hours, complete */
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.score-row label{font-size:12px;color:var(--text2);}
+.score-row input{width:72px;font-size:13px;padding:5px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.hours-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text2);}
+.hours-row input{width:60px;font-size:13px;padding:4px 8px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.complete-btn{width:100%;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s;font-weight:400;}
+.complete-btn:hover{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+.complete-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);font-weight:500;}
+/* AI cards */
+.ai-prompt-box{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:10px;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;line-height:1.7;white-space:pre-wrap;}
+.ai-link-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-family:inherit;text-decoration:none;}
+.ai-link-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+/* GitHub sync modal */
+.gh-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;}
+.gh-modal.open{display:flex;}
+.gh-modal-box{background:var(--surface);border-radius:var(--radius);padding:1.5rem;max-width:440px;width:90%;box-shadow:var(--shadow-md);}
+.gh-modal-box h3{font-size:17px;font-weight:600;margin-bottom:6px;}
+.gh-modal-sub{font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.6;}
+.gh-field{margin-bottom:10px;}
+.gh-field label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.gh-field input{width:100%;font-size:13px;padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Mono',monospace;}
+.gh-field input:focus{outline:none;border-color:var(--green);}
+.gh-modal-actions{display:flex;gap:8px;align-items:center;margin-top:1rem;flex-wrap:wrap;}
+.gh-btn-save{font-size:13px;padding:8px 18px;border-radius:var(--radius-sm);background:var(--green);color:#fff;border:none;font-family:inherit;font-weight:500;cursor:pointer;}
+.gh-btn-save:hover{background:var(--green-dark);}
+.gh-btn-cancel{font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--text2);border:.5px solid var(--border2);font-family:inherit;cursor:pointer;}
+.gh-btn-cancel:hover{background:var(--surface2);}
+.gh-btn-disconnect{font-size:12px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--coral-dark);border:.5px solid var(--coral);font-family:inherit;cursor:pointer;}
+.gh-modal-msg{font-size:12px;color:var(--text2);}
+/* Topic pills */
+.day-topic-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.day-topic-pill{font-size:10px;padding:2px 9px;border-radius:99px;border:.5px solid;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.day-topic-pill:hover{opacity:.7;}
+.topic-days{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.topic-day-btn{font-size:11px;padding:2px 8px;border-radius:99px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
+.topic-day-btn:hover{background:var(--surface3);color:var(--text);}
+.topic-day-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+/* Layout */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;font-size:14px;}
+.app{max-width:860px;margin:0 auto;padding:0 1.25rem 3rem;}
+.breadcrumb{font-size:12px;color:var(--text3);padding:12px 0 0;margin-bottom:16px;}
+.breadcrumb a{color:var(--text3);text-decoration:none;}
+.breadcrumb a:hover{color:var(--text);}
+.breadcrumb-sep{margin:0 5px;}
+/* Hero */
+.course-hero{background:var(--surface);border-radius:var(--radius);padding:1.5rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.course-hero-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:1rem;}
+.course-icon-wrap{flex-shrink:0;}
+.course-icon{width:52px;height:52px;border-radius:12px;background:#6366F1;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;letter-spacing:0.01em;}
+.course-title-block{flex:1;}
+.course-title-block h1{font-size:20px;font-weight:700;letter-spacing:-0.025em;line-height:1.25;margin-bottom:4px;}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.tag{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--surface2);color:var(--text2);border:.5px solid var(--border);}
+.hero-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:1rem;}
+.meta-item{text-align:center;padding:10px;background:var(--surface2);border-radius:var(--radius-sm);}
+.meta-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;}
+.meta-val{font-size:13px;font-weight:600;color:var(--text);}
+/* Progress strip */
+.prog-strip{background:var(--surface);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.prog-strip-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prog-label{font-size:13px;font-weight:600;}
+.prog-pct{font-size:13px;font-weight:700;color:var(--green);}
+.bar-bg{height:6px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-bottom:10px;}
+.bar-fill{height:100%;background:var(--green);border-radius:99px;transition:width .5s;}
+.readiness{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500;}
+.readiness.early{background:var(--surface2);color:var(--text3);}
+.readiness.close{background:var(--amber-light);color:var(--amber);}
+.readiness.ready{background:var(--green-light);color:var(--green-dark);}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px;}
+.stat{text-align:center;padding:10px 6px;background:var(--surface2);border-radius:var(--radius-sm);}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;}
+.stat-val{font-size:15px;font-weight:700;}
+.stat-val.ok{color:var(--green-dark);}
+.stat-val.warn{color:var(--amber);}
+.stat-val.danger{color:var(--coral);}
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:1rem;overflow-x:auto;padding-bottom:2px;}
+.tab{font-size:13px;padding:7px 14px;border-radius:var(--radius-sm);border:.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;}
+.tab:hover{background:var(--surface2);color:var(--text);}
+.tab.active{background:var(--green);color:#fff;border-color:var(--green);font-weight:500;}
+.panel{display:none;}
+.panel.active{display:block;}
+/* Day cards */
+.day-card{background:var(--surface);border-radius:var(--radius);margin-bottom:8px;box-shadow:var(--shadow);overflow:hidden;transition:box-shadow .15s;}
+.day-card:hover{box-shadow:var(--shadow-md);}
+.day-card.completed .day-header{border-left:3px solid var(--green);}
+.day-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
+.day-num{font-size:11px;font-weight:700;color:var(--text3);font-family:'DM Mono',monospace;min-width:32px;}
+.day-meta{flex:1;}
+.day-title{font-size:14px;font-weight:600;line-height:1.3;}
+.day-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.day-badge{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600;margin-left:auto;flex-shrink:0;}
+.chevron{font-size:12px;color:var(--text3);transition:transform .2s;margin-left:6px;}
+.day-card.open .chevron{transform:rotate(180deg);}
+.day-body{display:none;padding:0 16px 16px;border-top:.5px solid var(--border);}
+.day-card.open .day-body{display:block;}
+.tip-box{background:var(--green-light);border-radius:var(--radius-sm);padding:10px 14px;margin:12px 0 10px;font-size:12px;color:var(--green-dark);line-height:1.6;}
+.task-list{margin-bottom:10px;}
+.task{display:flex;align-items:flex-start;gap:8px;padding:5px 0;font-size:13px;}
+.resources-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.res-pill{font-size:11px;padding:4px 10px;border-radius:var(--radius-xs);border:.5px solid var(--border);background:var(--surface2);color:var(--text2);display:inline-flex;align-items:center;gap:4px;}
+.score-badge{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:600;}
+/* Topics */
+.topic-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.topic-card{background:var(--surface);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow);}
+.topic-card h4{font-size:14px;font-weight:600;margin-bottom:8px;}
+.t-bar-bg{height:4px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-bottom:5px;}
+.t-bar-fill{height:100%;border-radius:99px;transition:width .5s;}
+.t-pct{font-size:11px;color:var(--text3);margin-bottom:4px;}
+/* AI */
+.ai-card{background:var(--surface);border-radius:var(--radius);padding:1.25rem;margin-bottom:12px;box-shadow:var(--shadow);}
+.ai-card-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+.ai-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ai-card-title{font-size:14px;font-weight:600;}
+.ai-card-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.ai-card-body{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:4px;}
+/* Exam */
+.exam-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:1rem;}
+.exam-card{background:var(--surface);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow);}
+.exam-card-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.exam-card-val{font-size:20px;font-weight:700;margin-bottom:2px;}
+.exam-card-sub{font-size:12px;color:var(--text2);}
+/* Resources */
+.res-section{background:var(--surface);border-radius:var(--radius);padding:1.25rem;margin-bottom:12px;box-shadow:var(--shadow);}
+.res-section-title{font-size:13px;font-weight:600;margin-bottom:12px;}
+.res-link-list{display:flex;flex-direction:column;gap:10px;}
+.res-link-item{display:flex;align-items:flex-start;gap:12px;}
+.res-link-index{font-size:11px;font-weight:700;color:var(--text3);font-family:'DM Mono',monospace;min-width:22px;padding-top:1px;}
+.res-link-body a{font-size:13px;font-weight:500;color:var(--green-dark);text-decoration:none;}
+.res-link-body a:hover{text-decoration:underline;}
+.res-link-desc{font-size:11px;color:var(--text3);margin-top:1px;}
+/* Shared */
+.info-box{background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:1rem;}
+.badge-learn{background:#EAF3FD;color:#185FA5;}
+.badge-practice{background:#FEF3E2;color:#A05A00;}
+.badge-review{background:#EEEDFE;color:#4338CA;}
+.badge-exam{background:#FAEDE8;color:#993C1D;}
+.page-footer{text-align:center;font-size:12px;color:var(--text3);padding:2rem 0 1rem;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.page-footer a{color:var(--text3);text-decoration:none;}
+.page-footer a:hover{color:var(--text);}
+.sync-badge{font-size:11px;padding:4px 10px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s;}
+.sync-badge:hover{background:var(--surface2);}
+.sync-badge.connected{color:var(--green-dark);border-color:var(--green);background:var(--green-light);}
+.sync-badge.syncing{color:var(--amber);border-color:var(--amber);}
+.sync-badge.error{color:var(--coral-dark);border-color:var(--coral);}
+/* Responsive */
+@media(max-width:640px){
+  .topic-grid{grid-template-columns:1fr;}
+  .hero-meta{grid-template-columns:repeat(2,1fr);}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .exam-grid{grid-template-columns:1fr;}
+}
+</style>
+<script>(function(){const t=localStorage.getItem('cj-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="../../index.html">
+      <div class="brand-mark">CJ</div>
+      certified-journeys
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" id="theme-btn" aria-label="Switch to dark mode" onclick="toggleTheme()"></button>
+      <a class="nav-gh-icon" href="https://github.com/certified-journeys" target="_blank" aria-label="GitHub">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
+<div class="app">
+
+  <div class="breadcrumb">
+    <a href="../../index.html">certified-journeys</a>
+    <span class="breadcrumb-sep">›</span>
+    <span>Building AI Agents with LangGraph</span>
+  </div>
+
+  <div class="course-hero">
+    <div class="course-hero-top">
+      <div class="course-icon-wrap">
+        <div class="course-icon">AG</div>
+      </div>
+      <div class="course-title-block">
+        <h1>Building AI Agents with LangGraph</h1>
+        <div class="tag-row">
+          <span class="tag">AI Agents</span>
+          <span class="tag">LangGraph</span>
+          <span class="tag">Python</span>
+          <span class="tag">LLMs</span>
+          <span class="tag">Workflows</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val">Free</div></div>
+      <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">10 days</div></div>
+      <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val">Self-paced</div></div>
+      <div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-val">Advanced</div></div>
+    </div>
+  </div>
+
+  <div class="prog-strip">
+    <div class="prog-strip-top">
+      <span class="prog-label">Overall Progress</span>
+      <span class="prog-pct" id="prog-pct">0%</span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+    <span class="readiness early" id="readiness-badge">Just getting started</span>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-label">Completed</div><div class="stat-val" id="stat-completed">0/10</div></div>
+      <div class="stat"><div class="stat-label">Avg Score</div><div class="stat-val" id="stat-score">—</div></div>
+      <div class="stat"><div class="stat-label">Total Hours</div><div class="stat-val" id="stat-hours">0</div></div>
+      <div class="stat"><div class="stat-label">Streak</div><div class="stat-val" id="stat-streak">0</div></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showPanel('schedule',this)">📅 Daily Plan</button>
+    <button class="tab" onclick="showPanel('topics',this)">📚 Topics</button>
+    <button class="tab" onclick="showPanel('ai',this)">🤖 AI Tools</button>
+    <button class="tab" onclick="showPanel('resources',this)">🔗 Resources</button>
+    <button class="tab" onclick="showPanel('exam',this)">🎓 Exam Prep</button>
+  </div>
+
+  <div id="panel-schedule"  class="panel active"></div>
+  <div id="panel-topics"    class="panel"></div>
+  <div id="panel-ai"        class="panel"></div>
+  <div id="panel-resources" class="panel"></div>
+  <div id="panel-exam"      class="panel"></div>
+
+  <div class="page-footer">
+    <button class="sync-badge" id="sync-badge" onclick="openGHModal()">☁ Connect GitHub</button>
+    · <span id="sk-display">cj_ai-agents-certified_v1</span> · <a href="../../index.html">← All journeys</a>
+  </div>
+
+</div>
+
+<!-- GitHub sync modal -->
+<div class="gh-modal" id="gh-modal" onclick="if(event.target===this)closeGHModal()">
+  <div class="gh-modal-box">
+    <h3>☁ GitHub Sync</h3>
+    <p class="gh-modal-sub">Progress is committed to <code>courses/ai-agents-certified/progress.json</code>
+    in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
+    <div class="gh-field"><label>Personal Access Token</label><input id="gh-pat" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+    <div class="gh-field"><label>Owner</label><input id="gh-owner" type="text" placeholder="your-username"></div>
+    <div class="gh-field"><label>Repository</label><input id="gh-repo" type="text" placeholder="certified-journeys.github.io"></div>
+    <div class="gh-field"><label>Branch</label><input id="gh-branch" type="text" placeholder="main"></div>
+    <div class="gh-modal-actions">
+      <button class="gh-btn-save" onclick="saveGHCreds()">Test &amp; Save</button>
+      <button class="gh-btn-cancel" onclick="closeGHModal()">Cancel</button>
+      <button class="gh-btn-disconnect" id="gh-disconnect-btn" style="display:none" onclick="disconnectGH()">Disconnect</button>
+      <span class="gh-modal-msg" id="gh-modal-msg"></span>
+    </div>
+  </div>
+</div>
+
+<script src="../../github-sync.js"></script>
+<script>
+if (typeof GHSync === 'undefined') {
+  window.GHSync = {
+    isConnected: () => false, saveCreds: () => {}, getCreds: () => null,
+    connect: async () => ({ok:false,msg:''}), fetchState: async () => null,
+    pushState: async () => false, saveDebounced: () => {},
+    testConnection: async () => ({ok:false,msg:''}),
+    exportConfig: () => '', importConfig: () => null, getLastSynced: () => null
+  };
+}
+
+const COURSE_ID   = 'ai-agents-certified';
+const STORAGE_KEY = 'cj_ai-agents-certified_v1';
+const TOTAL_DAYS  = 10;
+
+const NOTEBOOKS = [
+  'day-01-langgraph-fundamentals',
+  'day-02-state-and-reducers',
+  'day-03-conditional-edges',
+  'day-04-tool-calling-react',
+  'day-05-human-in-the-loop',
+  'day-06-persistence-checkpointers',
+  'day-07-multi-agent-supervisor',
+  'day-08-streaming-and-memory',
+  'day-09-review-and-patterns',
+  'day-10-capstone-research-system',
+];
+
+const days = [
+  {
+    title: "LangGraph Fundamentals — Graphs, Nodes, Edges, and State",
+    badge: "learn",
+    sub: "Day 1 · LangGraph Core",
+    tasks: [
+      {text: "Read the LangGraph conceptual overview", url: "https://langchain-ai.github.io/langgraph/concepts/low_level/"},
+      {text: "Install langgraph and langchain-openai", url: "https://pypi.org/project/langgraph/"},
+      "Build a minimal two-node graph: one node that appends text to state, a second that reverses it",
+      "Run the graph with invoke and inspect the final state dict",
+      {text: "Read the LangGraph quickstart end-to-end", url: "https://langchain-ai.github.io/langgraph/tutorials/introduction/"},
+    ],
+    resources: [
+      {text: "LangGraph Docs — Low Level Concepts", url: "https://langchain-ai.github.io/langgraph/concepts/low_level/"},
+      {text: "LangGraph GitHub Repository", url: "https://github.com/langchain-ai/langgraph"},
+      {text: "LangGraph Quickstart Tutorial", url: "https://langchain-ai.github.io/langgraph/tutorials/introduction/"},
+    ],
+    tip: "Start with the absolute minimum: one StateGraph, two nodes, one edge. Add complexity only after you can explain what state is and how it flows.",
+    hasScore: false,
+  },
+  {
+    title: "State Schemas and Reducers — TypedDict, add_messages, and Custom Reducers",
+    badge: "learn",
+    sub: "Day 2 · LangGraph Core",
+    tasks: [
+      {text: "Read the LangGraph state documentation", url: "https://langchain-ai.github.io/langgraph/concepts/low_level/#state"},
+      {text: "Study how add_messages works as a reducer", url: "https://langchain-ai.github.io/langgraph/how-tos/state-reducers/"},
+      "Implement a custom reducer that deduplicates items when merging two lists in a state field",
+      "Build a graph that uses MessagesState as its base type and traces the full message list after three LLM turns",
+      "Compare StateGraph with TypedDict state vs Pydantic BaseModel state — verify both work identically",
+    ],
+    resources: [
+      {text: "LangGraph — State & Reducers How-To", url: "https://langchain-ai.github.io/langgraph/how-tos/state-reducers/"},
+      {text: "LangGraph MessagesState reference", url: "https://langchain-ai.github.io/langgraph/concepts/low_level/#messagesstate"},
+      {text: "Python typing — Annotated and TypedDict", url: "https://docs.python.org/3/library/typing.html#typing.TypedDict"},
+    ],
+    tip: "Every state field that uses a mutable default needs a reducer. If you skip the reducer, later nodes silently overwrite what earlier nodes wrote — a bug that only shows up at scale.",
+    hasScore: false,
+  },
+  {
+    title: "Conditional Edges and Routing Logic",
+    badge: "practice",
+    sub: "Day 3 · Tool Calling and ReAct",
+    tasks: [
+      {text: "Read the conditional edges how-to guide", url: "https://langchain-ai.github.io/langgraph/how-tos/branching/"},
+      "Implement a routing function that inspects last_message.content for keywords and returns one of three node names",
+      "Build a graph where the router sends inputs to a math node, a code node, or an END node based on intent classification",
+      "Add a fallback edge so an unknown intent routes to a clarification node rather than crashing",
+      "Write a unit test that drives the graph through all three branches using mock LLM responses",
+      {text: "Read the edges reference", url: "https://langchain-ai.github.io/langgraph/concepts/low_level/#edges"},
+    ],
+    resources: [
+      {text: "LangGraph — Branching How-To", url: "https://langchain-ai.github.io/langgraph/how-tos/branching/"},
+      {text: "LangGraph — Edges Concept Reference", url: "https://langchain-ai.github.io/langgraph/concepts/low_level/#edges"},
+      {text: "LangGraph — add_conditional_edges API", url: "https://langchain-ai.github.io/langgraph/reference/graphs/#langgraph.graph.StateGraph.add_conditional_edges"},
+    ],
+    tip: "Routing functions must return a string that exactly matches a registered node name or the special END constant. A typo here produces a silent graph hang, not a Python error.",
+    hasScore: true,
+  },
+  {
+    title: "ReAct Agents and Tool Calling with ToolNode",
+    badge: "practice",
+    sub: "Day 4 · Tool Calling and ReAct",
+    tasks: [
+      {text: "Read the ReAct agent pattern documentation", url: "https://langchain-ai.github.io/langgraph/concepts/agentic_concepts/#react-agents"},
+      {text: "Study create_react_agent vs building manually", url: "https://langchain-ai.github.io/langgraph/how-tos/create-react-agent/"},
+      "Build a ReAct agent using ToolNode and a manually wired tool-call loop — no create_react_agent shortcut",
+      "Add three tools: a calculator, a DuckDuckGo search wrapper, and a Python REPL tool",
+      "Force the agent to use the calculator tool on a multi-step arithmetic word problem and log the full tool-call chain",
+      "Implement a max_iterations guard so the agent stops gracefully after N tool calls",
+    ],
+    resources: [
+      {text: "LangGraph — ReAct Agent How-To", url: "https://langchain-ai.github.io/langgraph/how-tos/create-react-agent/"},
+      {text: "LangGraph — ToolNode Reference", url: "https://langchain-ai.github.io/langgraph/reference/prebuilt/#langgraph.prebuilt.tool_node.ToolNode"},
+      {text: "LangChain Tool Calling Docs", url: "https://python.langchain.com/docs/concepts/tool_calling/"},
+    ],
+    tip: "Always add a max_iterations ceiling in the tool-call loop. LLMs occasionally get stuck repeating the same tool call — a ceiling is the safety valve that makes agents production-safe.",
+    hasScore: true,
+  },
+  {
+    title: "Human-in-the-Loop Breakpoints and Resumption",
+    badge: "learn",
+    sub: "Day 5 · Human-in-the-Loop",
+    tasks: [
+      {text: "Read the human-in-the-loop concept documentation", url: "https://langchain-ai.github.io/langgraph/concepts/human_in_the_loop/"},
+      {text: "Study interrupt_before and interrupt_after", url: "https://langchain-ai.github.io/langgraph/how-tos/human_in_the_loop/wait-user-input/"},
+      "Build a graph that interrupts before a dangerous tool call, prints the pending action, and waits for user approval",
+      "Resume the graph from its snapshot using the same thread_id and verify the state is preserved exactly",
+      {text: "Implement Command-based resumption", url: "https://langchain-ai.github.io/langgraph/how-tos/human_in_the_loop/command/"},
+    ],
+    resources: [
+      {text: "LangGraph — Human-in-the-Loop Concepts", url: "https://langchain-ai.github.io/langgraph/concepts/human_in_the_loop/"},
+      {text: "LangGraph — Wait for User Input How-To", url: "https://langchain-ai.github.io/langgraph/how-tos/human_in_the_loop/wait-user-input/"},
+      {text: "LangGraph — Command Resumption How-To", url: "https://langchain-ai.github.io/langgraph/how-tos/human_in_the_loop/command/"},
+    ],
+    tip: "Thread IDs are the key to HITL. If you call invoke with a different thread_id after an interrupt, you get a fresh run, not a resumed one. Always store and reuse the exact same thread_id.",
+    hasScore: false,
+  },
+  {
+    title: "Persistence and Checkpointers — SQLite and State Survival",
+    badge: "practice",
+    sub: "Day 6 · Persistence and State",
+    tasks: [
+      {text: "Read the persistence and checkpointing concepts page", url: "https://langchain-ai.github.io/langgraph/concepts/persistence/"},
+      {text: "Study the SQLite checkpointer setup guide", url: "https://langchain-ai.github.io/langgraph/how-tos/persistence/"},
+      "Wire a SqliteSaver checkpointer to a multi-turn chatbot graph and confirm state survives process restart",
+      "Inspect raw checkpoint rows in SQLite using sqlite3 to understand what langgraph serialises per turn",
+      "Build a graph that resumes correctly after simulating a mid-run crash",
+      {text: "Study the PostgreSQL checkpointer for production", url: "https://langchain-ai.github.io/langgraph/how-tos/persistence-postgres/"},
+    ],
+    resources: [
+      {text: "LangGraph — Persistence Concepts", url: "https://langchain-ai.github.io/langgraph/concepts/persistence/"},
+      {text: "LangGraph — SQLite Checkpointer How-To", url: "https://langchain-ai.github.io/langgraph/how-tos/persistence/"},
+      {text: "LangGraph — PostgreSQL Checkpointer How-To", url: "https://langchain-ai.github.io/langgraph/how-tos/persistence-postgres/"},
+    ],
+    tip: "Use thread_id to isolate conversations and checkpoint_id to retrieve a specific snapshot. The combination of both is what makes time-travel debugging possible in production agents.",
+    hasScore: true,
+  },
+  {
+    title: "Multi-Agent Supervisor Pattern — Router, Handoffs, and Subagents",
+    badge: "practice",
+    sub: "Day 7 · Multi-Agent Systems",
+    tasks: [
+      {text: "Read the multi-agent architecture concepts page", url: "https://langchain-ai.github.io/langgraph/concepts/multi_agent/"},
+      {text: "Study the supervisor how-to guide", url: "https://langchain-ai.github.io/langgraph/tutorials/multi_agent/agent_supervisor/"},
+      "Implement a supervisor graph that routes between a research agent and a writer agent",
+      "Give each subagent its own private state namespace so they cannot overwrite each other's working memory",
+      "Add a FINISH sentinel so the supervisor can decide when the task is complete",
+      "Test with a multi-step research question that requires at least two handoffs between agents",
+    ],
+    resources: [
+      {text: "LangGraph — Multi-Agent Concepts", url: "https://langchain-ai.github.io/langgraph/concepts/multi_agent/"},
+      {text: "LangGraph — Supervisor Tutorial", url: "https://langchain-ai.github.io/langgraph/tutorials/multi_agent/agent_supervisor/"},
+      {text: "LangGraph — Subgraphs How-To", url: "https://langchain-ai.github.io/langgraph/how-tos/subgraph/"},
+    ],
+    tip: "The supervisor's router LLM only needs to output a single token: the next agent's name or FINISH. Keep its system prompt to one paragraph — complexity in the router causes hallucinated handoffs.",
+    hasScore: true,
+  },
+  {
+    title: "Streaming and Long-Term Memory Store",
+    badge: "practice",
+    sub: "Day 8 · Streaming and Memory",
+    tasks: [
+      {text: "Read the streaming documentation", url: "https://langchain-ai.github.io/langgraph/concepts/streaming/"},
+      {text: "Study astream_events and filtering for specific event types", url: "https://langchain-ai.github.io/langgraph/how-tos/streaming-events-from-within-tools/"},
+      "Implement a streaming agent that prints each token to the terminal using astream with stream_mode=\"messages\"",
+      "Add node-level streaming so the terminal shows which node is currently executing",
+      {text: "Read the long-term memory store documentation", url: "https://langchain-ai.github.io/langgraph/concepts/memory/"},
+      "Wire an InMemoryStore to your agent and store one user preference per session, then retrieve it on the next turn",
+    ],
+    resources: [
+      {text: "LangGraph — Streaming Concepts", url: "https://langchain-ai.github.io/langgraph/concepts/streaming/"},
+      {text: "LangGraph — Streaming How-To Guides", url: "https://langchain-ai.github.io/langgraph/how-tos/#streaming"},
+      {text: "LangGraph — Memory Store Concepts", url: "https://langchain-ai.github.io/langgraph/concepts/memory/"},
+    ],
+    tip: "Use stream_mode='messages' for token-level streaming and stream_mode='updates' for node-level updates. Mixing both in astream_events lets you build a rich terminal UI without any extra dependencies.",
+    hasScore: true,
+  },
+  {
+    title: "Review and Patterns — Rebuild, Audit, and Cheat Sheet",
+    badge: "review",
+    sub: "Day 9 · Capstone Integration",
+    tasks: [
+      {text: "Re-read the LangGraph how-to index", url: "https://langchain-ai.github.io/langgraph/how-tos/"},
+      "Rebuild the supervisor graph from Day 7 from memory without referencing your previous notebook",
+      "Write a one-page cheat sheet: state reducers, conditional edge routing, HITL resumption, checkpointer setup, supervisor handoff",
+      "Identify and fix at least one edge case in your Day 7 graph: what happens when both agents return empty results?",
+      {text: "Read the LangGraph Platform deployment overview", url: "https://langchain-ai.github.io/langgraph/concepts/langgraph_platform/"},
+    ],
+    resources: [
+      {text: "LangGraph — How-To Index", url: "https://langchain-ai.github.io/langgraph/how-tos/"},
+      {text: "LangGraph — Conceptual Guides Index", url: "https://langchain-ai.github.io/langgraph/concepts/"},
+      {text: "LangGraph Platform Overview", url: "https://langchain-ai.github.io/langgraph/concepts/langgraph_platform/"},
+    ],
+    tip: "The review day is not passive reading — rebuild the hardest graph from memory. What you can reconstruct from memory is what you actually understand; everything else is just familiarity.",
+    hasScore: true,
+  },
+  {
+    title: "Capstone — Multi-Agent Research System with Persistence and Streaming",
+    badge: "exam",
+    sub: "Day 10 · Capstone Integration",
+    tasks: [
+      "Design the full graph architecture on paper first: supervisor node, research subagent, summarizer subagent, state schema, and output format",
+      {text: "Set up the SQLite checkpointer and verify state persists across invocations before writing any agent logic", url: "https://langchain-ai.github.io/langgraph/how-tos/persistence/"},
+      "Implement the supervisor router that classifies research tasks, delegates to the correct subagent, and detects FINISH",
+      "Wire the research subagent with DuckDuckGo search tool and a scratchpad state field for intermediate notes",
+      "Wire the summarizer subagent to condense the research scratchpad into a structured Markdown report",
+      "Implement node-level streaming so the terminal prints which agent is active and streams each LLM token as it arrives",
+      {text: "Test the full system end-to-end with a multi-hop research question requiring at least 3 handoffs", url: "https://langchain-ai.github.io/langgraph/tutorials/multi_agent/agent_supervisor/"},
+    ],
+    resources: [
+      {text: "LangGraph — Multi-Agent Supervisor Tutorial", url: "https://langchain-ai.github.io/langgraph/tutorials/multi_agent/agent_supervisor/"},
+      {text: "LangGraph — Streaming How-To Guides", url: "https://langchain-ai.github.io/langgraph/how-tos/#streaming"},
+      {text: "LangGraph — Persistence How-To", url: "https://langchain-ai.github.io/langgraph/how-tos/persistence/"},
+    ],
+    tip: "The capstone is an integration test for everything you have built this week. Start with the state schema and wiring before writing any prompt — the graph structure is harder to change than the prompts.",
+    hasScore: false,
+  },
+];
+
+const topics = [
+  {name: "LangGraph Core",         color: "#6366F1", days: [0, 1, 2]},
+  {name: "Tool Calling and ReAct", color: "#E8890C", days: [2, 3]},
+  {name: "Human-in-the-Loop",      color: "#0891B2", days: [3, 4]},
+  {name: "Persistence and State",  color: "#7F77DD", days: [4, 5]},
+  {name: "Multi-Agent Systems",    color: "#D85A30", days: [5, 6, 9]},
+  {name: "Streaming and Memory",   color: "#1C7A4A", days: [6, 7]},
+  {name: "Capstone Integration",   color: "#BA7517", days: [7, 8]},
+];
+
+const exam = {
+  questions:  null,
+  minutes:    null,
+  passScore:  "N/A",
+  cost:       "Free",
+  provider:   "Self-paced",
+  link:       "https://langchain-ai.github.io/langgraph/",
+  notes:      "No formal exam. Ship a working multi-agent research system as the capstone."
+};
+
+let state = {
+  completed:    [],
+  scores:       {},
+  hours:        {},
+  completedAt:  {},
+  tasksDone:    {},
+  openDay:      null,
+  startDate:    null,
+  lastActivity: null,
+  status:       'not_started'
+};
+
+async function loadState() {
+  try { const s = localStorage.getItem(STORAGE_KEY); if (s) state = {...state, ...JSON.parse(s)}; } catch(e) {}
+  if (GHSync.isConnected()) {
+    updateSyncBadge('syncing');
+    const gh = await GHSync.fetchState(COURSE_ID);
+    if (gh) { state = {...state, ...gh}; try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
+    updateSyncBadge(gh ? 'connected' : 'error');
+  } else { updateSyncBadge('disconnected'); }
+}
+
+function saveState() {
+  const completed = state.completed.length;
+  if (completed === 0) state.status = 'not_started';
+  else if (completed < TOTAL_DAYS) state.status = 'in_progress';
+  else state.status = 'complete';
+  if (completed > 0 && !state.startDate) state.startDate = new Date().toISOString();
+  if (completed > 0) state.lastActivity = new Date().toISOString();
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  broadcastStatus();
+  if (GHSync.isConnected())
+    GHSync.saveDebounced(COURSE_ID, state, 2500,
+      () => updateSyncBadge('syncing'),
+      ok => updateSyncBadge(ok ? 'connected' : 'error'));
+}
+
+function broadcastStatus() {
+  const summary = {
+    id: COURSE_ID, status: state.status,
+    completed: state.completed.length, total: TOTAL_DAYS,
+    scores: Object.values(state.scores).filter(s => s > 0),
+    totalHours: Object.values(state.hours).reduce((a, b) => a + b, 0),
+    completedAt: state.completedAt, startDate: state.startDate,
+    lastActivity: state.lastActivity
+  };
+  try { localStorage.setItem('cj_summary_ai-agents-certified', JSON.stringify(summary)); } catch(e) {}
+}
+
+function resetAll() {
+  if (!confirm('Reset all progress for this course?')) return;
+  state = {completed:[], scores:{}, hours:{}, completedAt:{}, tasksDone:{}, openDay:null, startDate:null, lastActivity:null, status:'not_started'};
+  saveState(); renderAll();
+}
+
+function isCompleted(i) { return state.completed.includes(i); }
+
+function toggleComplete(i) {
+  if (isCompleted(i)) {
+    state.completed = state.completed.filter(x => x !== i);
+    delete state.completedAt[i];
+  } else {
+    state.completed.push(i);
+    state.completedAt[i] = new Date().toISOString();
+  }
+  saveState(); renderSchedule(); updateStats();
+}
+
+function toggleDay(i) {
+  state.openDay = state.openDay === i ? null : i;
+  saveState(); renderSchedule();
+}
+
+function logScore(i, val) {
+  state.scores[i] = parseFloat(val) || 0;
+  saveState(); updateStats();
+}
+
+function logHours(i, val) {
+  state.hours[i] = parseFloat(val) || 0;
+  saveState(); updateStats();
+}
+
+function scoreClass(s) {
+  if (s >= 80) return 'ok';
+  if (s >= 60) return 'warn';
+  return 'danger';
+}
+
+function badgeClass(b) {
+  return 'badge-' + b;
+}
+
+function badgeLabel(b) {
+  return {learn:'Learn', practice:'Practice', review:'Review', exam:'Capstone'}[b] || b;
+}
+
+const dayTopics = (() => {
+  const m = {};
+  topics.forEach(t => t.days.forEach(d => { (m[d] = m[d] || []).push(t); }));
+  return m;
+})();
+
+function goToDay(i) {
+  showPanel('schedule', document.querySelector('.tab'));
+  setTimeout(() => {
+    state.openDay = i; saveState(); renderSchedule();
+    const el = document.querySelector('.day-card:nth-child(' + (i + 1) + ')');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
+
+function renderTask(t, di, ti) {
+  const done = (state.tasksDone[di] || []).includes(ti);
+  const text = typeof t === 'string' ? t : t.text;
+  const link = (typeof t === 'object' && t.url)
+    ? `<a class="task-link" href="${t.url}" target="_blank" rel="noopener">↗</a>` : '';
+  return `<div class="task${done ? ' task-done' : ''}">
+    <button class="task-tick${done ? ' ticked' : ''}"
+      onclick="event.stopPropagation();tickTask(${di},${ti})"></button>
+    <span>${text}</span>${link}
+  </div>`;
+}
+
+function tickTask(di, ti) {
+  const arr = state.tasksDone[di] || (state.tasksDone[di] = []);
+  const idx = arr.indexOf(ti);
+  if (idx === -1) arr.push(ti); else arr.splice(idx, 1);
+  const total = days[di].tasks.length;
+  const done  = arr.length;
+  if (done === total && !isCompleted(di)) { toggleComplete(di); return; }
+  if (done < total  &&  isCompleted(di)) {
+    state.completed = state.completed.filter(x => x !== di);
+    delete state.completedAt[di];
+  }
+  saveState(); renderSchedule();
+}
+
+function renderRes(r) {
+  if (typeof r === 'string')
+    return `<span class="res-pill">📎 ${r}</span>`;
+  return r.url
+    ? `<a class="res-pill" href="${r.url}" target="_blank" rel="noopener">📎 ${r.text}</a>`
+    : `<span class="res-pill">📎 ${r.text}</span>`;
+}
+
+function updateStats() {
+  const comp = state.completed.length;
+  const pct  = Math.round((comp / TOTAL_DAYS) * 100);
+  document.getElementById('prog-pct').textContent   = pct + '%';
+  document.getElementById('bar-fill').style.width   = pct + '%';
+  document.getElementById('stat-completed').textContent = comp + '/' + TOTAL_DAYS;
+
+  const scores = Object.values(state.scores).filter(s => s > 0);
+  const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+  const scoreEl = document.getElementById('stat-score');
+  scoreEl.textContent = avg ? avg + '%' : '—';
+  if (avg) {
+    scoreEl.className = 'stat-val ' + scoreClass(avg);
+  } else {
+    scoreEl.className = 'stat-val';
+  }
+
+  const totalHrs = Object.values(state.hours).reduce((a,b)=>a+b,0);
+  document.getElementById('stat-hours').textContent = totalHrs % 1 === 0 ? totalHrs : totalHrs.toFixed(1);
+
+  // Simple streak: consecutive completed days from start
+  let streak = 0;
+  for (let i = 0; i < TOTAL_DAYS; i++) {
+    if (isCompleted(i)) streak++; else break;
+  }
+  document.getElementById('stat-streak').textContent = streak;
+
+  const badge = document.getElementById('readiness-badge');
+  if (pct < 40) {
+    badge.className = 'readiness early'; badge.textContent = 'Just getting started';
+  } else if (pct < 80) {
+    badge.className = 'readiness close'; badge.textContent = 'Making progress';
+  } else {
+    badge.className = 'readiness ready'; badge.textContent = 'Capstone ready!';
+  }
+}
+
+function renderSchedule() {
+  document.getElementById('panel-schedule').innerHTML = days.map((d, i) => {
+    const comp  = isCompleted(i);
+    const open  = state.openDay === i;
+    const score = state.scores[i];
+    const hrs   = state.hours[i];
+    const tot   = d.tasks.length;
+    const done  = (state.tasksDone[i] || []).length;
+
+    const actionRow = `<div class="nb-row">
+      <a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a>
+      <a class="nb-btn nb-btn-colab"
+         href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/${COURSE_ID}/notebooks/${NOTEBOOKS[i]}.ipynb"
+         target="_blank">▶ Open in Colab</a>
+      <a class="nb-btn" href="https://github.com/certified-journeys/certified-journeys.github.io/edit/main/courses/${COURSE_ID}/notes/day-${String(i+1).padStart(2,'0')}.md" target="_blank">📝 notes/day-${String(i+1).padStart(2,'0')}.md</a>
+    </div>`;
+
+    const topicPills = (dayTopics[i]||[]).length
+      ? `<div class="day-topic-pills">
+          ${(dayTopics[i]||[]).map(t => `<span class="day-topic-pill"
+            style="background:${t.color}18;color:${t.color};border-color:${t.color}40"
+            onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])"
+            title="View topic in Topics tab">${t.name}</span>`).join('')}
+        </div>` : '';
+
+    const progressBar = tot
+      ? `<div class="task-progress"><div class="task-progress-fill" style="width:${Math.round(done/tot*100)}%"></div></div>`
+      : '';
+
+    return `<div class="day-card${comp ? ' completed' : ''}${open ? ' open' : ''}">
+      <div class="day-header" onclick="toggleDay(${i})">
+        <span class="day-num">Day ${i+1}</span>
+        <div class="day-meta">
+          <div class="day-title">${d.title}</div>
+          <div class="day-sub">${d.sub}</div>
+        </div>
+        <span class="day-badge ${badgeClass(d.badge)}">${badgeLabel(d.badge)}</span>
+        ${comp ? '<span style="font-size:14px;margin-left:6px;">✓</span>' : ''}
+        <span class="chevron">▾</span>
+      </div>
+      ${open ? `<div class="day-body">
+        ${actionRow}
+        <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
+        ${topicPills}
+        ${progressBar}
+        <div class="task-list">${d.tasks.map((t, j) => renderTask(t, i, j)).join('')}</div>
+        <div class="resources-row">${d.resources.map(renderRes).join('')}</div>
+        ${d.hasScore ? `<div class="score-row"><label>Practice score (%):</label><input type="number" min="0" max="100" placeholder="e.g. 84" value="${score||''}" onchange="logScore(${i},this.value)">${score ? `<span class="score-badge ${scoreClass(score)==='ok'?'badge-learn':scoreClass(score)==='warn'?'badge-review':'badge-exam'}">${score}%</span>` : ''}</div>` : ''}
+        <div class="hours-row"><label>Hours spent today:</label><input type="number" min="0" max="24" step="0.5" placeholder="e.g. 2.5" value="${hrs||''}" onchange="logHours(${i},this.value)"><span style="font-size:11px;color:var(--text3);">hrs</span></div>
+        <button class="complete-btn ${comp?'done':''}" onclick="event.stopPropagation();toggleComplete(${i})">${comp?'✓ Completed':'Mark as complete'}</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+  updateStats();
+}
+
+function renderTopics() {
+  document.getElementById('panel-topics').innerHTML = `<div class="topic-grid">${
+    topics.map(t => {
+      const cov = t.days.filter(d => state.completed.includes(d)).length;
+      const pct = Math.round((cov / t.days.length) * 100);
+      const dayBtns = t.days.map(d =>
+        `<button class="topic-day-btn${state.completed.includes(d) ? ' done' : ''}"
+          onclick="goToDay(${d})">Day ${d + 1}</button>`
+      ).join('');
+      return `<div class="topic-card">
+        <h4>${t.name}</h4>
+        <div class="t-bar-bg"><div class="t-bar-fill" style="width:${pct}%;background:${t.color}"></div></div>
+        <div class="t-pct">${pct}% covered · ${cov}/${t.days.length} sessions</div>
+        <div class="topic-days">${dayBtns}</div>
+      </div>`;
+    }).join('')
+  }</div>`;
+}
+
+function renderAI() {
+  document.getElementById('panel-ai').innerHTML = `
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#E8F0FE;">🎙</div>
+        <div>
+          <div class="ai-card-title">NotebookLM — Audio Podcast Summary</div>
+          <div class="ai-card-sub">Generate a personalized audio briefing of your learning</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Upload your day-card notes plus the official LangGraph docs as sources in NotebookLM, then generate a podcast covering key concepts and implementation pitfalls.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Audio:
+"Create a 10-minute podcast episode for someone studying Building AI Agents with LangGraph. Cover: LangGraph state schemas and reducer functions — how add_messages and custom reducers control state merging across nodes, human-in-the-loop breakpoints — the difference between interrupt_before vs interrupt_after vs Command-based resumption and why thread IDs matter, and the supervisor multi-agent pattern — router LLM handoff mechanics and preventing infinite delegation loops — include the most common misconceptions and the 3 things that will trip you up when building production agents."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#FEF3E2;">🃏</div>
+        <div>
+          <div class="ai-card-title">NotebookLM — AI Flashcards</div>
+          <div class="ai-card-sub">Generate quiz cards from your notes</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Upload your notes and the official LangGraph docs to NotebookLM and use the Study Guide feature to generate Q&A flashcards on the hardest concepts.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Quiz:
+"Generate 20 flashcard-style Q&A pairs for someone studying Building AI Agents with LangGraph. Include at least 5 cards on LangGraph state schemas and reducer functions — how add_messages and custom reducers control state merging across nodes, 5 on human-in-the-loop breakpoints — the difference between interrupt_before vs interrupt_after vs Command-based resumption and why thread IDs matter, and 5 on the supervisor multi-agent pattern — router LLM handoff mechanics and preventing infinite delegation loops. Focus on concept distinctions, common misconceptions, and scenario-based questions."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#EEE9FF;">💬</div>
+        <div>
+          <div class="ai-card-title">Claude — Deep Dive Prompts</div>
+          <div class="ai-card-sub">Use when a concept isn't clicking</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Copy any of these prompts directly into Claude when you need a deeper explanation of a LangGraph concept.</div>
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior engineer:
+"I'm studying Building AI Agents with LangGraph. Explain LangGraph state schemas and reducer functions — how add_messages and custom reducers control state merging across nodes as if I'm already experienced with Python and async code. Skip the basics — focus on nuance, edge cases, and real-world decisions around mutable defaults and concurrent node writes."
+
+Prompt 2 — Scenario questions:
+"Give me 5 scenario-based questions for Building AI Agents with LangGraph on human-in-the-loop breakpoints — the difference between interrupt_before vs interrupt_after vs Command-based resumption and why thread IDs matter. After each question, explain why the correct answer is right and why the alternatives are wrong."
+
+Prompt 3 — Gap analysis study plan:
+"I've studied Building AI Agents with LangGraph but I'm unsure about the supervisor multi-agent pattern — router LLM handoff mechanics and preventing infinite delegation loops. Give me a focused 30-minute study plan with concrete coding exercises to fill that gap, including at least one exercise where I must debug a broken handoff."</div>
+    </div>`;
+}
+
+function renderResources() {
+  document.getElementById('panel-resources').innerHTML = `
+    <div class="res-section">
+      <div class="res-section-title">📖 Core Reading</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">01</span>
+          <div class="res-link-body">
+            <a href="https://langchain-ai.github.io/langgraph/concepts/low_level/" target="_blank">LangGraph — Low Level Concepts</a>
+            <div class="res-link-desc">State, nodes, edges, and the graph execution model explained from first principles</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">02</span>
+          <div class="res-link-body">
+            <a href="https://langchain-ai.github.io/langgraph/tutorials/introduction/" target="_blank">LangGraph Quickstart Tutorial</a>
+            <div class="res-link-desc">End-to-end walkthrough of building a chatbot with LangGraph — the authoritative starting point</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">03</span>
+          <div class="res-link-body">
+            <a href="https://langchain-ai.github.io/langgraph/concepts/agentic_concepts/" target="_blank">LangGraph — Agentic Concepts</a>
+            <div class="res-link-desc">ReAct pattern, tool calling, and the agent loop explained with diagrams</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">04</span>
+          <div class="res-link-body">
+            <a href="https://langchain-ai.github.io/langgraph/concepts/human_in_the_loop/" target="_blank">LangGraph — Human-in-the-Loop Concepts</a>
+            <div class="res-link-desc">Breakpoints, snapshots, resumption patterns, and when to use each approach</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">05</span>
+          <div class="res-link-body">
+            <a href="https://langchain-ai.github.io/langgraph/concepts/multi_agent/" target="_blank">LangGraph — Multi-Agent Architecture Concepts</a>
+            <div class="res-link-desc">Supervisor pattern, subgraph isolation, and handoff mechanics at a conceptual level</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🛠 Hands-On Resources</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">06</span>
+          <div class="res-link-body">
+            <a href="https://langchain-ai.github.io/langgraph/how-tos/" target="_blank">LangGraph — How-To Guides Index</a>
+            <div class="res-link-desc">The single best reference page — covers every implementation pattern with runnable code</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">07</span>
+          <div class="res-link-body">
+            <a href="https://langchain-ai.github.io/langgraph/tutorials/multi_agent/agent_supervisor/" target="_blank">LangGraph — Supervisor Tutorial</a>
+            <div class="res-link-desc">Step-by-step guide to building a supervisor that routes between specialized subagents</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">08</span>
+          <div class="res-link-body">
+            <a href="https://langchain-ai.github.io/langgraph/how-tos/persistence/" target="_blank">LangGraph — SQLite Checkpointer How-To</a>
+            <div class="res-link-desc">Wire SqliteSaver for local persistence and verify thread-level state isolation</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">09</span>
+          <div class="res-link-body">
+            <a href="https://langchain-ai.github.io/langgraph/how-tos/human_in_the_loop/wait-user-input/" target="_blank">LangGraph — Wait for User Input How-To</a>
+            <div class="res-link-desc">Implement interrupt_before, approve/reject flows, and state resumption with thread IDs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🔧 Ecosystem &amp; Tooling</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">10</span>
+          <div class="res-link-body">
+            <a href="https://github.com/langchain-ai/langgraph" target="_blank">LangGraph GitHub Repository</a>
+            <div class="res-link-desc">Source code, open issues, and the CHANGELOG — essential for tracking breaking changes</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">11</span>
+          <div class="res-link-body">
+            <a href="https://python.langchain.com/docs/concepts/tool_calling/" target="_blank">LangChain — Tool Calling Concepts</a>
+            <div class="res-link-desc">How tool schemas, ToolMessage, and bind_tools wire into LangGraph's ToolNode</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">12</span>
+          <div class="res-link-body">
+            <a href="https://langchain-ai.github.io/langgraph/reference/prebuilt/" target="_blank">LangGraph — Prebuilt Components Reference</a>
+            <div class="res-link-desc">ToolNode, create_react_agent, and other batteries-included components with full API docs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">⬆ Upgrade Path</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">13</span>
+          <div class="res-link-body">
+            <a href="https://langchain-ai.github.io/langgraph/concepts/langgraph_platform/" target="_blank">LangGraph Platform Overview</a>
+            <div class="res-link-desc">Managed deployment for production agents — persistence, streaming, and observability at scale</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">14</span>
+          <div class="res-link-body">
+            <a href="https://langchain-ai.github.io/langgraph/how-tos/persistence-postgres/" target="_blank">LangGraph — PostgreSQL Checkpointer</a>
+            <div class="res-link-desc">Upgrade from SQLite to Postgres for production-grade durability and concurrent access</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">15</span>
+          <div class="res-link-body">
+            <a href="https://langchain-ai.github.io/langgraph/concepts/streaming/" target="_blank">LangGraph — Streaming Concepts</a>
+            <div class="res-link-desc">stream_mode options, astream_events filtering, and building real-time terminal UIs for agent output</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderExam() {
+  const checklist = [
+    "Built at least 3 distinct LangGraph StateGraphs from scratch without referencing docs",
+    "Can explain the difference between interrupt_before, interrupt_after, and Command-based resumption — and when each is appropriate",
+    "Implemented the supervisor multi-agent pattern with handoffs between at least 2 specialized subagents",
+    "Connected a SQLite checkpointer and verified that a graph resumes correctly after mid-run interruption",
+    "Streamed node-level events using astream_events and rendered them in a real terminal output",
+  ];
+
+  document.getElementById('panel-exam').innerHTML = `
+    <div class="exam-grid">
+      <div class="exam-card">
+        <div class="exam-card-label">Format</div>
+        <div class="exam-card-val">Capstone</div>
+        <div class="exam-card-sub">${exam.notes}</div>
+      </div>
+      <div class="exam-card">
+        <div class="exam-card-label">Pass Score</div>
+        <div class="exam-card-val">${exam.passScore}</div>
+        <div class="exam-card-sub">Ship a working multi-agent system</div>
+      </div>
+      <div class="exam-card">
+        <div class="exam-card-label">Cost</div>
+        <div class="exam-card-val">${exam.cost}</div>
+        <div class="exam-card-sub">Provider: ${exam.provider}</div>
+      </div>
+      <div class="exam-card">
+        <div class="exam-card-label">Official Docs</div>
+        <div class="exam-card-val" style="font-size:14px;"><a href="${exam.link}" target="_blank" style="color:var(--green-dark);text-decoration:none;">langgraph ↗</a></div>
+        <div class="exam-card-sub">LangGraph documentation</div>
+      </div>
+    </div>
+    <div class="info-box" style="margin-bottom:1rem;">
+      <strong>Capstone project:</strong> Build a multi-agent research system in LangGraph with a supervisor node that routes between a web-search agent and a summarization agent, persists conversation state to a SQLite checkpointer, streams node-level output to a terminal UI, and produces a structured Markdown research report.
+    </div>
+    <div style="background:var(--surface);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow);">
+      <div style="font-size:13px;font-weight:600;margin-bottom:12px;">Readiness Checklist</div>
+      ${checklist.map((item, i) => `
+        <label style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border);cursor:pointer;font-size:13px;">
+          <input type="checkbox" id="chk-${i}" style="margin-top:2px;accent-color:var(--green);flex-shrink:0;">
+          <span>${item}</span>
+        </label>`).join('')}
+      <div style="margin-top:14px;">
+        <a class="nb-btn" href="${exam.link}" target="_blank" style="display:inline-flex;">Open LangGraph Docs ↗</a>
+        <button onclick="resetAll()" style="margin-left:8px;font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:inherit;">Reset all progress</button>
+      </div>
+    </div>`;
+}
+
+function showPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'topics') renderTopics();
+  if (name === 'ai') renderAI();
+  if (name === 'resources') renderResources();
+  if (name === 'exam') renderExam();
+}
+
+function renderAll() {
+  renderSchedule();
+  updateStats();
+}
+
+function updateSyncBadge(s) {
+  const el = document.getElementById('sync-badge'); if (!el) return;
+  const L = {disconnected:'☁ Connect GitHub', connected:'✓ Synced', syncing:'↑ Syncing…', error:'⚠ Sync failed'};
+  el.textContent = L[s] || L.disconnected;
+  el.className = 'sync-badge' + (s==='connected' ? ' connected' : s==='syncing' ? ' syncing' : s==='error' ? ' error' : '');
+}
+
+function openGHModal() {
+  const creds = GHSync.getCreds();
+  if (creds) {
+    document.getElementById('gh-pat').value    = creds.pat    || '';
+    document.getElementById('gh-owner').value  = creds.owner  || '';
+    document.getElementById('gh-repo').value   = creds.repo   || '';
+    document.getElementById('gh-branch').value = creds.branch || 'main';
+    document.getElementById('gh-disconnect-btn').style.display = 'inline-flex';
+  } else {
+    document.getElementById('gh-pat').value    = '';
+    document.getElementById('gh-owner').value  = '';
+    document.getElementById('gh-repo').value   = '';
+    document.getElementById('gh-branch').value = 'main';
+    document.getElementById('gh-disconnect-btn').style.display = 'none';
+  }
+  document.getElementById('gh-modal-msg').textContent = '';
+  document.getElementById('gh-modal').classList.add('open');
+}
+
+function closeGHModal() { document.getElementById('gh-modal').classList.remove('open'); }
+
+async function saveGHCreds() {
+  const c = {
+    pat:    document.getElementById('gh-pat').value.trim(),
+    owner:  document.getElementById('gh-owner').value.trim(),
+    repo:   document.getElementById('gh-repo').value.trim(),
+    branch: document.getElementById('gh-branch').value.trim() || 'main'
+  };
+  if (!c.pat || !c.owner || !c.repo) {
+    document.getElementById('gh-modal-msg').textContent = 'Fill in all fields.'; return;
+  }
+  document.getElementById('gh-modal-msg').textContent = 'Testing…';
+  GHSync.saveCreds(c);
+  const r = await GHSync.testConnection();
+  if (r.ok) {
+    document.getElementById('gh-modal-msg').textContent = '✓ Connected!';
+    updateSyncBadge('connected');
+    setTimeout(closeGHModal, 900);
+  } else {
+    document.getElementById('gh-modal-msg').textContent = 'Error: ' + r.msg;
+  }
+}
+
+function disconnectGH() { GHSync.saveCreds(null); updateSyncBadge('disconnected'); closeGHModal(); }
+
+loadState().then(renderAll);
+
+// Dark mode toggle
+const MOON = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function getEffectiveTheme(){const t=document.documentElement.getAttribute('data-theme');if(t)return t;return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+function applyThemeBtn(){const btn=document.getElementById('theme-btn');if(!btn)return;const dark=getEffectiveTheme()==='dark';btn.innerHTML=dark?SUN:MOON;btn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');}
+window.toggleTheme=function(){const next=getEffectiveTheme()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);localStorage.setItem('cj-theme',next);applyThemeBtn();};
+applyThemeBtn();
+</script>
+</body>
+</html>

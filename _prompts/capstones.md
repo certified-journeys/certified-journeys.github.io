@@ -18,3 +18,4 @@ No two courses may share the same capstone artifact.
 | mlflow-certified  | Full MLOps pipeline: Train → Track → Register → Serve |
 | altair-certified  | Fully interactive multi-panel EDA dashboard with linked brushing and cross-filtering across scatter, histogram, and bar panels, built from the gapminder Vega dataset |
 | llm-engineering-certified | Multi-document RAG chatbot ingesting PDFs and web pages into a persistent Chroma vector store, retrieved with MMR re-ranking, with ConversationSummaryMemory and a streaming Gradio ChatInterface |
+| ai-agents-certified | Multi-agent research system in LangGraph with a supervisor node routing between a web-search agent and a summarization agent, persisted to a SQLite checkpointer, streaming node-level output to a terminal UI, producing a structured Markdown research report |

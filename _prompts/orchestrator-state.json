@@ -7,8 +7,8 @@
     "auto_commit": true,
     "on_validation_failure": "stop"
   },
-  "current_course": "llm-engineering-certified",
-  "current_phase": "generating",
+  "current_course": null,
+  "current_phase": null,
   "last_updated": "2026-06-13T01:10:00.000000+00:00",
   "schedule_id": null,
   "courses": {
@@ -24,7 +24,7 @@
     "altair-certified": {"status": "done", "started_at": "2026-06-12T00:00:00.000000Z", "designed_at": "2026-06-12T00:00:00.000000Z", "generated_at": "2026-06-12T00:30:00.000000Z", "completed_at": "2026-06-12T00:35:00.000000Z", "error": null},
     "huggingface-nlp-certified": {"status": "done", "started_at": "2026-06-13T00:00:00.000000Z", "designed_at": "2026-06-13T00:05:00.000000Z", "generated_at": "2026-06-13T01:00:00.000000Z", "completed_at": "2026-06-13T01:05:00.000000Z", "error": null},
     "llm-engineering-certified": {"status": "done", "started_at": "2026-06-13T01:10:00.000000Z", "designed_at": "2026-06-13T01:15:00.000000Z", "generated_at": "2026-06-13T21:00:00.000000Z", "completed_at": "2026-06-13T21:05:00.000000Z", "error": null},
-    "ai-agents-certified": {"status": "pending"},
+    "ai-agents-certified": {"status": "done", "started_at": "2026-06-13T21:10:00.000000Z", "designed_at": "2026-06-13T21:15:00.000000Z", "generated_at": "2026-06-13T23:00:00.000000Z", "completed_at": "2026-06-13T23:05:00.000000Z", "error": null},
     "llama-certified": {"status": "pending"},
     "prompt-engineering-certified": {"status": "pending"},
     "github-actions-certified": {"status": "pending"},
