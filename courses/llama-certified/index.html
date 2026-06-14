@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Llama &amp; Local LLMs in Production · certified-journeys</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#0057FF; --green-light:#E6EEFF; --green-dark:#003FCC;
+  --blue:#378ADD; --blue-light:#EAF3FD; --blue-dark:#185FA5;
+  --amber:#BA7517; --amber-light:#FDF3E3;
+  --coral:#D85A30; --coral-light:#FAEDE8; --coral-dark:#993C1D;
+  --purple:#7F77DD; --purple-light:#EEEDFE;
+  --orange:#E8890C; --orange-light:#FEF3E2;
+  --teal:#0891B2; --teal-light:#E0F5FA;
+  --bg:#F5F4F0; --surface:#FFFFFF; --surface2:#EEECE5; --surface3:#E8E6DF;
+  --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.16);
+  --text:#18181A; --text2:#52524E; --text3:#8C8B85;
+  --radius:14px; --radius-sm:9px; --radius-xs:5px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.1),0 1px 3px rgba(0,0,0,0.06);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#000F33;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}}
+[data-theme="dark"]{
+  --bg:#111113; --surface:#1C1C1F; --surface2:#252528; --surface3:#2E2E33;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+  --text:#F0EFEA; --text2:#A09F9B; --text3:#5E5D58;
+  --green-light:#000F33;
+  --blue-light:#061E38; --amber-light:#221900;
+  --coral-light:#2A0E05; --purple-light:#161440;
+  --orange-light:#1F1200; --teal-light:#021E26;
+}
+/* Nav */
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);border-bottom:0.5px solid var(--border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav{background:rgba(26,26,26,0.85);}}
+[data-theme="dark"] nav{background:rgba(26,26,26,0.85);}
+.nav-inner{max-width:860px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-0.025em;color:var(--text);text-decoration:none;}
+.nav-brand:hover{text-decoration:none;opacity:0.85;}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:0.01em;flex-shrink:0;box-shadow:0 1px 4px rgba(26,26,46,0.25);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-gh-icon{width:34px;height:34px;border-radius:99px;border:0.5px solid var(--border2);color:var(--text2);display:flex;align-items:center;justify-content:center;transition:all 0.15s;text-decoration:none;flex-shrink:0;}
+.nav-gh-icon:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.theme-btn{width:34px;height:34px;border-radius:99px;flex-shrink:0;border:0.5px solid var(--border2);background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;}
+.theme-btn:hover{background:var(--surface2);color:var(--text);}
+/* Action row */
+.nb-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.nb-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;font-family:inherit;}
+.nb-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+.nb-btn-colab{background:#F9AB00;border-color:#F9AB00;color:#000;}
+.nb-btn-colab:hover{background:#e09900;color:#000;text-decoration:none;}
+/* Linked resources & tasks */
+a.res-pill{text-decoration:none;cursor:pointer;}
+a.res-pill:hover{background:var(--surface3);border-color:var(--border2);color:var(--text);}
+.task-link{color:var(--blue-dark);font-size:11px;margin-left:6px;flex-shrink:0;opacity:0.7;line-height:1.5;}
+.task-link:hover{opacity:1;text-decoration:none;}
+/* Task tick checkboxes */
+.task-tick{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px;background:none;padding:0;}
+.task-tick:hover{border-color:var(--green);}
+.task-tick.ticked{background:var(--green);border-color:var(--green);}
+.task-tick.ticked::after{content:"✓";font-size:10px;color:#fff;font-weight:700;line-height:1;}
+.task.task-done>span{text-decoration:line-through;color:var(--text3);}
+/* Per-day task progress bar */
+.task-progress{height:3px;border-radius:99px;background:var(--surface2);margin-bottom:8px;overflow:hidden;}
+.task-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;}
+/* Score / hours / complete */
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.score-row label{font-size:12px;color:var(--text2);}
+.score-row input{width:72px;font-size:13px;padding:5px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.hours-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text2);}
+.hours-row input{width:60px;font-size:13px;padding:4px 8px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;}
+.complete-btn{width:100%;font-size:13px;padding:9px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .2s;font-weight:400;}
+.complete-btn:hover{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+.complete-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);font-weight:500;}
+/* AI cards */
+.ai-prompt-box{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-top:10px;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;line-height:1.7;white-space:pre-wrap;}
+.ai-link-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-family:inherit;text-decoration:none;}
+.ai-link-btn:hover{background:var(--surface2);color:var(--text);text-decoration:none;}
+/* GitHub sync modal */
+.gh-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;}
+.gh-modal.open{display:flex;}
+.gh-modal-box{background:var(--surface);border-radius:var(--radius);padding:1.5rem;max-width:440px;width:90%;box-shadow:var(--shadow-md);}
+.gh-modal-box h3{font-size:17px;font-weight:600;margin-bottom:6px;}
+.gh-modal-sub{font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.6;}
+.gh-field{margin-bottom:10px;}
+.gh-field label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.gh-field input{width:100%;font-size:13px;padding:8px 10px;border:.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Mono',monospace;}
+.gh-field input:focus{outline:none;border-color:var(--green);}
+.gh-modal-actions{display:flex;gap:8px;align-items:center;margin-top:1rem;flex-wrap:wrap;}
+.gh-btn-save{font-size:13px;padding:8px 18px;border-radius:var(--radius-sm);background:var(--green);color:#fff;border:none;font-family:inherit;font-weight:500;cursor:pointer;}
+.gh-btn-save:hover{background:var(--green-dark);}
+.gh-btn-cancel{font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--text2);border:.5px solid var(--border2);font-family:inherit;cursor:pointer;}
+.gh-btn-cancel:hover{background:var(--surface2);}
+.gh-btn-disconnect{font-size:12px;padding:8px 14px;border-radius:var(--radius-sm);background:none;color:var(--coral-dark);border:.5px solid var(--coral);font-family:inherit;cursor:pointer;}
+.gh-modal-msg{font-size:12px;color:var(--text2);}
+/* Topic pills on day cards */
+.day-topic-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.day-topic-pill{font-size:10px;padding:2px 9px;border-radius:99px;border:.5px solid;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.day-topic-pill:hover{opacity:.7;}
+.topic-days{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.topic-day-btn{font-size:11px;padding:2px 8px;border-radius:99px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
+.topic-day-btn:hover{background:var(--surface3);color:var(--text);}
+.topic-day-btn.done{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+/* Sync badge */
+.sync-badge{font-size:11px;padding:4px 10px;border-radius:99px;border:.5px solid var(--border2);background:none;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s;}
+.sync-badge:hover{background:var(--surface2);color:var(--text2);}
+.sync-badge.connected{color:var(--green-dark);border-color:var(--green);}
+.sync-badge.syncing{color:var(--amber);border-color:var(--amber);}
+.sync-badge.error{color:var(--coral-dark);border-color:var(--coral);}
+/* Layout */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;}
+.app{max-width:860px;margin:0 auto;padding:1.25rem;}
+/* Breadcrumb */
+.breadcrumb{font-size:12px;color:var(--text3);margin-bottom:1rem;display:flex;align-items:center;gap:6px;}
+.breadcrumb a{color:var(--text3);text-decoration:none;}
+.breadcrumb a:hover{color:var(--text2);}
+.breadcrumb-sep{color:var(--text3);}
+/* Hero */
+.course-hero{background:var(--surface);border-radius:var(--radius);padding:1.5rem;margin-bottom:1rem;box-shadow:var(--shadow);border:.5px solid var(--border);}
+.course-hero-top{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1rem;}
+.course-icon-wrap{flex-shrink:0;}
+.course-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;letter-spacing:-0.02em;color:#fff;background:#0057FF;}
+.course-title-block{flex:1;}
+.course-title-block h1{font-size:20px;font-weight:700;letter-spacing:-0.03em;line-height:1.25;margin-bottom:6px;}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;}
+.tag{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--surface2);color:var(--text2);font-weight:500;}
+.hero-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-top:1rem;}
+.meta-item{background:var(--surface2);border-radius:var(--radius-sm);padding:.65rem .85rem;}
+.meta-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;}
+.meta-val{font-size:13px;font-weight:600;color:var(--text);}
+@media(max-width:640px){.hero-meta{grid-template-columns:repeat(2,1fr);}}
+/* Progress strip */
+.prog-strip{background:var(--surface);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow);border:.5px solid var(--border);}
+.prog-strip-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;}
+.prog-label{font-size:12px;color:var(--text2);}
+.prog-pct{font-size:22px;font-weight:700;letter-spacing:-0.03em;}
+.bar-bg{height:6px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-bottom:.85rem;}
+.bar-fill{height:100%;background:var(--green);border-radius:99px;transition:width .4s;}
+.readiness{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:4px 12px;border-radius:99px;margin-bottom:1rem;}
+.readiness.early{background:var(--surface2);color:var(--text2);}
+.readiness.close{background:var(--amber-light);color:var(--amber);}
+.readiness.ready{background:var(--green-light);color:var(--green-dark);}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;}
+@media(max-width:640px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+.stat{background:var(--surface2);border-radius:var(--radius-sm);padding:.6rem .8rem;text-align:center;}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;}
+.stat-val{font-size:16px;font-weight:700;}
+.stat-val.ok{color:var(--green-dark);}
+.stat-val.warn{color:var(--amber);}
+.stat-val.danger{color:var(--coral-dark);}
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:1rem;flex-wrap:wrap;}
+.tab{font-size:13px;padding:7px 14px;border-radius:var(--radius-sm);border:.5px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .15s;}
+.tab:hover{background:var(--surface);color:var(--text);}
+.tab.active{background:var(--surface);color:var(--text);font-weight:500;box-shadow:var(--shadow);}
+.panel{display:none;}
+.panel.active{display:block;}
+/* Day cards */
+.day-card{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);box-shadow:var(--shadow);margin-bottom:.65rem;overflow:hidden;transition:box-shadow .15s;}
+.day-card.completed{border-color:var(--green);}
+.day-card.open{box-shadow:var(--shadow-md);}
+.day-header{display:flex;align-items:center;gap:.75rem;padding:1rem 1.1rem;cursor:pointer;user-select:none;}
+.day-num{width:32px;height:32px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--surface2);color:var(--text2);flex-shrink:0;}
+.day-card.completed .day-num{background:var(--green);color:#fff;}
+.day-meta{flex:1;min-width:0;}
+.day-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.day-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.day-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;flex-shrink:0;}
+.badge-learn{background:var(--blue-light);color:var(--blue-dark);}
+.badge-practice{background:var(--green-light);color:var(--green-dark);}
+.badge-review{background:var(--amber-light);color:var(--amber);}
+.badge-exam{background:var(--coral-light);color:var(--coral-dark);}
+.chevron{font-size:12px;color:var(--text3);flex-shrink:0;transition:transform .2s;}
+.day-card.open .chevron{transform:rotate(180deg);}
+.day-body{padding:0 1.1rem 1rem;display:none;}
+.day-card.open .day-body{display:block;}
+.tip-box{background:var(--surface2);border-radius:var(--radius-sm);padding:.65rem .85rem;margin-bottom:10px;font-size:12px;color:var(--text2);line-height:1.6;}
+.task-list{display:flex;flex-direction:column;gap:7px;margin-bottom:10px;}
+.task{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.5;}
+.resources-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.res-pill{font-size:11px;padding:3px 10px;border-radius:99px;border:.5px solid var(--border2);color:var(--text2);display:inline-flex;align-items:center;gap:4px;}
+.score-badge{font-size:11px;padding:2px 8px;border-radius:99px;}
+/* Topics */
+.topic-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;}
+@media(max-width:640px){.topic-grid{grid-template-columns:1fr;}}
+.topic-card{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:1rem 1.1rem;box-shadow:var(--shadow);}
+.topic-card h4{font-size:14px;font-weight:600;margin-bottom:.5rem;}
+.t-bar-bg{height:5px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-bottom:4px;}
+.t-bar-fill{height:100%;border-radius:99px;transition:width .4s;}
+.t-pct{font-size:11px;color:var(--text3);margin-bottom:6px;}
+/* AI */
+.ai-card{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:1.1rem;box-shadow:var(--shadow);margin-bottom:.75rem;}
+.ai-card-head{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.65rem;}
+.ai-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ai-card-title{font-size:14px;font-weight:600;}
+.ai-card-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.ai-card-body{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:4px;}
+/* Exam */
+.exam-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-bottom:1rem;}
+@media(max-width:640px){.exam-grid{grid-template-columns:1fr;}}
+.exam-card{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:1rem 1.1rem;box-shadow:var(--shadow);}
+.exam-card-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.exam-card-val{font-size:20px;font-weight:700;margin-bottom:2px;}
+.exam-card-sub{font-size:11px;color:var(--text3);}
+/* Resources */
+.res-section{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:1.1rem;box-shadow:var(--shadow);margin-bottom:.75rem;}
+.res-section-title{font-size:13px;font-weight:600;margin-bottom:.75rem;}
+.res-link-list{display:flex;flex-direction:column;gap:.5rem;}
+.res-link-item{display:flex;align-items:flex-start;gap:.65rem;}
+.res-link-index{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);padding-top:2px;flex-shrink:0;width:20px;}
+.res-link-body{flex:1;}
+.res-link-body a{font-size:13px;color:var(--blue-dark);text-decoration:none;font-weight:500;}
+.res-link-body a:hover{text-decoration:underline;}
+.res-link-desc{font-size:11px;color:var(--text3);margin-top:1px;}
+/* Shared */
+.info-box{background:var(--surface2);border-radius:var(--radius-sm);padding:.85rem 1rem;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:1rem;}
+/* Footer */
+.page-footer{text-align:center;font-size:11px;color:var(--text3);padding:2rem 0 1rem;display:flex;align-items:center;justify-content:center;gap:.5rem;flex-wrap:wrap;}
+.page-footer a{color:var(--text3);text-decoration:none;}
+.page-footer a:hover{color:var(--text2);}
+</style>
+<script>(function(){const t=localStorage.getItem('cj-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="../../index.html">
+      <div class="brand-mark">CJ</div>
+      certified-journeys
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" id="theme-btn" aria-label="Switch to dark mode" onclick="toggleTheme()"></button>
+      <a class="nav-gh-icon" href="https://github.com/certified-journeys" target="_blank" aria-label="GitHub">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="app">
+
+  <div class="breadcrumb">
+    <a href="../../index.html">certified-journeys</a>
+    <span class="breadcrumb-sep">›</span>
+    <span>Llama &amp; Local LLMs in Production</span>
+  </div>
+
+  <div class="course-hero">
+    <div class="course-hero-top">
+      <div class="course-icon-wrap">
+        <div class="course-icon">LL</div>
+      </div>
+      <div class="course-title-block">
+        <h1>Llama &amp; Local LLMs in Production</h1>
+        <div class="tag-row">
+          <span class="tag">LLMs</span>
+          <span class="tag">Llama</span>
+          <span class="tag">Ollama</span>
+          <span class="tag">Python</span>
+          <span class="tag">Inference</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div class="meta-item"><div class="meta-label">Cost</div><div class="meta-val">Free</div></div>
+      <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">10 days</div></div>
+      <div class="meta-item"><div class="meta-label">Provider</div><div class="meta-val">Meta / Ollama (Self-paced)</div></div>
+      <div class="meta-item"><div class="meta-label">Difficulty</div><div class="meta-val">Advanced</div></div>
+    </div>
+  </div>
+
+  <div class="prog-strip">
+    <div class="prog-strip-top">
+      <span class="prog-label">Overall progress</span>
+      <span class="prog-pct" id="prog-pct">0%</span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+    <div id="readiness-badge" class="readiness early">🌱 Just getting started</div>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-label">Days Done</div><div class="stat-val" id="stat-done">0/10</div></div>
+      <div class="stat"><div class="stat-label">Avg Score</div><div class="stat-val" id="stat-score">—</div></div>
+      <div class="stat"><div class="stat-label">Total Hours</div><div class="stat-val" id="stat-hours">0</div></div>
+      <div class="stat"><div class="stat-label">Streak</div><div class="stat-val" id="stat-streak">0</div></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showPanel('schedule',this)">📅 Daily Plan</button>
+    <button class="tab" onclick="showPanel('topics',this)">📚 Topics</button>
+    <button class="tab" onclick="showPanel('ai',this)">🤖 AI Tools</button>
+    <button class="tab" onclick="showPanel('resources',this)">🔗 Resources</button>
+    <button class="tab" onclick="showPanel('exam',this)">🎓 Exam Prep</button>
+  </div>
+
+  <div id="panel-schedule"  class="panel active"></div>
+  <div id="panel-topics"    class="panel"></div>
+  <div id="panel-ai"        class="panel"></div>
+  <div id="panel-resources" class="panel"></div>
+  <div id="panel-exam"      class="panel"></div>
+
+  <div class="page-footer">
+    <button class="sync-badge" id="sync-badge" onclick="openGHModal()">☁ Connect GitHub</button>
+    · <span id="sk-display">cj_llama-certified_v1</span> · <a href="../../index.html">← All journeys</a>
+  </div>
+
+</div>
+
+<!-- GitHub sync modal -->
+<div class="gh-modal" id="gh-modal" onclick="if(event.target===this)closeGHModal()">
+  <div class="gh-modal-box">
+    <h3>☁ GitHub Sync</h3>
+    <p class="gh-modal-sub">Progress is committed to <code>courses/llama-certified/progress.json</code>
+    in your repo on every change. Generate a Fine-grained token with Contents: Read &amp; Write.</p>
+    <div class="gh-field"><label>Personal Access Token</label><input id="gh-pat" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+    <div class="gh-field"><label>Owner</label><input id="gh-owner" type="text" placeholder="your-username"></div>
+    <div class="gh-field"><label>Repository</label><input id="gh-repo" type="text" placeholder="certified-journeys.github.io"></div>
+    <div class="gh-field"><label>Branch</label><input id="gh-branch" type="text" placeholder="main"></div>
+    <div class="gh-modal-actions">
+      <button class="gh-btn-save" onclick="saveGHCreds()">Test &amp; Save</button>
+      <button class="gh-btn-cancel" onclick="closeGHModal()">Cancel</button>
+      <button class="gh-btn-disconnect" id="gh-disconnect-btn" style="display:none" onclick="disconnectGH()">Disconnect</button>
+      <span class="gh-modal-msg" id="gh-modal-msg"></span>
+    </div>
+  </div>
+</div>
+
+<script src="../../github-sync.js"></script>
+<script>
+if (typeof GHSync === 'undefined') {
+  window.GHSync = {
+    isConnected: () => false, saveCreds: () => {}, getCreds: () => null,
+    connect: async () => ({ok:false,msg:''}), fetchState: async () => null,
+    pushState: async () => false, saveDebounced: () => {},
+    testConnection: async () => ({ok:false,msg:''}),
+    exportConfig: () => '', importConfig: () => null, getLastSynced: () => null
+  };
+}
+
+const COURSE_ID   = 'llama-certified';
+const STORAGE_KEY = 'cj_llama-certified_v1';
+const TOTAL_DAYS  = 10;
+
+const NOTEBOOKS = [
+  'day-01-llama-model-family',
+  'day-02-ollama-local-setup',
+  'day-03-quantization-gguf',
+  'day-04-inference-backends',
+  'day-05-prompt-formatting',
+  'day-06-qlora-finetuning',
+  'day-07-gguf-conversion',
+  'day-08-ollama-rest-api',
+  'day-09-benchmarking',
+  'day-10-capstone-domain-model'
+];
+
+const days = [
+  {
+    title: "Llama Model Family — Variants, Parameters, and Context Windows",
+    badge: "learn",
+    sub: "Day 1 · Llama Fundamentals",
+    tasks: [
+      {text: "Read the Llama 3 model card and variants overview", url: "https://llama.meta.com/docs/model-cards-and-prompt-formats/llama3_1/"},
+      "Compare Llama-3.2-1B, 3B, Llama-3.1-8B, and 70B: parameters, context window, intended use",
+      {text: "Read the Ollama model library and find all available Llama variants", url: "https://ollama.com/library/llama3.2"},
+      "Map each variant to a hardware requirement: VRAM needed for Q4_K_M and Q8_0 at each size",
+      "Write a Python function that takes a model size (1B, 3B, 8B, 70B) and quantization and returns the estimated VRAM"
+    ],
+    resources: [
+      {text: "Llama 3 Model Card", url: "https://llama.meta.com/docs/model-cards-and-prompt-formats/llama3_1/"},
+      {text: "Ollama Llama3.2 Library", url: "https://ollama.com/library/llama3.2"},
+      {text: "Meta Llama GitHub", url: "https://github.com/meta-llama/llama-models"}
+    ],
+    tip: "Start with Llama-3.2-1B for local experimentation — it runs on CPU in under 2GB RAM. Use 3B for tasks that need more reasoning. Only move to 8B when you have a GPU.",
+    hasScore: false
+  },
+  {
+    title: "Running Llama Locally with Ollama",
+    badge: "learn",
+    sub: "Day 2 · Llama Fundamentals",
+    tasks: [
+      {text: "Install Ollama from the official site", url: "https://ollama.com/download"},
+      "Run ollama pull llama3.2:3b and ollama run llama3.2:3b in the terminal",
+      {text: "Read the Ollama Modelfile documentation", url: "https://github.com/ollama/ollama/blob/main/docs/modelfile.md"},
+      "Write a custom Modelfile with a system prompt and PARAMETER settings (temperature, top_p, num_ctx)",
+      "Call the Ollama REST API with Python requests to chat with the model programmatically"
+    ],
+    resources: [
+      {text: "Ollama Documentation", url: "https://github.com/ollama/ollama/blob/main/docs/README.md"},
+      {text: "Ollama Modelfile Reference", url: "https://github.com/ollama/ollama/blob/main/docs/modelfile.md"},
+      {text: "Ollama REST API Reference", url: "https://github.com/ollama/ollama/blob/main/docs/api.md"}
+    ],
+    tip: "Ollama serves on localhost:11434 by default. The /api/chat endpoint uses streaming by default — set stream=False in your Python request if you want a single complete response.",
+    hasScore: false
+  },
+  {
+    title: "Quantization — GGUF Formats and Quality vs Speed Tradeoffs",
+    badge: "practice",
+    sub: "Day 3 · Quantization and Backends",
+    tasks: [
+      {text: "Read the GGUF format specification overview", url: "https://github.com/ggerganov/ggml/blob/master/docs/gguf.md"},
+      "Pull llama3.2:3b (Q4_K_M default) and llama3.2:3b-instruct-q8_0 — compare file sizes",
+      "Write a benchmark: run the same 5 prompts on Q4_K_M vs Q8_0, measure tokens/sec and response quality",
+      {text: "Read the llama.cpp quantization types reference", url: "https://github.com/ggerganov/llama.cpp/blob/master/docs/quantization.md"},
+      "Build a decision matrix: task type vs recommended quantization level with reasoning"
+    ],
+    resources: [
+      {text: "GGUF Format Spec", url: "https://github.com/ggerganov/ggml/blob/master/docs/gguf.md"},
+      {text: "llama.cpp Quantization Reference", url: "https://github.com/ggerganov/llama.cpp/blob/master/docs/quantization.md"},
+      {text: "Ollama Model Tags", url: "https://ollama.com/library/llama3.2/tags"}
+    ],
+    tip: "Q4_K_M is the sweet spot for most tasks: ~4x compression vs float16 with minimal quality loss. Q8_0 is worth the 2x overhead for coding, math, and structured output where precision matters.",
+    hasScore: true
+  },
+  {
+    title: "Inference Backends — llama.cpp, vLLM, and Transformers",
+    badge: "practice",
+    sub: "Day 4 · Quantization and Backends",
+    tasks: [
+      {text: "Read the llama.cpp README and understand its architecture", url: "https://github.com/ggerganov/llama.cpp"},
+      {text: "Read the vLLM quickstart guide", url: "https://docs.vllm.ai/en/latest/getting_started/quickstart.html"},
+      "Compare the three backends on latency, throughput, hardware requirements, and ease of setup",
+      "Run Llama inference with the HuggingFace Transformers pipeline and measure time-to-first-token",
+      "Write a backend selection guide: single user vs multi-user, CPU vs GPU, dev vs prod"
+    ],
+    resources: [
+      {text: "llama.cpp GitHub", url: "https://github.com/ggerganov/llama.cpp"},
+      {text: "vLLM Quickstart", url: "https://docs.vllm.ai/en/latest/getting_started/quickstart.html"},
+      {text: "HuggingFace Transformers — Text Generation", url: "https://huggingface.co/docs/transformers/en/llm_tutorial"}
+    ],
+    tip: "llama.cpp runs anywhere including CPU-only. vLLM needs a GPU but handles concurrent requests with PagedAttention — throughput is 10-20x higher under load. Use Transformers when you need the full HuggingFace ecosystem.",
+    hasScore: true
+  },
+  {
+    title: "Prompt Formatting — Chat Templates and Instruction Formatting",
+    badge: "practice",
+    sub: "Day 5 · Prompting and Fine-Tuning",
+    tasks: [
+      {text: "Read the Llama 3 prompt format documentation", url: "https://llama.meta.com/docs/model-cards-and-prompt-formats/llama3_1/"},
+      "Manually format a chat with system + user + assistant turns using the Llama 3 special tokens",
+      "Use the HuggingFace tokenizer apply_chat_template method and verify it matches your manual format",
+      "Test the same prompt in raw format vs chat template format — compare outputs",
+      "Write a PromptBuilder class that handles Llama 3.1 and Llama 3.2 chat template differences"
+    ],
+    resources: [
+      {text: "Llama 3 Prompt Format", url: "https://llama.meta.com/docs/model-cards-and-prompt-formats/llama3_1/"},
+      {text: "HuggingFace apply_chat_template", url: "https://huggingface.co/docs/transformers/en/chat_templating"},
+      {text: "Llama 3.2 Vision Prompt Format", url: "https://llama.meta.com/docs/model-cards-and-prompt-formats/llama3_2/"}
+    ],
+    tip: "Always use apply_chat_template rather than manually constructing the prompt. The special tokens (BOS, EOT, header_id) must be exact — a missing token causes the model to ignore the system prompt entirely.",
+    hasScore: true
+  },
+  {
+    title: "Fine-Tuning with QLoRA on Consumer Hardware",
+    badge: "practice",
+    sub: "Day 6 · Prompting and Fine-Tuning",
+    tasks: [
+      {text: "Read the QLoRA paper overview and understand NF4 quantization", url: "https://arxiv.org/abs/2305.14314"},
+      {text: "Read the TRL SFTTrainer documentation", url: "https://huggingface.co/docs/trl/en/sft_trainer"},
+      "Fine-tune Llama-3.2-1B on a small dataset (Alpaca-format, 500 examples) with SFTTrainer and QLoRA config",
+      "Verify the LoRA adapter files are saved correctly and load the merged model",
+      "Run the fine-tuned model on 5 held-out prompts and compare to the base model"
+    ],
+    resources: [
+      {text: "QLoRA Paper (Dettmers et al. 2023)", url: "https://arxiv.org/abs/2305.14314"},
+      {text: "TRL SFTTrainer Docs", url: "https://huggingface.co/docs/trl/en/sft_trainer"},
+      {text: "PEFT LoRA Configuration", url: "https://huggingface.co/docs/peft/en/package_reference/lora"}
+    ],
+    tip: "Use r=16, alpha=32, dropout=0.05 as your starting LoRA config. Double r only if the model underfits after 3 epochs. Increasing r increases VRAM — on 8GB cards, r=64 will OOM on a 7B model.",
+    hasScore: true
+  },
+  {
+    title: "GGUF Conversion and Custom Modelfiles",
+    badge: "practice",
+    sub: "Day 7 · Deployment and Serving",
+    tasks: [
+      {text: "Read the llama.cpp conversion scripts documentation", url: "https://github.com/ggerganov/llama.cpp/blob/master/docs/development/README.md"},
+      "Clone llama.cpp and run convert_hf_to_gguf.py on a merged Llama checkpoint",
+      "Quantize the resulting GGUF from F16 to Q4_K_M using llama-quantize",
+      "Write a Modelfile for the converted model with a custom system prompt and PARAMETER overrides",
+      "Load the custom model in Ollama with ollama create and test it via the REST API"
+    ],
+    resources: [
+      {text: "llama.cpp — HuggingFace to GGUF Conversion", url: "https://github.com/ggerganov/llama.cpp/blob/master/docs/development/README.md"},
+      {text: "Ollama — Importing Models", url: "https://github.com/ollama/ollama/blob/main/docs/import.md"},
+      {text: "Ollama Modelfile Reference", url: "https://github.com/ollama/ollama/blob/main/docs/modelfile.md"}
+    ],
+    tip: "Always convert to F16 GGUF first, then quantize to Q4_K_M as a second step. Converting directly to Q4 from a HuggingFace bf16 checkpoint skips the calibration pass and produces lower quality weights.",
+    hasScore: true
+  },
+  {
+    title: "Serving with Ollama REST API and OpenAI-Compatible Endpoints",
+    badge: "practice",
+    sub: "Day 8 · Deployment and Serving",
+    tasks: [
+      {text: "Read the Ollama OpenAI compatibility documentation", url: "https://github.com/ollama/ollama/blob/main/docs/openai.md"},
+      "Connect the OpenAI Python SDK to Ollama by setting base_url and api_key=\"ollama\"",
+      "Build a streaming chat endpoint that proxies Ollama through a FastAPI server",
+      "Add a simple rate limiter and request logger to the FastAPI proxy",
+      "Benchmark concurrent requests: compare Ollama vs a direct llama.cpp server under 5 simultaneous users"
+    ],
+    resources: [
+      {text: "Ollama OpenAI Compatibility", url: "https://github.com/ollama/ollama/blob/main/docs/openai.md"},
+      {text: "Ollama REST API Reference", url: "https://github.com/ollama/ollama/blob/main/docs/api.md"},
+      {text: "FastAPI Background Tasks", url: "https://fastapi.tiangolo.com/tutorial/background-tasks/"}
+    ],
+    tip: "Ollama's OpenAI-compatible endpoint is at http://localhost:11434/v1. Just set base_url='http://localhost:11434/v1' in the OpenAI client — zero code changes needed to switch between OpenAI and local Llama.",
+    hasScore: true
+  },
+  {
+    title: "Benchmarking — Tokens/sec, Memory, and Quality Metrics",
+    badge: "review",
+    sub: "Day 9 · Benchmarking and Capstone",
+    tasks: [
+      {text: "Read the lm-evaluation-harness documentation", url: "https://github.com/EleutherAI/lm-evaluation-harness"},
+      "Write a Python benchmarker: measure prefill latency, decode tokens/sec, and peak RAM for 3 model variants",
+      "Build a quality evaluator: run 20 prompts, score outputs on relevance (1-5) with an LLM judge",
+      "Compare base vs fine-tuned model across both speed and quality dimensions",
+      "Write a one-page benchmark report: which model wins at which task and why"
+    ],
+    resources: [
+      {text: "EleutherAI lm-evaluation-harness", url: "https://github.com/EleutherAI/lm-evaluation-harness"},
+      {text: "Ollama /api/generate response fields", url: "https://github.com/ollama/ollama/blob/main/docs/api.md#generate-a-completion"},
+      {text: "HuggingFace Evaluate Library", url: "https://huggingface.co/docs/evaluate/index"}
+    ],
+    tip: "Measure tokens/sec at the decode phase, not prefill. Prefill is fast for short prompts but slow for long context — if you're seeing slow inference, check whether you're bottlenecked on prefill (context length) or decode (generation speed).",
+    hasScore: true
+  },
+  {
+    title: "Capstone — Fine-Tune and Serve a Domain-Specific Llama Model",
+    badge: "exam",
+    sub: "Day 10 · Benchmarking and Capstone",
+    tasks: [
+      "Choose a domain dataset in Alpaca format (customer support, medical QA, code, or legal)",
+      "Fine-tune Llama-3.2-1B with QLoRA using SFTTrainer — log training loss per epoch",
+      "Merge the LoRA adapter into the base model and save the merged checkpoint",
+      "Convert the merged checkpoint to GGUF Q4_K_M using llama.cpp conversion scripts",
+      "Write a Modelfile with a domain-appropriate system prompt and load it into Ollama",
+      "Serve the model via the OpenAI-compatible endpoint and test with the OpenAI Python SDK",
+      "Benchmark fine-tuned vs base model on 20 held-out prompts: accuracy score and tokens/sec"
+    ],
+    resources: [
+      {text: "TRL SFTTrainer Full Example", url: "https://huggingface.co/docs/trl/en/sft_trainer"},
+      {text: "llama.cpp GGUF Conversion", url: "https://github.com/ggerganov/llama.cpp/blob/master/docs/development/README.md"},
+      {text: "Ollama Import Custom Model", url: "https://github.com/ollama/ollama/blob/main/docs/import.md"}
+    ],
+    tip: "The capstone is a full MLOps pipeline for local LLMs. The most common failure point is the GGUF conversion step — ensure the merged model is saved in safetensors format before converting, not pytorch_model.bin shards.",
+    hasScore: false
+  }
+];
+
+const topics = [
+  {name: "Llama Fundamentals",         color: "#0057FF", days: [0, 1]},
+  {name: "Quantization and Backends",  color: "#E8890C", days: [2, 3]},
+  {name: "Prompting and Fine-Tuning",  color: "#0891B2", days: [4, 5]},
+  {name: "Deployment and Serving",     color: "#7F77DD", days: [6, 7]},
+  {name: "Benchmarking and Capstone",  color: "#BA7517", days: [8, 9]}
+];
+
+const exam = {
+  questions:  null,
+  minutes:    null,
+  passScore:  "N/A",
+  cost:       "Free",
+  provider:   "Meta / Ollama (Self-paced)",
+  link:       "https://llama.meta.com/docs/",
+  notes:      "No formal exam. Fine-tune a Llama model on a domain dataset and serve it via an OpenAI-compatible API as the capstone."
+};
+
+let state = {
+  completed:    [],
+  scores:       {},
+  hours:        {},
+  completedAt:  {},
+  tasksDone:    {},
+  openDay:      null,
+  startDate:    null,
+  lastActivity: null,
+  status:       'not_started'
+};
+
+// ── State persistence ─────────────────────────────────────────────────────────
+
+async function loadState() {
+  try { const s = localStorage.getItem(STORAGE_KEY); if (s) state = {...state, ...JSON.parse(s)}; } catch(e) {}
+  if (GHSync.isConnected()) {
+    updateSyncBadge('syncing');
+    const gh = await GHSync.fetchState(COURSE_ID);
+    if (gh) { state = {...state, ...gh}; try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
+    updateSyncBadge(gh ? 'connected' : 'error');
+  } else { updateSyncBadge('disconnected'); }
+}
+
+function saveState() {
+  if (state.completed.length > 0 && !state.startDate) state.startDate = new Date().toISOString();
+  if (state.completed.length > 0) state.lastActivity = new Date().toISOString();
+  state.status = state.completed.length === 0 ? 'not_started'
+    : state.completed.length === TOTAL_DAYS ? 'completed' : 'in_progress';
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  broadcastStatus();
+  if (GHSync.isConnected())
+    GHSync.saveDebounced(COURSE_ID, state, 2500,
+      () => updateSyncBadge('syncing'),
+      ok => updateSyncBadge(ok ? 'connected' : 'error'));
+}
+
+function broadcastStatus() {
+  const summary = {
+    id: COURSE_ID, status: state.status,
+    completed: state.completed.length, total: TOTAL_DAYS,
+    scores: Object.values(state.scores).filter(s => s > 0),
+    totalHours: Object.values(state.hours).reduce((a, b) => a + b, 0),
+    completedAt: state.completedAt, startDate: state.startDate,
+    lastActivity: state.lastActivity
+  };
+  try { localStorage.setItem('cj_summary_' + COURSE_ID, JSON.stringify(summary)); } catch(e) {}
+}
+
+function resetAll() {
+  if (!confirm('Reset all progress for this course?')) return;
+  state = {completed:[], scores:{}, hours:{}, completedAt:{}, tasksDone:{}, openDay:null, startDate:null, lastActivity:null, status:'not_started'};
+  saveState(); renderAll();
+}
+
+// ── Day helpers ───────────────────────────────────────────────────────────────
+
+function isCompleted(i) { return state.completed.includes(i); }
+
+function toggleComplete(i) {
+  if (isCompleted(i)) {
+    state.completed = state.completed.filter(x => x !== i);
+    delete state.completedAt[i];
+  } else {
+    state.completed.push(i);
+    state.completedAt[i] = new Date().toISOString();
+  }
+  saveState(); renderSchedule(); updateStats();
+}
+
+function toggleDay(i) {
+  state.openDay = state.openDay === i ? null : i;
+  saveState(); renderSchedule();
+}
+
+function logScore(i, val) {
+  state.scores[i] = parseFloat(val) || 0;
+  saveState(); updateStats();
+}
+
+function logHours(i, val) {
+  state.hours[i] = parseFloat(val) || 0;
+  saveState(); updateStats();
+}
+
+function scoreClass(s) {
+  if (s >= 80) return 'ok';
+  if (s >= 60) return 'warn';
+  return 'danger';
+}
+
+function badgeClass(b) {
+  return {learn:'badge-learn', practice:'badge-practice', review:'badge-review', exam:'badge-exam'}[b] || 'badge-learn';
+}
+
+function badgeLabel(b) {
+  return {learn:'Learn', practice:'Practice', review:'Review', exam:'Capstone'}[b] || b;
+}
+
+// ── Topic reverse index + goToDay ─────────────────────────────────────────────
+
+const dayTopics = (() => {
+  const m = {};
+  topics.forEach(t => t.days.forEach(d => { (m[d] = m[d] || []).push(t); }));
+  return m;
+})();
+
+function goToDay(i) {
+  showPanel('schedule', document.querySelector('.tab'));
+  setTimeout(() => {
+    state.openDay = i; saveState(); renderSchedule();
+    const el = document.querySelector('.day-card:nth-child(' + (i + 1) + ')');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
+
+// ── renderTask / tickTask / renderRes ─────────────────────────────────────────
+
+function renderTask(t, di, ti) {
+  const done = (state.tasksDone[di] || []).includes(ti);
+  const text = typeof t === 'string' ? t : t.text;
+  const link = (typeof t === 'object' && t.url)
+    ? `<a class="task-link" href="${t.url}" target="_blank" rel="noopener">↗</a>` : '';
+  return `<div class="task${done ? ' task-done' : ''}">
+    <button class="task-tick${done ? ' ticked' : ''}"
+      onclick="event.stopPropagation();tickTask(${di},${ti})"></button>
+    <span>${text}</span>${link}
+  </div>`;
+}
+
+function tickTask(di, ti) {
+  const arr = state.tasksDone[di] || (state.tasksDone[di] = []);
+  const idx = arr.indexOf(ti);
+  if (idx === -1) arr.push(ti); else arr.splice(idx, 1);
+  const total = days[di].tasks.length;
+  const done  = arr.length;
+  if (done === total && !isCompleted(di)) { toggleComplete(di); return; }
+  if (done < total  &&  isCompleted(di)) {
+    state.completed = state.completed.filter(x => x !== di);
+    delete state.completedAt[di];
+  }
+  saveState(); renderSchedule();
+}
+
+function renderRes(r) {
+  if (typeof r === 'string')
+    return `<span class="res-pill">📎 ${r}</span>`;
+  return r.url
+    ? `<a class="res-pill" href="${r.url}" target="_blank" rel="noopener">📎 ${r.text}</a>`
+    : `<span class="res-pill">📎 ${r.text}</span>`;
+}
+
+// ── updateStats ───────────────────────────────────────────────────────────────
+
+function updateStats() {
+  const pct = Math.round((state.completed.length / TOTAL_DAYS) * 100);
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('bar-fill').style.width = pct + '%';
+
+  const rb = document.getElementById('readiness-badge');
+  if (pct >= 80) { rb.className = 'readiness ready'; rb.textContent = '🎓 Exam ready'; }
+  else if (pct >= 40) { rb.className = 'readiness close'; rb.textContent = '📈 Getting close'; }
+  else { rb.className = 'readiness early'; rb.textContent = '🌱 Just getting started'; }
+
+  document.getElementById('stat-done').textContent = state.completed.length + '/' + TOTAL_DAYS;
+
+  const scores = Object.values(state.scores).filter(s => s > 0);
+  const avg = scores.length ? Math.round(scores.reduce((a,b) => a+b,0) / scores.length) : null;
+  const sv = document.getElementById('stat-score');
+  sv.textContent = avg ? avg + '%' : '—';
+  sv.className = 'stat-val' + (avg ? ' ' + scoreClass(avg) : '');
+
+  const hrs = Object.values(state.hours).reduce((a,b)=>a+b,0);
+  document.getElementById('stat-hours').textContent = hrs % 1 === 0 ? hrs : hrs.toFixed(1);
+
+  // Simple streak: count consecutive completed days from start
+  let streak = 0;
+  for (let i = 0; i < TOTAL_DAYS; i++) {
+    if (state.completed.includes(i)) streak++; else break;
+  }
+  document.getElementById('stat-streak').textContent = streak;
+}
+
+// ── renderSchedule ────────────────────────────────────────────────────────────
+
+function renderSchedule() {
+  document.getElementById('panel-schedule').innerHTML = days.map((d, i) => {
+    const comp = isCompleted(i);
+    const open = state.openDay === i;
+    const score = state.scores[i];
+    const hrs = state.hours[i];
+    const nn = String(i+1).padStart(2,'0');
+    const tot = d.tasks.length;
+    const doneCnt = (state.tasksDone[i] || []).length;
+
+    return `<div class="day-card${comp?' completed':''}${open?' open':''}" id="day-card-${i}">
+      <div class="day-header" onclick="toggleDay(${i})">
+        <div class="day-num">${comp ? '✓' : i+1}</div>
+        <div class="day-meta">
+          <div class="day-title">${d.title}</div>
+          <div class="day-sub">${d.sub}</div>
+        </div>
+        <span class="day-badge ${badgeClass(d.badge)}">${badgeLabel(d.badge)}</span>
+        <span class="chevron">▾</span>
+      </div>
+      ${open ? `<div class="day-body">
+        <div class="nb-row">
+          <a class="nb-btn" href="notebooks/${NOTEBOOKS[i]}.ipynb" target="_blank">📓 Open notebook</a>
+          <a class="nb-btn nb-btn-colab"
+             href="https://colab.research.google.com/github/certified-journeys/certified-journeys.github.io/blob/main/courses/llama-certified/notebooks/${NOTEBOOKS[i]}.ipynb"
+             target="_blank">▶ Open in Colab</a>
+          <a class="nb-btn" href="https://github.com/certified-journeys/certified-journeys.github.io/edit/main/courses/${COURSE_ID}/notes/day-${nn}.md" target="_blank">📝 notes/day-${nn}.md</a>
+        </div>
+        <div class="tip-box"><p><strong>💡 Tip:</strong> ${d.tip}</p></div>
+        ${(dayTopics[i]||[]).length ? `<div class="day-topic-pills">
+          ${(dayTopics[i]||[]).map(t => `<span class="day-topic-pill"
+            style="background:${t.color}18;color:${t.color};border-color:${t.color}40"
+            onclick="event.stopPropagation();showPanel('topics',document.querySelectorAll('.tab')[1])"
+            title="View topic in Topics tab">${t.name}</span>`).join('')}
+        </div>` : ''}
+        ${tot ? `<div class="task-progress"><div class="task-progress-fill" style="width:${Math.round(doneCnt/tot*100)}%"></div></div>` : ''}
+        <div class="task-list">${d.tasks.map((t,j) => renderTask(t,i,j)).join('')}</div>
+        <div class="resources-row">${d.resources.map(renderRes).join('')}</div>
+        ${d.hasScore ? `<div class="score-row"><label>Practice score (%):</label><input type="number" min="0" max="100" placeholder="e.g. 84" value="${score||''}" onchange="logScore(${i},this.value)">${score ? `<span class="score-badge ${scoreClass(score)==='ok'?'badge-learn':scoreClass(score)==='warn'?'badge-review':'badge-exam'}">${score}%</span>` : ''}</div>` : ''}
+        <div class="hours-row"><label>Hours spent today:</label><input type="number" min="0" max="24" step="0.5" placeholder="e.g. 2.5" value="${hrs||''}" onchange="logHours(${i},this.value)"><span style="font-size:11px;color:var(--text3);">hrs</span></div>
+        <button class="complete-btn ${comp?'done':''}" onclick="event.stopPropagation();toggleComplete(${i})">${comp?'✓ Completed':'Mark as complete'}</button>
+      </div>` : ''}
+    </div>`;
+  }).join('') + `<div style="margin-top:1rem;text-align:right;"><button onclick="resetAll()" style="font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;font-family:inherit;">Reset all progress</button></div>`;
+  updateStats();
+}
+
+// ── renderTopics ──────────────────────────────────────────────────────────────
+
+function renderTopics() {
+  document.getElementById('panel-topics').innerHTML = `<div class="topic-grid">${
+    topics.map(t => {
+      const cov = t.days.filter(d => state.completed.includes(d)).length;
+      const pct = Math.round((cov / t.days.length) * 100);
+      const dayBtns = t.days.map(d =>
+        `<button class="topic-day-btn${state.completed.includes(d) ? ' done' : ''}"
+          onclick="goToDay(${d})">Day ${d + 1}</button>`
+      ).join('');
+      return `<div class="topic-card">
+        <h4>${t.name}</h4>
+        <div class="t-bar-bg"><div class="t-bar-fill" style="width:${pct}%;background:${t.color}"></div></div>
+        <div class="t-pct">${pct}% covered · ${cov}/${t.days.length} sessions</div>
+        <div class="topic-days">${dayBtns}</div>
+      </div>`;
+    }).join('')
+  }</div>`;
+}
+
+// ── renderAI ──────────────────────────────────────────────────────────────────
+
+function renderAI() {
+  document.getElementById('panel-ai').innerHTML = `
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#E8F0FE;">🎙</div>
+        <div>
+          <div class="ai-card-title">NotebookLM — Audio Podcast Summary</div>
+          <div class="ai-card-sub">Generate a personalized audio briefing of your learning</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Upload your day-card notes plus the official docs as sources in NotebookLM, then generate a podcast covering key concepts and exam traps.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Audio:
+"Create a 10-minute podcast episode for someone studying Llama &amp; Local LLMs in Production. Cover: GGUF quantization internals — how Q4_K_M packs 4-bit weights into 64-element blocks with per-block scale factors (K-quants), why K-quants outperform legacy Q4_0 at the same bit-width by preserving more information in the scaling metadata, and when Q8_0 is worth the 2x memory cost (accuracy-sensitive tasks, coding, math), QLoRA memory math — how 4-bit NF4 quantization of the base model plus LoRA adapter training in bfloat16 lets a 7B model fine-tune in under 10GB VRAM, why r=16 alpha=32 is the safe starting LoRA config for most tasks, and why paged AdamW is critical for avoiding OOM spikes during gradient accumulation on long sequences, and OpenAI-compatible serving — how Ollama's /v1/chat/completions endpoint is wire-compatible with the OpenAI Python SDK (swap base_url and api_key="ollama"), the latency difference between Ollama's single-process server and vLLM's PagedAttention-based continuous batching, and when to switch: Ollama for dev/single-user, vLLM for multi-user prod serving — include the most common misconceptions and the 3 things that will trip you up on the exam."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#FEF3E2;">🃏</div>
+        <div>
+          <div class="ai-card-title">NotebookLM — AI Flashcards</div>
+          <div class="ai-card-sub">Generate quiz cards from your notes</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Upload your notes and the official docs to NotebookLM and use the Study Guide feature to generate Q&amp;A flashcards.</div>
+      <div class="ai-prompt-box">Prompt for NotebookLM Quiz:
+"Generate 20 flashcard-style Q&amp;A pairs for someone studying Llama &amp; Local LLMs in Production. Include at least 5 cards on GGUF quantization internals — how Q4_K_M packs 4-bit weights into 64-element blocks with per-block scale factors (K-quants), why K-quants outperform legacy Q4_0 at the same bit-width by preserving more information in the scaling metadata, and when Q8_0 is worth the 2x memory cost (accuracy-sensitive tasks, coding, math), 5 on QLoRA memory math — how 4-bit NF4 quantization of the base model plus LoRA adapter training in bfloat16 lets a 7B model fine-tune in under 10GB VRAM, why r=16 alpha=32 is the safe starting LoRA config for most tasks, and why paged AdamW is critical for avoiding OOM spikes during gradient accumulation on long sequences, and 5 on OpenAI-compatible serving — how Ollama's /v1/chat/completions endpoint is wire-compatible with the OpenAI Python SDK (swap base_url and api_key="ollama"), the latency difference between Ollama's single-process server and vLLM's PagedAttention-based continuous batching, and when to switch: Ollama for dev/single-user, vLLM for multi-user prod serving. Focus on concept distinctions, common misconceptions, and scenario-based questions."</div>
+      <a class="ai-link-btn" href="https://notebooklm.google.com" target="_blank">→ Open NotebookLM</a>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <div class="ai-icon" style="background:#EEE9FF;">💬</div>
+        <div>
+          <div class="ai-card-title">Claude — Deep Dive Prompts</div>
+          <div class="ai-card-sub">Use when a concept isn't clicking</div>
+        </div>
+      </div>
+      <div class="ai-card-body">Copy any of these prompts directly into Claude when you need a deeper explanation.</div>
+      <div class="ai-prompt-box">Prompt 1 — Explain like a senior engineer:
+"I'm studying Llama &amp; Local LLMs in Production. Explain GGUF quantization internals — how Q4_K_M packs 4-bit weights into 64-element blocks with per-block scale factors (K-quants), why K-quants outperform legacy Q4_0 at the same bit-width by preserving more information in the scaling metadata, and when Q8_0 is worth the 2x memory cost (accuracy-sensitive tasks, coding, math) as if I'm already experienced. Skip the basics — focus on nuance, edge cases, and real-world decisions."
+
+Prompt 2 — Exam scenario questions:
+"Give me 5 scenario-based exam questions for Llama &amp; Local LLMs in Production on QLoRA memory math — how 4-bit NF4 quantization of the base model plus LoRA adapter training in bfloat16 lets a 7B model fine-tune in under 10GB VRAM, why r=16 alpha=32 is the safe starting LoRA config for most tasks, and why paged AdamW is critical for avoiding OOM spikes during gradient accumulation on long sequences. After each question, explain why the correct answer is right and why the distractors are wrong."
+
+Prompt 3 — Gap analysis study plan:
+"I've studied Llama &amp; Local LLMs in Production but I'm unsure about OpenAI-compatible serving — how Ollama's /v1/chat/completions endpoint is wire-compatible with the OpenAI Python SDK (swap base_url and api_key="ollama"), the latency difference between Ollama's single-process server and vLLM's PagedAttention-based continuous batching, and when to switch: Ollama for dev/single-user, vLLM for multi-user prod serving. Give me a focused 30-minute study plan with concrete exercises to fill that gap."</div>
+    </div>`;
+}
+
+// ── renderResources ───────────────────────────────────────────────────────────
+
+function renderResources() {
+  document.getElementById('panel-resources').innerHTML = `
+    <div class="res-section">
+      <div class="res-section-title">📖 Core Reading</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">01</span>
+          <div class="res-link-body">
+            <a href="https://llama.meta.com/docs/model-cards-and-prompt-formats/llama3_1/" target="_blank">Llama 3.1 Model Card and Prompt Formats</a>
+            <div class="res-link-desc">Official Meta documentation for Llama 3.1 model variants, context windows, and prompt templates</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">02</span>
+          <div class="res-link-body">
+            <a href="https://llama.meta.com/docs/model-cards-and-prompt-formats/llama3_2/" target="_blank">Llama 3.2 Model Card and Prompt Formats</a>
+            <div class="res-link-desc">Official Meta documentation covering Llama 3.2 multimodal variants and updated chat templates</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">03</span>
+          <div class="res-link-body">
+            <a href="https://github.com/ggerganov/ggml/blob/master/docs/gguf.md" target="_blank">GGUF Format Specification</a>
+            <div class="res-link-desc">Official ggml spec for the GGUF binary format including header layout, metadata keys, and tensor encoding</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">04</span>
+          <div class="res-link-body">
+            <a href="https://arxiv.org/abs/2305.14314" target="_blank">QLoRA: Efficient Finetuning of Quantized LLMs (Dettmers et al., 2023)</a>
+            <div class="res-link-desc">The original paper introducing NF4 quantization, double quantization, and paged AdamW for memory-efficient fine-tuning</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🛠 Hands-On Resources</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">05</span>
+          <div class="res-link-body">
+            <a href="https://github.com/ollama/ollama/blob/main/docs/README.md" target="_blank">Ollama Documentation</a>
+            <div class="res-link-desc">Full Ollama docs: install, CLI reference, Modelfile format, REST API, and OpenAI compatibility</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">06</span>
+          <div class="res-link-body">
+            <a href="https://github.com/ggerganov/llama.cpp/blob/master/docs/quantization.md" target="_blank">llama.cpp Quantization Reference</a>
+            <div class="res-link-desc">Detailed comparison of all GGUF quantization types: Q4_0, Q4_K_M, Q8_0, IQ quants, and their quality/speed tradeoffs</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">07</span>
+          <div class="res-link-body">
+            <a href="https://huggingface.co/docs/trl/en/sft_trainer" target="_blank">TRL SFTTrainer Documentation</a>
+            <div class="res-link-desc">HuggingFace TRL library reference for supervised fine-tuning with LoRA, QLoRA, dataset formatting, and training callbacks</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">08</span>
+          <div class="res-link-body">
+            <a href="https://huggingface.co/docs/transformers/en/chat_templating" target="_blank">HuggingFace Chat Templating Guide</a>
+            <div class="res-link-desc">How to use apply_chat_template for Llama 3, Mistral, Phi, and other instruction-tuned models</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">🔧 Ecosystem &amp; Tooling</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">09</span>
+          <div class="res-link-body">
+            <a href="https://github.com/ggerganov/llama.cpp" target="_blank">llama.cpp GitHub Repository</a>
+            <div class="res-link-desc">The core C++ inference engine behind Ollama and many local LLM tools; includes convert_hf_to_gguf.py and llama-quantize</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">10</span>
+          <div class="res-link-body">
+            <a href="https://docs.vllm.ai/en/latest/getting_started/quickstart.html" target="_blank">vLLM Quickstart Guide</a>
+            <div class="res-link-desc">Production-grade LLM serving with PagedAttention; covers OpenAI-compatible server, async engine, and multi-GPU setup</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">11</span>
+          <div class="res-link-body">
+            <a href="https://github.com/EleutherAI/lm-evaluation-harness" target="_blank">EleutherAI lm-evaluation-harness</a>
+            <div class="res-link-desc">Standardized benchmark framework for LLMs covering 200+ tasks including ARC, HellaSwag, MMLU, and TruthfulQA</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">12</span>
+          <div class="res-link-body">
+            <a href="https://huggingface.co/docs/peft/en/package_reference/lora" target="_blank">PEFT LoRA Configuration Reference</a>
+            <div class="res-link-desc">Parameter-Efficient Fine-Tuning library docs for LoraConfig: rank, alpha, target modules, dropout, and merge strategies</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">⬆ Upgrade Path</div>
+      <div class="res-link-list">
+        <div class="res-link-item">
+          <span class="res-link-index">13</span>
+          <div class="res-link-body">
+            <a href="https://github.com/meta-llama/llama-models" target="_blank">Meta Llama Models GitHub</a>
+            <div class="res-link-desc">Official Meta repository for Llama model weights, download scripts, and responsible use guidelines</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">14</span>
+          <div class="res-link-body">
+            <a href="https://huggingface.co/docs/evaluate/index" target="_blank">HuggingFace Evaluate Library</a>
+            <div class="res-link-desc">Unified evaluation API for NLP metrics (BLEU, ROUGE, accuracy, F1) and custom metric integration for benchmarking fine-tuned models</div>
+          </div>
+        </div>
+        <div class="res-link-item">
+          <span class="res-link-index">15</span>
+          <div class="res-link-body">
+            <a href="https://github.com/ollama/ollama/blob/main/docs/import.md" target="_blank">Ollama — Importing Custom Models</a>
+            <div class="res-link-desc">Step-by-step guide for creating Ollama models from GGUF files with custom Modelfiles and system prompts</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── renderExam ────────────────────────────────────────────────────────────────
+
+function renderExam() {
+  const checklist = [
+    "Can explain the difference between Q4_K_M, Q8_0, and Q4_0 GGUF quantization formats and when to choose each",
+    "Ran Llama locally with Ollama, wrote a custom Modelfile with a system prompt, and pulled the model via the REST API",
+    "Fine-tuned a Llama model with QLoRA using SFTTrainer and verified the adapter merged correctly into the base weights",
+    "Converted a HuggingFace checkpoint to GGUF using llama.cpp convert scripts and loaded it in Ollama",
+    "Benchmarked a fine-tuned model vs the base model on held-out prompts and produced a tokens/sec + accuracy table"
+  ];
+
+  document.getElementById('panel-exam').innerHTML = `
+    <div class="exam-grid">
+      <div class="exam-card">
+        <div class="exam-card-label">Format</div>
+        <div class="exam-card-val">Capstone</div>
+        <div class="exam-card-sub">No formal exam — project-based</div>
+      </div>
+      <div class="exam-card">
+        <div class="exam-card-label">Pass Score</div>
+        <div class="exam-card-val">N/A</div>
+        <div class="exam-card-sub">Self-assessed capstone project</div>
+      </div>
+      <div class="exam-card">
+        <div class="exam-card-label">Cost</div>
+        <div class="exam-card-val">Free</div>
+        <div class="exam-card-sub">Meta / Ollama (Self-paced)</div>
+      </div>
+      <div class="exam-card">
+        <div class="exam-card-label">Capstone</div>
+        <div class="exam-card-val" style="font-size:13px;line-height:1.4;">Domain Fine-tune + Serve</div>
+        <div class="exam-card-sub">QLoRA → GGUF → Ollama → OpenAI API</div>
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>Capstone project:</strong> Fine-tune Llama-3.2-1B with QLoRA on a domain-specific dataset, convert the merged adapter to GGUF, load it into Ollama with a custom Modelfile, serve it via the OpenAI-compatible REST API, and benchmark it against the base model on 20 held-out prompts measuring accuracy and tokens/sec.
+    </div>
+    <div class="info-box">
+      <strong>Exam notes:</strong> No formal exam. Fine-tune a Llama model on a domain dataset and serve it via an OpenAI-compatible API as the capstone.
+    </div>
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:.75rem;">Readiness Checklist</h3>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem;">
+      ${checklist.map((item, i) => `
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;line-height:1.5;">
+          <input type="checkbox" id="chk-${i}" style="margin-top:3px;flex-shrink:0;accent-color:var(--green);">
+          <span>${item}</span>
+        </label>`).join('')}
+    </div>
+    <a class="ai-link-btn" href="https://llama.meta.com/docs/" target="_blank">→ Llama Documentation</a>`;
+}
+
+// ── Panel switching ───────────────────────────────────────────────────────────
+
+function showPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'topics')    renderTopics();
+  if (name === 'ai')        renderAI();
+  if (name === 'resources') renderResources();
+  if (name === 'exam')      renderExam();
+}
+
+function renderAll() {
+  renderSchedule();
+  updateStats();
+}
+
+// ── GitHub sync UI ────────────────────────────────────────────────────────────
+
+function updateSyncBadge(s) {
+  const el = document.getElementById('sync-badge'); if (!el) return;
+  const L = {disconnected:'☁ Connect GitHub', connected:'✓ Synced', syncing:'↑ Syncing…', error:'⚠ Sync failed'};
+  el.textContent = L[s] || L.disconnected;
+  el.className = 'sync-badge' + (s==='connected' ? ' connected' : s==='syncing' ? ' syncing' : s==='error' ? ' error' : '');
+}
+
+function openGHModal() {
+  const creds = GHSync.getCreds();
+  if (creds) {
+    document.getElementById('gh-pat').value    = creds.pat    || '';
+    document.getElementById('gh-owner').value  = creds.owner  || '';
+    document.getElementById('gh-repo').value   = creds.repo   || '';
+    document.getElementById('gh-branch').value = creds.branch || 'main';
+    document.getElementById('gh-disconnect-btn').style.display = 'inline-flex';
+  } else {
+    document.getElementById('gh-pat').value    = '';
+    document.getElementById('gh-owner').value  = '';
+    document.getElementById('gh-repo').value   = '';
+    document.getElementById('gh-branch').value = 'main';
+    document.getElementById('gh-disconnect-btn').style.display = 'none';
+  }
+  document.getElementById('gh-modal-msg').textContent = '';
+  document.getElementById('gh-modal').classList.add('open');
+}
+
+function closeGHModal() { document.getElementById('gh-modal').classList.remove('open'); }
+
+async function saveGHCreds() {
+  const c = {
+    pat:    document.getElementById('gh-pat').value.trim(),
+    owner:  document.getElementById('gh-owner').value.trim(),
+    repo:   document.getElementById('gh-repo').value.trim(),
+    branch: document.getElementById('gh-branch').value.trim() || 'main'
+  };
+  if (!c.pat || !c.owner || !c.repo) {
+    document.getElementById('gh-modal-msg').textContent = 'Fill in all fields.'; return;
+  }
+  document.getElementById('gh-modal-msg').textContent = 'Testing…';
+  GHSync.saveCreds(c);
+  const r = await GHSync.testConnection();
+  if (r.ok) {
+    document.getElementById('gh-modal-msg').textContent = '✓ Connected!';
+    updateSyncBadge('connected');
+    setTimeout(closeGHModal, 900);
+  } else {
+    document.getElementById('gh-modal-msg').textContent = 'Error: ' + r.msg;
+  }
+}
+
+function disconnectGH() { GHSync.saveCreds(null); updateSyncBadge('disconnected'); closeGHModal(); }
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+loadState().then(renderAll);
+
+// ── Dark mode toggle ──────────────────────────────────────────────────────────
+const MOON = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function getEffectiveTheme(){const t=document.documentElement.getAttribute('data-theme');if(t)return t;return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+function applyThemeBtn(){const btn=document.getElementById('theme-btn');if(!btn)return;const dark=getEffectiveTheme()==='dark';btn.innerHTML=dark?SUN:MOON;btn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');}
+window.toggleTheme=function(){const next=getEffectiveTheme()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);localStorage.setItem('cj-theme',next);applyThemeBtn();};
+applyThemeBtn();
+</script>
+</body>
+</html>
